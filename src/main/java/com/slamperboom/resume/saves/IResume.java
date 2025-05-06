@@ -1,8 +1,8 @@
 package com.slamperboom.resume.saves;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.BlockType;
 import com.slamperboom.resume.blocks.common.IBlock;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface IResume {
     String getId();
     String getName();
     List<IBlock> getBlocks();
-    JSONObject getJson();
+    JsonNode getJson();
     boolean isSaved();
-    void updateContent(BlockType blockType, JSONObject content);
+    void updateContent(BlockType blockType, JsonNode content);
 }

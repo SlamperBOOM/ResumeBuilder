@@ -1,6 +1,9 @@
 package com.slamperboom.resume.blocks.common;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public interface IBlock {
-    BlockType blockType();
-    IContent content();
+    BlockType getBlockType();
+    IContent getContent();
+    void updateContent(JsonNode content);
 }

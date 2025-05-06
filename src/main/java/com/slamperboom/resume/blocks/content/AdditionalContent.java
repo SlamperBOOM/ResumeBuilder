@@ -1,17 +1,12 @@
 package com.slamperboom.resume.blocks.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.slamperboom.resume.blocks.common.IContent;
-import org.json.JSONObject;
 
 public class AdditionalContent implements IContent {
+    @JsonProperty("additional_info")
+    private String additionalInfo;
 
-    @Override
-    public JSONObject getJson() {
-        return null;
-    }
-
-    @Override
-    public void updateContent(JSONObject content) {
-
-    }
+    @JsonProperty("show_on_side")
+    private boolean showOnSide;
 }

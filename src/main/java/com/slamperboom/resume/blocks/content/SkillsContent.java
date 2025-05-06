@@ -1,17 +1,13 @@
 package com.slamperboom.resume.blocks.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.IContent;
-import org.json.JSONObject;
 
 public class SkillsContent implements IContent {
+    @JsonProperty("skill_name")
+    private String skillName;
 
-    @Override
-    public JSONObject getJson() {
-        return null;
-    }
-
-    @Override
-    public void updateContent(JSONObject content) {
-
-    }
+    @JsonProperty("skill_level")
+    private SkillsContentSkillLevel skillLevel;
 }

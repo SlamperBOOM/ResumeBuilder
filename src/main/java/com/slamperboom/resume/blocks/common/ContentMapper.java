@@ -3,7 +3,9 @@ package com.slamperboom.resume.blocks.common;
 import com.slamperboom.resume.blocks.content.*;
 
 public class ContentMapper {
-    public static IContent MapContent(BlockType blockType) {
+    private ContentMapper(){}
+
+    public static IContent mapContent(BlockType blockType) {
         switch (blockType) {
             case ABOUT -> {
                 return new AboutContent();

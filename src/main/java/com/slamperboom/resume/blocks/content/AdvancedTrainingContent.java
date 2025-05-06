@@ -1,16 +1,16 @@
 package com.slamperboom.resume.blocks.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.IContent;
-import org.json.JSONObject;
 
 public class AdvancedTrainingContent implements IContent {
-    @Override
-    public JSONObject getJson() {
-        return null;
-    }
+    @JsonProperty("course_name")
+    private String courseName;
 
-    @Override
-    public void updateContent(JSONObject content) {
+    @JsonProperty("organization")
+    private String organization;
 
-    }
+    @JsonProperty("year_of_graduate")
+    private String yearOfGraduate;
 }

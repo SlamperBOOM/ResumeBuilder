@@ -1,10 +1,13 @@
 package com.slamperboom.settings;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Settings {
     private static Settings settingsInstance;
@@ -17,24 +20,31 @@ public class Settings {
     }
 
     private static final String REQUIRED_BLOCKS = "required_blocks";
-    private JSONObject settings;
+    private static final String VERSION = "current_version";
+
+    private final JsonNode settings;
 
     private Settings(){
         try {
+            ObjectMapper mapper = new ObjectMapper();
             settings =
-                    new JSONObject(new String(ClassLoader.getSystemResourceAsStream("global_settings.json").readAllBytes()));
+                    mapper.readTree(new String(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("global_settings.json")).readAllBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public List<String> getRequiredBlocksList() {
-        List<String> list = new ArrayList<>();
-        for (Object o : settings.getJSONArray(REQUIRED_BLOCKS).toList()) {
-            if (o instanceof String string) {
-                list.add(string);
-            }
+        if (settings.get(REQUIRED_BLOCKS).isArray()) {
+            List<String> requiredBlocks = new ArrayList<>();
+            var iter = settings.withArrayProperty(REQUIRED_BLOCKS).elements();
+            iter.forEachRemaining(o -> requiredBlocks.add(o.asText()));
+            return requiredBlocks;
         }
-        return list;
+        return Collections.emptyList();
+    }
+
+    public String getVersion() {
+        return settings.get(VERSION).asText();
     }
 }

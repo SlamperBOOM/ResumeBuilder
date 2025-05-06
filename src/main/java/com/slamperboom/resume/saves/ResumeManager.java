@@ -1,10 +1,9 @@
 package com.slamperboom.resume.saves;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slamperboom.resume.blocks.common.*;
 import com.slamperboom.settings.Settings;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -38,8 +37,11 @@ public class ResumeManager implements IResumeManager{
         Resume resume = resumes.get(resumeId);
         File saveFile = resumeFileMap.get(resumeId);
         try {
-            if (!saveFile.exists() && !saveFile.createNewFile()) {
-                throw new IOException("Cannot create save file for resume " + resume.getName());
+            if (saveFile == null || !saveFile.exists()) {
+                saveFile = new File(SAVE_PATH + resume.getName());
+                if (!saveFile.createNewFile()) {
+                    throw new IOException("Cannot create save file for resume " + resume.getName());
+                }
             }
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile));
             writer.write(resume.getJson().toString());
@@ -64,13 +66,15 @@ public class ResumeManager implements IResumeManager{
         if (saves == null || saves.length == 0) {
             throw new EmptyStackException();
         }
+        ObjectMapper objectMapper = new ObjectMapper();
         for (File saveFile : saves) {
-            try (var reader = new FileInputStream(saveFile)) {
-                JSONObject object = new JSONObject(new String(reader.readAllBytes(), StandardCharsets.UTF_16));
-                String resumeId = object.getString("id");
+            try {
+                JsonNode json = objectMapper.readTree(saveFile);
+                Resume resume = objectMapper.treeToValue(json, Resume.class);
+                /*String resumeId = json.get("resume_id").asText();
                 Resume resume = new Resume(resumeId);
-                resume.setResumeName(object.getString("name"));
-                resume.setVersionOfLastEdit(object.getString("version"));
+                resume.setResumeName(json.get("resume_name").asText());
+                resume.setVersionOfLastEdit(json.get("version_of_last_edit").asText());
 
                 JSONArray jsonBlocks = object.getJSONArray("blocks");
                 List<IBlock> resumeBlocks = new ArrayList<>(jsonBlocks.length());
@@ -81,9 +85,9 @@ public class ResumeManager implements IResumeManager{
                     content.updateContent(block.getJSONObject("content"));
                     resumeBlocks.add(new Block(type, content));
                 }
-                resume.setBlocks(resumeBlocks);
-                resumes.put(resumeId, resume);
-                resumeFileMap.put(resumeId, saveFile);
+                resume.setBlocks(resumeBlocks);*/
+                resumes.put(resume.getId(), resume);
+                resumeFileMap.put(resume.getId(), saveFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -111,7 +115,7 @@ public class ResumeManager implements IResumeManager{
         List<IBlock> blocks = new ArrayList<>();
         for (String blockName : listOfRequiredBlocks) {
             BlockType blockType = BlockType.valueOf(blockName);
-            Block block = new Block(blockType, ContentMapper.MapContent(blockType));
+            Block block = new Block(blockType, ContentMapper.mapContent(blockType));
             blocks.add(block);
         }
         resume.setBlocks(blocks);

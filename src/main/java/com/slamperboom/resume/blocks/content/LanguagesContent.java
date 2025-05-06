@@ -1,17 +1,12 @@
 package com.slamperboom.resume.blocks.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.slamperboom.resume.blocks.common.IContent;
-import org.json.JSONObject;
 
 public class LanguagesContent implements IContent {
+    @JsonProperty("language")
+    private String language;
 
-    @Override
-    public JSONObject getJson() {
-        return null;
-    }
-
-    @Override
-    public void updateContent(JSONObject content) {
-
-    }
+    @JsonProperty("language_level")
+    private LanguageContentLanguageLevel languageLevel;
 }

@@ -1,9 +1,12 @@
 package com.slamperboom.resume.saves;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slamperboom.resume.blocks.common.BlockType;
 import com.slamperboom.resume.blocks.common.IBlock;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -12,13 +15,22 @@ import java.util.List;
  * This can be transformed into HTML or PDF doc
  */
 public class Resume implements IResume {
+    @JsonProperty("resume_id")
     private final String id;
+
+    @JsonProperty("version_of_last_edit")
     @Setter
     private String versionOfLastEdit;
+
+    @JsonProperty("resume_name")
     @Setter
     private String resumeName;
+
+    @JsonProperty("blocks")
     @Setter
     private List<IBlock> blocks;
+
+    @JsonIgnore
     private boolean isSaved;
 
     protected Resume(String id) {
@@ -46,8 +58,9 @@ public class Resume implements IResume {
     }
 
     @Override
-    public JSONObject getJson() {
-        return null;
+    public JsonNode getJson() {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.valueToTree(this);
     }
 
     public void save(){
@@ -60,9 +73,8 @@ public class Resume implements IResume {
     }
 
     @Override
-    public void updateContent(BlockType blockType, JSONObject content) {
-        blocks.stream()
-                .filter(block -> block.blockType() == blockType).findFirst()
-                .ifPresent(block -> block.content().updateContent(content));
+    public void updateContent(BlockType blockType, JsonNode content) {
+        blocks.stream().filter(b -> b.getBlockType() == blockType).findFirst()
+                .ifPresent(b -> b.updateContent(content));
     }
 }

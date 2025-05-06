@@ -1,17 +1,18 @@
 package com.slamperboom.resume.blocks.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.slamperboom.resume.blocks.common.IContent;
-import org.json.JSONObject;
 
 public class RecommendationsContent implements IContent {
+    @JsonProperty("recommending")
+    private String recommending;
 
-    @Override
-    public JSONObject getJson() {
-        return null;
-    }
+    @JsonProperty("company")
+    private String company;
 
-    @Override
-    public void updateContent(JSONObject content) {
+    @JsonProperty("email")
+    private String email;
 
-    }
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 }
