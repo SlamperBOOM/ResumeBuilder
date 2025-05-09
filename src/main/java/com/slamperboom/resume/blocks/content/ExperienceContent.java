@@ -2,6 +2,7 @@ package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
 import java.util.Date;
@@ -10,6 +11,11 @@ import java.util.List;
 public class ExperienceContent implements IContent {
     @JsonProperty("experiences")
     private List<WorkExperience> workExperiences;
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.EXPERIENCE;
+    }
 
     private static class WorkExperience {
         @JsonProperty("position")

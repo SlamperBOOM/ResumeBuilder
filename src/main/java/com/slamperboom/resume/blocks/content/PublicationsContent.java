@@ -1,6 +1,7 @@
 package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
 public class PublicationsContent implements IContent {
@@ -12,4 +13,9 @@ public class PublicationsContent implements IContent {
 
     @JsonProperty("month")
     private String month;
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.PUBLICATIONS;
+    }
 }

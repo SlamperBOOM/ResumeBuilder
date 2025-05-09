@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slamperboom.resume.blocks.common.*;
 import com.slamperboom.settings.Settings;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,6 +22,7 @@ public class ResumeManager implements IResumeManager{
         return resumes.values().stream().map(resume -> {
             var file = resumeFileMap.get(resume.getId());
             return new SimpleResume(
+                    resume.getId(),
                     resume.getName(),
                     file,
                     LocalDateTime.ofInstant(
@@ -38,17 +38,23 @@ public class ResumeManager implements IResumeManager{
         File saveFile = resumeFileMap.get(resumeId);
         try {
             if (saveFile == null || !saveFile.exists()) {
-                saveFile = new File(SAVE_PATH + resume.getName());
-                if (!saveFile.createNewFile()) {
-                    throw new IOException("Cannot create save file for resume " + resume.getName());
+                File saveDir = new File(SAVE_PATH);
+                if (!saveDir.exists() && !saveDir.mkdir()) {
+                    throw new IOException("Cannot create saves directory");
                 }
+                saveFile = new File(SAVE_PATH + resume.getName() + ".json");
+                if (!saveFile.exists() && !saveFile.createNewFile()) {
+                    throw new IOException("Cannot create save file for resume \"" + resume.getName() + "\"");
+                }
+                resumeFileMap.put(resumeId, saveFile);
             }
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile));
-            writer.write(resume.getJson().toString());
+//            writer.write(resume.getJson().toString());
+            writer.write(resume.getJson().toPrettyString());
             writer.close();
             resume.save();
         } catch (IOException e){
-            System.err.println("Unable to save resume " + resume.getName());
+            System.err.println("Unable to save resume \"" + resume.getName() + "\": " + e);
         }
     }
 
@@ -96,7 +102,16 @@ public class ResumeManager implements IResumeManager{
 
     @Override
     public IResume getCurrentResume() {
-        return resumes.get(currentResumeId);
+        Resume currentResume = resumes.get(currentResumeId);
+        if (currentResume == null) {
+            if (resumes.isEmpty()) {
+                return null;
+            } else {
+                return resumes.values().stream().findFirst().get();
+            }
+        } else {
+            return currentResume;
+        }
     }
 
     @Override
@@ -105,21 +120,23 @@ public class ResumeManager implements IResumeManager{
     }
 
     @Override
-    public void createResume(String resumeName) {
+    public String createResume(String resumeName) {
         String resumeId = UUID.randomUUID().toString();
         Resume resume = new Resume(resumeId);
         resume.setResumeName(resumeName);
+        resume.setVersionOfLastEdit(Settings.getInstance().getVersion());
 
         // adding required blocks
         List<String> listOfRequiredBlocks = settings.getRequiredBlocksList();
-        List<IBlock> blocks = new ArrayList<>();
+        Map<ContentType, IContent> blocks = new EnumMap<>(ContentType.class);
         for (String blockName : listOfRequiredBlocks) {
-            BlockType blockType = BlockType.valueOf(blockName);
-            Block block = new Block(blockType, ContentMapper.mapContent(blockType));
-            blocks.add(block);
+            ContentType contentType = ContentType.valueOf(blockName);
+            IContent block = ContentMapper.mapContent(contentType);
+            blocks.put(contentType, block);
         }
         resume.setBlocks(blocks);
 
         resumes.put(resumeId, resume);
+        return resumeId;
     }
 }

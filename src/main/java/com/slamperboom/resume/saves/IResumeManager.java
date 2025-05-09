@@ -10,5 +10,5 @@ public interface IResumeManager {
 
     IResume getCurrentResume();
     void setCurrentResume(String resumeId);
-    void createResume(String resumeName);
+    String createResume(String resumeName);
 }

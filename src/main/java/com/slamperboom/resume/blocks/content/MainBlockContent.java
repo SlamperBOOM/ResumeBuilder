@@ -1,6 +1,9 @@
 package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
 import java.util.Date;
@@ -53,4 +56,9 @@ public class MainBlockContent implements IContent {
 
     @JsonProperty("goal_of_resume")
     private String goalOfTheResume;
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.MAIN_BLOCK;
+    }
 }

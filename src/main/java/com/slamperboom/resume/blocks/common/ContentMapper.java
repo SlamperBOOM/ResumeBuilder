@@ -5,8 +5,8 @@ import com.slamperboom.resume.blocks.content.*;
 public class ContentMapper {
     private ContentMapper(){}
 
-    public static IContent mapContent(BlockType blockType) {
-        switch (blockType) {
+    public static IContent mapContent(ContentType contentType) {
+        switch (contentType) {
             case ABOUT -> {
                 return new AboutContent();
             }
