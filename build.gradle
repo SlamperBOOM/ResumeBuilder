@@ -31,7 +31,15 @@ dependencies {
 //    try this
     implementation 'io.github.palexdev:materialfx:11.17.0'
 
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    implementation 'org.freemarker:freemarker:2.3.31'
+
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'org.jsoup:jsoup:1.20.1'
+
+    implementation "com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10"
 
     implementation 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'

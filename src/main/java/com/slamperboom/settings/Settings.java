@@ -22,12 +22,12 @@ public class Settings {
     private static final String REQUIRED_BLOCKS = "required_blocks";
     private static final String VERSION = "current_version";
 
-    private final JsonNode settings;
+    private final JsonNode staticSettings;
 
     private Settings(){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            settings =
+            staticSettings =
                     mapper.readTree(new String(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("global_settings.json")).readAllBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -35,9 +35,9 @@ public class Settings {
     }
 
     public List<String> getRequiredBlocksList() {
-        if (settings.get(REQUIRED_BLOCKS).isArray()) {
+        if (staticSettings.get(REQUIRED_BLOCKS).isArray()) {
             List<String> requiredBlocks = new ArrayList<>();
-            var iter = settings.withArrayProperty(REQUIRED_BLOCKS).elements();
+            var iter = staticSettings.withArrayProperty(REQUIRED_BLOCKS).elements();
             iter.forEachRemaining(o -> requiredBlocks.add(o.asText()));
             return requiredBlocks;
         }
@@ -45,6 +45,6 @@ public class Settings {
     }
 
     public String getVersion() {
-        return settings.get(VERSION).asText();
+        return staticSettings.get(VERSION).asText();
     }
 }

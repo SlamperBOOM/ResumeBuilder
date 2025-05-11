@@ -1,12 +1,12 @@
 {
     "required_blocks": [
-        "main_block",
-        "contacts",
-        "experience",
-        "education",
-        "languages",
-        "skills",
-        "about"
+        "MAIN_BLOCK",
+        "CONTACTS",
+        "EXPERIENCE",
+        "EDUCATION",
+        "LANGUAGES",
+        "SKILLS",
+        "ABOUT"
     ],
     "current_version": "1.0"
 }

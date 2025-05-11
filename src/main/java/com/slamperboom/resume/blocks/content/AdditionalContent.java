@@ -8,9 +8,6 @@ public class AdditionalContent implements IContent {
     @JsonProperty("additional_info")
     private String additionalInfo;
 
-    @JsonProperty("show_on_side")
-    private boolean showOnSide;
-
     @Override
     public ContentType getContentType() {
         return ContentType.ADDITIONAL;

@@ -7,28 +7,31 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 
 public class DynamicSettings {
-    private static DynamicSettings dynamicSettings;
+    private static DynamicSettings settingsInstance;
 
     public static DynamicSettings getInstance() {
-        if (dynamicSettings == null) {
-            dynamicSettings = new DynamicSettings();
+        if (settingsInstance == null) {
+            settingsInstance = new DynamicSettings();
         }
-        return dynamicSettings;
+        return settingsInstance;
     }
 
     private static final String SAVE_FILE = "config/config.json";
     private static final String LOCALE = "locale";
 
-    private JsonNode settings;
+    private final JsonNode settings;
 
     private DynamicSettings(){
         try {
             ObjectMapper mapper = new ObjectMapper();
             File settingsFile = new File(SAVE_FILE);
             if (!settingsFile.exists()) {
-                settings = mapper.createObjectNode().put(LOCALE, "en");
+                // fill with defaults
+                settings = mapper.createObjectNode()
+                        .put(LOCALE, "en");
             } else {
                 settings =
                         mapper.readTree(settingsFile);

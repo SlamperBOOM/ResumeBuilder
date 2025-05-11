@@ -49,7 +49,6 @@ public class ResumeManager implements IResumeManager{
                 resumeFileMap.put(resumeId, saveFile);
             }
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile));
-//            writer.write(resume.getJson().toString());
             writer.write(resume.getJson().toPrettyString());
             writer.close();
             resume.save();
@@ -77,21 +76,6 @@ public class ResumeManager implements IResumeManager{
             try {
                 JsonNode json = objectMapper.readTree(saveFile);
                 Resume resume = objectMapper.treeToValue(json, Resume.class);
-                /*String resumeId = json.get("resume_id").asText();
-                Resume resume = new Resume(resumeId);
-                resume.setResumeName(json.get("resume_name").asText());
-                resume.setVersionOfLastEdit(json.get("version_of_last_edit").asText());
-
-                JSONArray jsonBlocks = object.getJSONArray("blocks");
-                List<IBlock> resumeBlocks = new ArrayList<>(jsonBlocks.length());
-                for (int i=0; i<jsonBlocks.length(); ++i) {
-                    JSONObject block = jsonBlocks.getJSONObject(i);
-                    BlockType type = BlockType.valueOf(block.getString("block_name"));
-                    IContent content = ContentMapper.MapContent(type);
-                    content.updateContent(block.getJSONObject("content"));
-                    resumeBlocks.add(new Block(type, content));
-                }
-                resume.setBlocks(resumeBlocks);*/
                 resumes.put(resume.getId(), resume);
                 resumeFileMap.put(resume.getId(), saveFile);
             } catch (IOException e) {

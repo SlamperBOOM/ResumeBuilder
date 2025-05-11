@@ -5,15 +5,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
-public class SkillsContent implements IContent {
-    @JsonProperty("skill_name")
-    private String skillName;
+import java.util.List;
 
-    @JsonProperty("skill_level")
-    private SkillsContentSkillLevel skillLevel;
+public class SkillsContent implements IContent {
+    @JsonProperty("skills")
+    private List<Skill> skills;
 
     @Override
     public ContentType getContentType() {
         return ContentType.SKILLS;
+    }
+
+    private static class Skill{
+        @JsonProperty("skill_name")
+        private String skillName;
+
+        @JsonProperty("skill_level")
+        private SkillsContentSkillLevel skillLevel;
     }
 }
