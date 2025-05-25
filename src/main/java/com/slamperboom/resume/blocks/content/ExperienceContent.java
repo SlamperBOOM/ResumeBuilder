@@ -1,11 +1,12 @@
 package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
+import com.slamperboom.resume.blocks.content.serializationUtilities.ExperienceDateSerializer;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ExperienceContent implements IContent {
@@ -24,11 +25,13 @@ public class ExperienceContent implements IContent {
         @JsonProperty("company")
         private String company;
 
+        @JsonSerialize(using = ExperienceDateSerializer.class)
         @JsonProperty("start_date")
-        private Date startDate;
+        private LocalDate startDate;
 
+        @JsonSerialize(using = ExperienceDateSerializer.class)
         @JsonProperty("end_date")
-        private Date endDate;
+        private LocalDate endDate;
 
         @JsonProperty("is_still_working")
         private boolean isStillWorking;

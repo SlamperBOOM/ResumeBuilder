@@ -2,17 +2,16 @@ package com.slamperboom.resume.saves;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
-import lombok.AllArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +20,9 @@ import java.util.Map;
  */
 public class Resume implements IResume {
     @JsonIgnore
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper defaultObjectMapper;
+    @JsonIgnore
+    private final ObjectMapper translatedObjectMapper;
 
     @JsonProperty("resume_id")
     private final String id;
@@ -43,6 +44,14 @@ public class Resume implements IResume {
 
     protected Resume(@JsonProperty("resume_id") String id) {
         this.id = id;
+
+        defaultObjectMapper = new ObjectMapper();
+        defaultObjectMapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        defaultObjectMapper.registerModule(new JavaTimeModule());
+
+        translatedObjectMapper = new ObjectMapper();
+        translatedObjectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        translatedObjectMapper.registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -72,7 +81,13 @@ public class Resume implements IResume {
     @Override
     @JsonIgnore
     public JsonNode getJson() {
-        return objectMapper.valueToTree(this);
+        return defaultObjectMapper.valueToTree(this);
+    }
+
+    @Override
+    @JsonIgnore
+    public JsonNode getTranslatedJson() {
+        return translatedObjectMapper.valueToTree(this);
     }
 
     public void save(){
@@ -88,7 +103,7 @@ public class Resume implements IResume {
     @Override
     public void updateContent(ContentType contentType, JsonNode content) {
         try {
-            blocks.put(contentType, objectMapper.treeToValue(content, ContentMapper.mapContent(contentType).getClass()));
+            blocks.put(contentType, defaultObjectMapper.treeToValue(content, ContentMapper.mapContent(contentType).getClass()));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

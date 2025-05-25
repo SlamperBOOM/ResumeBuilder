@@ -1,4 +1,4 @@
-package com.slamperboom.resume.blocks.content;
+package com.slamperboom.resume.blocks.content.enums;
 
 public enum MainBlockEmployment {
     FULL_TIME,

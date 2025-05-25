@@ -2,9 +2,12 @@ package com.slamperboom.resume.saves;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.resume.blocks.common.*;
 import com.slamperboom.settings.Settings;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -48,7 +51,7 @@ public class ResumeManager implements IResumeManager{
                 }
                 resumeFileMap.put(resumeId, saveFile);
             }
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile));
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile), StandardCharsets.UTF_8);
             writer.write(resume.getJson().toPrettyString());
             writer.close();
             resume.save();
@@ -72,6 +75,7 @@ public class ResumeManager implements IResumeManager{
             throw new EmptyStackException();
         }
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         for (File saveFile : saves) {
             try {
                 JsonNode json = objectMapper.readTree(saveFile);

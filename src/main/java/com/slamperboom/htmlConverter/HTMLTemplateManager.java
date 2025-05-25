@@ -24,7 +24,7 @@ public class HTMLTemplateManager {
 
     private HTMLTemplateManager() {
         templateConfiguration = new Configuration(Configuration.VERSION_2_3_31);
-        templateConfiguration.setDefaultEncoding(StandardCharsets.UTF_16.name());
+        templateConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
         templateConfiguration.setClassLoaderForTemplateLoading(ClassLoader.getSystemClassLoader(), TEMPLATES_PATH);
         DefaultObjectWrapperBuilder objectWrapperBuilder = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_31);
         objectWrapperBuilder.setIterableSupport(true);
@@ -40,6 +40,6 @@ public class HTMLTemplateManager {
 
     public Template getTemplate(String templateName) throws IOException {
         String templateFileName = templateMap.getProperty(templateName);
-        return templateConfiguration.getTemplate(templateFileName);
+        return templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
     }
 }

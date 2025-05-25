@@ -1,12 +1,14 @@
 package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
+import com.slamperboom.resume.blocks.content.enums.MainBlockEmployment;
+import com.slamperboom.resume.blocks.content.enums.MainBlockSchedule;
+import com.slamperboom.resume.blocks.content.serializationUtilities.MainBlockDateSerializer;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class MainBlockContent implements IContent {
     @JsonProperty("desired_position")
@@ -21,8 +23,9 @@ public class MainBlockContent implements IContent {
     @JsonProperty("first_name")
     private String firstName;
 
+    @JsonSerialize(using = MainBlockDateSerializer.class)
     @JsonProperty("date_of_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @JsonProperty("city")
     private String city;
@@ -40,7 +43,7 @@ public class MainBlockContent implements IContent {
     private MainBlockSchedule schedule;
 
     @JsonProperty("is_moving_acceptable")
-    private boolean isMovingAcceptable;
+    private Boolean isMovingAcceptable;
 
     @JsonProperty("is_ready_for_business_trips")
     private boolean isReadyForBusinessTrips;

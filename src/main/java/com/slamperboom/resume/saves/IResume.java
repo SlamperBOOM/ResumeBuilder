@@ -13,6 +13,7 @@ public interface IResume {
     String getName();
     Map<ContentType, IContent> getBlocks();
     JsonNode getJson();
+    JsonNode getTranslatedJson();
     boolean isSaved();
     void updateContent(ContentType contentType, JsonNode content);
 }

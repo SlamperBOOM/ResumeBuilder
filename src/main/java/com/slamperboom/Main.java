@@ -3,6 +3,7 @@ package com.slamperboom;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.ResumeManager;
+import com.slamperboom.settings.DynamicSettings;
 
 import java.io.IOException;
 
@@ -25,5 +26,7 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        manager.saveAll();
+        DynamicSettings.getInstance().saveSettings();
     }
 }

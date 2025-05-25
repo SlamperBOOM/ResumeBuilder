@@ -1,13 +1,12 @@
 package com.slamperboom.settings;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Locale;
 
 public class DynamicSettings {
     private static DynamicSettings settingsInstance;
@@ -19,10 +18,11 @@ public class DynamicSettings {
         return settingsInstance;
     }
 
+    private static final String CONFIG_DIR = "config/";
     private static final String SAVE_FILE = "config/config.json";
     private static final String LOCALE = "locale";
 
-    private final JsonNode settings;
+    private final ObjectNode settings;
 
     private DynamicSettings(){
         try {
@@ -34,7 +34,7 @@ public class DynamicSettings {
                         .put(LOCALE, "en");
             } else {
                 settings =
-                        mapper.readTree(settingsFile);
+                        (ObjectNode) mapper.readTree(settingsFile);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -42,8 +42,17 @@ public class DynamicSettings {
     }
 
     public void saveSettings() {
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(SAVE_FILE))) {
+        File configDir = new File(CONFIG_DIR);
+        File configFile = new File(SAVE_FILE);
+        try{
+            configDir.mkdir();
+            if (!configFile.exists() && !configFile.createNewFile()) {
+                System.err.println("Unable to save settings");
+                return;
+            }
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(SAVE_FILE));
             writer.write(settings.toString());
+            writer.close();
         } catch (IOException e){
             throw new RuntimeException(e);
         }
@@ -51,5 +60,9 @@ public class DynamicSettings {
 
     public String getLocale() {
         return settings.get(LOCALE).asText();
+    }
+
+    public void setLocale(String locale) {
+        settings.put(LOCALE, locale);
     }
 }

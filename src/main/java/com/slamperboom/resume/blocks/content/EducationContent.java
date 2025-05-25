@@ -1,9 +1,10 @@
 package com.slamperboom.resume.blocks.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
+import com.slamperboom.resume.blocks.content.enums.EducationContentEducationLevel;
+
 import java.util.List;
 
 public class EducationContent implements IContent {

@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.resume.saves.IResume;
+import com.slamperboom.settings.DynamicSettings;
+import com.slamperboom.translations.TranslationsManager;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,18 +36,27 @@ public class HTMLConverter {
         }
         Map jsonRepresentation;
         try {
-            jsonRepresentation = new ObjectMapper().treeToValue(resume.getJson(), HashMap.class);
+            ObjectMapper mapper = new ObjectMapper();
+            jsonRepresentation = mapper.treeToValue(resume.getTranslatedJson(), HashMap.class);
+            jsonRepresentation.put(
+                    "translations",
+                    mapper.treeToValue(
+                            TranslationsManager.getInstance().getResumeTranslations(),
+                            HashMap.class
+                    )
+            );
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Writer writer = new OutputStreamWriter(stream);
+
+        StringWriter writer = new StringWriter();
         try {
             template.process(jsonRepresentation, writer);
+            writer.flush();
         } catch (TemplateException | IOException e) {
             throw new RuntimeException(e);
         }
-        return stream.toString();
+        return writer.toString();
     }
 
     /**
