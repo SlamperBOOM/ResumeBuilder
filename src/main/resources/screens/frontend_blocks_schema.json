@@ -1,0 +1,46 @@
+{
+    "drop_down_list": {
+        "type": "drop_down_list",
+        "title": "title",
+        "values": {
+            "key1": "val1"
+        },
+        "resume_value": "",
+        "default": "key1"
+    },
+    "text_input": {
+        "type": "text_input",
+        "title": "title",
+        "resume_value": ""
+    },
+    "text_area": {
+        "type": "text_area",
+        "title": "title",
+        "resume_value": ""
+    },
+    "toggle": {
+        "type": "toggle",
+        "title": "title",
+        "resume_value": "",
+        "default": "false"
+    },
+    "dynamic_combined_block": {
+        "type": "dynamic_combined_block",
+        "blocks_list": "",
+        "block_format": {},
+        "add_button_title": ""
+    },
+    "image": {
+        "type": "image"
+    },
+    "date": {
+        "type": "date",
+        "fields": [
+            "day",
+            "month",
+            "year"
+        ],
+        "translations": "main_block.date_of_birth",
+        "resume_value": ""
+    }
+}

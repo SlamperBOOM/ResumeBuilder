@@ -1,5 +1,6 @@
 package com.slamperboom.resume.saves;
 
+import java.io.File;
 import java.util.List;
 
 public interface IResumeManager {
@@ -7,8 +8,10 @@ public interface IResumeManager {
     void saveResume(String resumeId);
     void saveAll();
     void readAllResumes();
+    File getSaveFolder();
 
-    IResume getCurrentResume();
-    void setCurrentResume(String resumeId);
+    IResume getResume(String resumeID);
     String createResume(String resumeName);
+    String duplicateResume(String duplicateResumeId);
+    void deleteResume(String resumeId);
 }

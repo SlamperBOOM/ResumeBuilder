@@ -10,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
+import com.slamperboom.settings.Settings;
 import lombok.Setter;
 
 import java.util.Map;
@@ -34,6 +35,10 @@ public class Resume implements IResume {
     @JsonProperty("resume_name")
     @Setter
     private String resumeName;
+
+    @JsonProperty("template_name")
+    @Setter
+    private String templateName;
 
     @JsonProperty("blocks")
     @Setter
@@ -90,6 +95,12 @@ public class Resume implements IResume {
         return translatedObjectMapper.valueToTree(this);
     }
 
+    @Override
+    @JsonIgnore
+    public String getTemplateName() {
+        return templateName;
+    }
+
     public void save(){
         isSaved = true;
     }
@@ -104,8 +115,15 @@ public class Resume implements IResume {
     public void updateContent(ContentType contentType, JsonNode content) {
         try {
             blocks.put(contentType, defaultObjectMapper.treeToValue(content, ContentMapper.mapContent(contentType).getClass()));
+            versionOfLastEdit = Settings.getInstance().getVersion();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void updateResumeInformation(JsonNode information) {
+        this.resumeName = information.get("resume_name").asText();
+        this.templateName = information.get("template_name").asText();
     }
 }

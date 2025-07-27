@@ -43,7 +43,7 @@ public class MainBlockContent implements IContent {
     private MainBlockSchedule schedule;
 
     @JsonProperty("is_moving_acceptable")
-    private Boolean isMovingAcceptable;
+    private boolean isMovingAcceptable;
 
     @JsonProperty("is_ready_for_business_trips")
     private boolean isReadyForBusinessTrips;

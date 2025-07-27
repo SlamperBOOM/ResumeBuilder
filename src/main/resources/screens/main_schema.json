@@ -1,0 +1,20 @@
+{
+    "resume_menu": {
+        "edit": {
+            "key": "edit",
+            "action": "LOAD"
+        },
+        "duplicate": {
+            "key": "duplicate",
+            "action": "DUPLICATE"
+        },
+        "delete": {
+            "key": "delete",
+            "action": "DELETE"
+        }
+    },
+    "create_new": {
+        "key": "create_resume",
+        "action": "CREATE_NEW"
+    }
+}

@@ -2,12 +2,19 @@ package com.slamperboom.resume.saves;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.slamperboom.resume.blocks.common.*;
+import com.slamperboom.resume.blocks.common.ContentMapper;
+import com.slamperboom.resume.blocks.common.ContentType;
+import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.settings.Settings;
-import java.io.*;
-import java.nio.charset.Charset;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -16,9 +23,14 @@ import java.util.*;
 public class ResumeManager implements IResumeManager{
     private static final String SAVE_PATH = "saves/";
     private final Settings settings = Settings.getInstance();
+    private final ObjectMapper objectMapper;
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
-    private String currentResumeId;
+
+    public ResumeManager() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @Override
     public List<SimpleResume> getListOfResumes() {
@@ -45,7 +57,7 @@ public class ResumeManager implements IResumeManager{
                 if (!saveDir.exists() && !saveDir.mkdir()) {
                     throw new IOException("Cannot create saves directory");
                 }
-                saveFile = new File(SAVE_PATH + resume.getName() + ".json");
+                saveFile = new File(SAVE_PATH + resume.getId() + ".json");
                 if (!saveFile.exists() && !saveFile.createNewFile()) {
                     throw new IOException("Cannot create save file for resume \"" + resume.getName() + "\"");
                 }
@@ -74,8 +86,6 @@ public class ResumeManager implements IResumeManager{
         if (saves == null || saves.length == 0) {
             throw new EmptyStackException();
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
         for (File saveFile : saves) {
             try {
                 JsonNode json = objectMapper.readTree(saveFile);
@@ -89,22 +99,13 @@ public class ResumeManager implements IResumeManager{
     }
 
     @Override
-    public IResume getCurrentResume() {
-        Resume currentResume = resumes.get(currentResumeId);
-        if (currentResume == null) {
-            if (resumes.isEmpty()) {
-                return null;
-            } else {
-                return resumes.values().stream().findFirst().get();
-            }
-        } else {
-            return currentResume;
-        }
+    public File getSaveFolder() {
+        return new File(SAVE_PATH);
     }
 
     @Override
-    public void setCurrentResume(String resumeId) {
-        currentResumeId = resumeId;
+    public IResume getResume(String resumeID) {
+        return resumes.get(resumeID);
     }
 
     @Override
@@ -113,6 +114,7 @@ public class ResumeManager implements IResumeManager{
         Resume resume = new Resume(resumeId);
         resume.setResumeName(resumeName);
         resume.setVersionOfLastEdit(Settings.getInstance().getVersion());
+        resume.setTemplateName("simple_template");
 
         // adding required blocks
         List<String> listOfRequiredBlocks = settings.getRequiredBlocksList();
@@ -126,5 +128,44 @@ public class ResumeManager implements IResumeManager{
 
         resumes.put(resumeId, resume);
         return resumeId;
+    }
+
+    @Override
+    public String duplicateResume(String duplicateResumeId) {
+        Resume duplicateResume = resumes.get(duplicateResumeId);
+        if (duplicateResume == null){
+            throw new RuntimeException();
+        }
+        String resumeId = UUID.randomUUID().toString();
+
+        ObjectNode duplicateResumeJson = objectMapper.valueToTree(duplicateResume);
+        duplicateResumeJson.put("resume_id", resumeId);
+
+        try {
+            Resume newResume = objectMapper.treeToValue(duplicateResumeJson, Resume.class);
+            newResume.setResumeName(duplicateResume.getName() + " (New)");
+            resumes.put(resumeId, newResume);
+            saveResume(resumeId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return resumeId;
+    }
+
+    @Override
+    public void deleteResume(String resumeId) {
+        Resume resume = resumes.get(resumeId);
+        if (resume == null) {
+            return;
+        }
+        var resumeFile = resumeFileMap.get(resumeId);
+        try {
+            Files.delete(resumeFile.toPath());
+            resumes.remove(resumeId);
+            resumeFileMap.remove(resumeId);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

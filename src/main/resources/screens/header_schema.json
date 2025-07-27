@@ -1,0 +1,18 @@
+{
+    "app_title": "app_title",
+    "menu": {
+        "open_save_dir": {
+            "key": "open_save_dir",
+            "action": "OPEN_SAVE_DIR"
+        },
+        "change_locale": {
+            "key": "change_locale",
+            "action": "CHANGE_LOCALE"
+        },
+        "about": "about",
+        "exit": {
+            "key": "exit",
+            "action": "EXIT"
+        }
+    }
+}

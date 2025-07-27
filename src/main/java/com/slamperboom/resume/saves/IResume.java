@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IResume {
@@ -14,6 +13,8 @@ public interface IResume {
     Map<ContentType, IContent> getBlocks();
     JsonNode getJson();
     JsonNode getTranslatedJson();
+    String getTemplateName();
     boolean isSaved();
     void updateContent(ContentType contentType, JsonNode content);
+    void updateResumeInformation(JsonNode information);
 }
