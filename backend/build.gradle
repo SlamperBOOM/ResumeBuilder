@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'io.quarkus' version '3.7.3'
+}
+
+group = 'com.slamperboom'
+version = '0.1'
+
+mainClassName = 'com.slamperboom.Main'
+
+application {
+    mainModule = 'ResumeBuilder.main'
+    mainClass = 'com.slamperboom.Main'
+}
+
+java {
+    modularity.inferModulePath = true
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    implementation 'org.freemarker:freemarker:2.3.31'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'org.jsoup:jsoup:1.20.1'
+
+    implementation "com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10"
+
+    implementation 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    implementation enforcedPlatform(
+            "io.quarkus.platform:quarkus-bom:3.7.3"
+    )
+
+    implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-class': mainClassName
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

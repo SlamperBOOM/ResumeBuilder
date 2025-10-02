@@ -1,0 +1,116 @@
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from '@mui/material';
+import {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { AppActions } from '../utils/appActions';
+import useSchemaApi from '../api/useSchemaApi';
+import { LanguageDialogSchema } from '../utils/backendTypes';
+
+type LanguageDialogProps = {
+  showState: boolean;
+  appActions: AppActions;
+};
+
+type LanguageVariant = {
+  locale: string;
+  key: string;
+};
+
+export default function LanguageDialog(props: LanguageDialogProps) {
+  const { showState, appActions } = props;
+
+  const schemaApi = useSchemaApi();
+
+  const [dialogTitle, setDialogTitle] = useState<string>('');
+  const [localeNodes, setLocaleNodes] = useState<Iterable<ReactNode>>([]);
+  const [actionOnConfirm, setActionOnConfirm] = useState<string>('');
+  const [cancelButtonText, setCancelButtonText] = useState<string>('');
+  const [saveButtonText, setSaveButtonText] = useState<string>('');
+
+  const [currentLocale, setCurrentLocale] = useState<string>('');
+
+  useEffect(() => {
+    schemaApi
+      .getLanguageDialog()
+      .then((schema) => {
+        const dialogSchema = schema.schema as LanguageDialogSchema;
+        setLocaleNodes(
+          schema.payload.locales.map((locale: LanguageVariant) => {
+            return (
+              <FormControlLabel
+                value={locale.locale}
+                key={locale.locale}
+                control={<Radio />}
+                label={schema.translations[locale.key]}
+              />
+            );
+          }),
+        );
+        setDialogTitle(schema.translations[dialogSchema.title]);
+        setCancelButtonText(schema.translations[dialogSchema.cancel_key]);
+        setSaveButtonText(schema.translations[dialogSchema.save_key]);
+        setActionOnConfirm(dialogSchema.save_action);
+        return null;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [schemaApi]);
+
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>, value: string) => {
+      setCurrentLocale(value);
+    },
+    [setCurrentLocale],
+  );
+  const onSave = useCallback(() => {
+    appActions.dialogActions.languageDialog.close();
+    if (currentLocale) {
+      appActions.performBduAction(actionOnConfirm, {
+        payload: { locale: currentLocale },
+      });
+    }
+  }, [actionOnConfirm, appActions, currentLocale]);
+
+  const radioGroupRef = useRef<HTMLElement>(null);
+
+  return (
+    <Dialog open={showState}>
+      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogContent dividers>
+        <RadioGroup
+          ref={radioGroupRef}
+          aria-label="ringtone"
+          name="locale"
+          value={currentLocale}
+          onChange={onChange}
+        >
+          {localeNodes}
+        </RadioGroup>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          autoFocus
+          onClick={appActions.dialogActions.languageDialog.close}
+        >
+          {cancelButtonText}
+        </Button>
+        <Button onClick={onSave}>{saveButtonText}</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}

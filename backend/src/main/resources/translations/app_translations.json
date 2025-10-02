@@ -1,0 +1,332 @@
+{
+    "en": {
+        "common": {
+            "new_resume_name": "New resume"
+        },
+        "main_screen": {
+            "resume_menu": {
+                "edit": "Edit",
+                "duplicate": "Duplicate",
+                "delete": "Delete",
+                "tooltip_title": "Actions"
+            },
+            "create_resume": "Create resume",
+            "export_title": "Export to PDF"
+        },
+        "header": {
+            "exit": "Exit",
+            "about": "About",
+            "change_locale": "Change locale",
+            "open_save_dir": "Open resume save directory",
+            "app_title": "ResumeBuilder",
+            "menu": "Menu"
+        },
+        "language_dialog": {
+            "language_dialog_title": "Select language",
+            "cancel_key": "Cancel",
+            "save_key": "Save",
+            "locale_ru": "Russian",
+            "locale_en": "English"
+        },
+        "edit_screen": {
+            "resume_name_title": "Resume name",
+            "to_main_screen_title": "To main menu",
+            "export_title": "Export to PDF",
+            "locale_name": "en",
+            "main_block": {
+                "title": "Basic information",
+                "desired_position": "Desired position",
+                "last_name": "Last name",
+                "first_name": "First name",
+                "date_of_birth": "Date of birth",
+                "city": "City",
+                "desired_salary": "Desired salary",
+                "occupation": "Occupation",
+                "employment_title": "Employment",
+                "employment": {
+                    "full_time": "Full time",
+                    "part_time": "Part time",
+                    "project": "Project work",
+                    "volunteer": "Volunteering",
+                    "internship": "Internship"
+                },
+                "schedule_title": "Work schedule",
+                "schedule": {
+                    "full_time": "Full time",
+                    "flexible": "Flexible schedule",
+                    "shift": "Shift schedule",
+                    "remote": "Remote work",
+                    "shift_watch": "Rotation based work"
+                },
+                "is_moving_acceptable": "Ready to move",
+                "is_ready_for_business_trips": "Ready for business trips",
+                "driving_license": "Driving license",
+                "marital_status": "Marital status",
+                "have_children": "Have children",
+                "goal_of_resume": "Goal of resume"
+            },
+            "contacts": {
+                "title": "Contacts",
+                "email": "E-mail",
+                "phone_number": "Phone number",
+                "social_net_name": "Social network",
+                "social_net_link": "Profile link",
+                "add_social_net": "Add social network"
+            },
+            "experience": {
+                "title": "Work experience",
+                "position": "Position",
+                "company": "Company",
+                "start_date": "Start date",
+                "end_date": "End date",
+                "is_still_working": "Still working",
+                "work_description": "Job responsibilities",
+                "add_experience": "Add work experience"
+            },
+            "education": {
+                "title": "Education",
+                "institution": "Institution",
+                "education_level": "Education level",
+                "level": {
+                    "middle": "School",
+                    "middle_spec": "College",
+                    "unfinished_university": "Unfinished university",
+                    "university": "University",
+                    "bachelor": "Bachelor degree",
+                    "specialist": "Specialist",
+                    "master": "Master degree",
+                    "doctor": "Doctor of Science",
+                    "candidate": "PhD"
+                },
+                "faculty": "Faculty",
+                "speciality": "Speciality",
+                "year_of_graduate": "Year of graduate",
+                "add_education": "Add education"
+            },
+            "advanced_training": {
+                "title": "Courses",
+                "course_name": "Course name",
+                "organization": "Organization",
+                "year_of_graduate": "Year of graduate",
+                "add_training": "Add course"
+            },
+            "languages": {
+                "title": "Languages",
+                "language": "Language",
+                "language_level": "Level",
+                "level": {
+                    "a1": "A1",
+                    "a2": "A2",
+                    "b1": "B1",
+                    "b2": "B2",
+                    "c1": "C1",
+                    "c2": "C2"
+                },
+                "add_language": "Add language"
+            },
+            "skills": {
+                "title": "Skills",
+                "skill_name": "Skill",
+                "skill_level": "Level",
+                "level": {
+                    "beginner": "Beginner",
+                    "base": "Base",
+                    "experienced": "Experienced",
+                    "professional": "Professional"
+                },
+                "add_skill": "Add skill"
+            },
+            "about": {
+                "title": "About me"
+            },
+            "hobbies": {
+                "title": "Hobbies"
+            },
+            "recommendations": {
+                "title": "Recommendations",
+                "recommending": "Full name oof recommender",
+                "company": "Company",
+                "email": "E-male",
+                "phone_number": "Phone number",
+                "add_recommendation": "Add recommendation"
+            },
+            "publications": {
+                "title": "Publications",
+                "publication": "Publication name or link",
+                "publication_date": "Publication date",
+                "add_publication": "Add publication"
+            },
+            "additional_info": {
+                "title": "Additional info"
+            },
+            "templates": {
+                "simple_template_name": "Simple template"
+            }
+        }
+    },
+    "ru": {
+        "common": {
+            "new_resume_name": "New resume"
+        },
+        "header": {
+            "exit": "Выйти",
+            "about": "О программе",
+            "change_locale": "Сменить язык",
+            "open_save_dir": "Открыть папку с резюме",
+            "app_title": "ResumeBuilder",
+            "menu": "Меню"
+        },
+        "language_dialog": {
+            "language_dialog_title": "Выберите язык",
+            "cancel_key": "Отмена",
+            "save_key": "Сохранить",
+            "locale_ru": "Русский",
+            "locale_en": "Английский"
+        },
+        "main_screen": {
+            "resume_menu": {
+                "edit": "Редактировать",
+                "duplicate": "Дублировать",
+                "delete": "Удалить",
+                "tooltip_title": "Действия"
+            },
+            "create_resume": "Создать резюме",
+            "export_title": "Экспортировать в PDF"
+        },
+        "edit_screen": {
+            "resume_name_title": "Название резюме",
+            "to_main_screen_title": "В главное меню",
+            "export_title": "Экспортировать в PDF",
+            "locale_name": "ru",
+            "main_block": {
+                "title": "Основная информация",
+                "desired_position": "Желаемая позиция",
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "date_of_birth": "Дата рождения",
+                "city": "Город",
+                "desired_salary": "Желаемая зарплата",
+                "occupation": "Гражданство",
+                "employment_title": "Занятость",
+                "employment": {
+                    "full_time": "Полная занятость",
+                    "part_time": "Частичная занятость",
+                    "project": "Проектная работа",
+                    "volunteer": "Волонтерство",
+                    "internship": "Стажировка"
+                },
+                "schedule_title": "График работы",
+                "schedule": {
+                    "full_time": "Полный день",
+                    "flexible": "Гибкий график",
+                    "shift": "Сменный график",
+                    "remote": "Удаленная работа",
+                    "shift_watch": "Вахтовый метод"
+                },
+                "is_moving_acceptable": "Готовность к переезду",
+                "is_ready_for_business_trips": "Готовность к командировкам",
+                "driver_license": "Водительские права",
+                "marital_status": "Семейное положение",
+                "have_children": "Есть дети",
+                "goal_of_resume": "Цель резюме"
+            },
+            "contacts": {
+                "title": "Контакты",
+                "email": "Электронная почта",
+                "phone_number": "Номер телефона",
+                "social_net_name": "Соцсеть",
+                "social_net_link": "Ссылка на профиль",
+                "add_social_net": "Добавить соцсеть"
+            },
+            "experience": {
+                "title": "Опыт работы",
+                "position": "Должность",
+                "company": "Компания",
+                "start_date": "Начало работы",
+                "end_date": "Окончание работы",
+                "is_still_working": "Еще работаю",
+                "work_description": "Обязанности",
+                "add_experience": "Добавить опыт работы"
+            },
+            "education": {
+                "title": "Образование",
+                "institution": "Учебное заведение",
+                "education_level": "Уровень образования",
+                "level": {
+                    "middle": "Среднее (школа)",
+                    "middle_spec": "Среднее специальное",
+                    "unfinished_university": "Неоконченное высшее",
+                    "university": "Высшее",
+                    "bachelor": "Бакалавр",
+                    "specialist": "Специалист",
+                    "master": "Магистр",
+                    "doctor": "Доктор наук",
+                    "candidate": "Кандидат наук"
+                },
+                "faculty": "Факультет",
+                "speciality": "Специальность",
+                "year_of_graduate": "Год окончания",
+                "add_education": "Добавить образование"
+            },
+            "advanced_training": {
+                "title": "Курсы повышения квалификации",
+                "course_name": "Название курса",
+                "organization": "Проводившая организация",
+                "year_of_graduate": "Год окончания",
+                "add_training": "Добавить курсы повышения квалификации"
+            },
+            "languages": {
+                "title": "Языки",
+                "language": "Язык",
+                "language_level": "Уровень владения",
+                "level": {
+                    "a1": "A1 - Начальный",
+                    "a2": "A2 - Базовый",
+                    "b1": "B1 - Средний",
+                    "b2": "B2 - Выше среднего",
+                    "c1": "C1 - Продвинутый",
+                    "c2": "C2 - Профессиональный"
+                },
+                "add_language": "Добавить язык"
+            },
+            "skills": {
+                "title": "Навыки",
+                "skill_name": "Навык/Описание навыка",
+                "skill_level": "Уровень навыка",
+                "level": {
+                    "beginner": "Начальный",
+                    "base": "Базовый",
+                    "experienced": "Опытный",
+                    "professional": "Профессиональный"
+                },
+                "add_skill": "Добавить навык"
+            },
+            "about": {
+                "title": "О себе"
+            },
+            "hobbies": {
+                "title": "Хобби"
+            },
+            "recommendations": {
+                "title": "Рекоммендации",
+                "recommending": "ФИО рекомендующего",
+                "company": "Компания, должность",
+                "email": "Электронная почта",
+                "phone_number": "Номер телефона",
+                "add_recommendation": "Добавить рекоммендацию"
+            },
+            "publications": {
+                "title": "Публикации",
+                "publication": "Название или ссылка",
+                "publication_date": "Дата публикации",
+                "add_publication": "Добавить публикацию"
+            },
+            "additional_info": {
+                "title": "Доп. инфо"
+            },
+            "templates": {
+                "simple_template_name": "Простой шаблон"
+            }
+        }
+    }
+}

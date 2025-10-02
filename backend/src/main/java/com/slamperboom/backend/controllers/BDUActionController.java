@@ -1,0 +1,99 @@
+package com.slamperboom.backend.controllers;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.slamperboom.backend.DTO.ExportPayload;
+import com.slamperboom.backend.DTO.UpdatePayload;
+import com.slamperboom.backend.bduAction.BDUActionPerformer;
+import com.slamperboom.resume.saves.IResumeManager;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import org.jboss.logging.Logger;
+
+import java.util.Optional;
+
+@Path("/action")
+@Produces(MediaType.APPLICATION_JSON)
+public class BDUActionController {
+    private final BDUActionPerformer bduActionPerformer;
+
+    public BDUActionController(IResumeManager resumeManager) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper);
+    }
+
+    @POST
+    @Path("/exit")
+    public JsonNode performExit() {
+        return bduActionPerformer.performExit();
+    }
+
+    @POST
+    @Path("/create_new")
+    public JsonNode performCreateNew() {
+        return bduActionPerformer.performCreateNew();
+    }
+
+    @GET
+    @Path("/load/{resumeId}")
+    public JsonNode performLoad(String resumeId) {
+        return bduActionPerformer.performLoad(resumeId);
+    }
+
+    @DELETE
+    @Path("/delete/{resumeId}")
+    public JsonNode performDelete(String resumeId) {
+        return bduActionPerformer.performDelete(resumeId);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/update")
+    public JsonNode performUpdate(UpdatePayload payload) {
+        return bduActionPerformer.performUpdate(payload);
+    }
+
+    @POST
+    @Path("/open_main_screen/{resumeId}")
+    public JsonNode performOpenMainScreen(String resumeId) {
+        return bduActionPerformer.performOpenMainScreen(resumeId);
+    }
+
+    @POST
+    @Path("/duplicate")
+    public JsonNode performDuplicate(String resumeId) {
+        return bduActionPerformer.performDuplicate(resumeId);
+    }
+
+    @POST
+    @Path("/export")
+    public Optional<JsonNode> performExport(ExportPayload payload) {
+        return bduActionPerformer.performExport(payload);
+    }
+
+    @GET
+    @Path("/open_save_dir")
+    public void openSaveDir() {
+        bduActionPerformer.performOpenSaveDir();
+    }
+
+    @POST
+    @Path("/locale/set/{locale}")
+    public JsonNode changeLocale(String locale) {
+        return bduActionPerformer.performChangeLocale(locale);
+    }
+
+    @GET
+    @Path("locales")
+    public JsonNode getLocales() {
+        return bduActionPerformer.performGetLocales();
+    }
+
+    @GET
+    @Path("/about")
+    public JsonNode about() {
+        return bduActionPerformer.performOpenAbout();
+    }
+}

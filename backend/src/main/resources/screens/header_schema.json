@@ -1,0 +1,21 @@
+{
+    "app_title": "Resume Builder",
+    "menu": [
+        {
+            "key": "open_save_dir",
+            "action": "open_save_dir"
+        },
+        {
+            "key": "change_locale",
+            "action": "locales"
+        },
+        {
+            "key": "about",
+            "action": "about"
+        },
+        {
+            "key": "exit",
+            "action": "exit"
+        }
+    ]
+}

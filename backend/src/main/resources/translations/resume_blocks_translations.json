@@ -1,0 +1,170 @@
+{
+    "en": {
+        "main_block": {
+            "date_of_birth": "Date of birth",
+            "city": "City",
+            "desired_salary": "Desired salary",
+            "work_conditions": "Employment",
+            "occupation": "Occupation",
+            "moving": {
+                "ready": "Relocation possible",
+                "not_ready": "Relocation not possible"
+            },
+            "business_trips_ready": "Ready for business trips",
+            "employment": {
+                "FULL_TIME": "Full time",
+                "PART_TIME": "Part time",
+                "PROJECT": "Project work",
+                "VOLUNTEER": "Volunteering",
+                "INTERNSHIP": "Internship"
+            },
+            "schedule": {
+                "FULL_TIME": "Full day",
+                "FLEXIBLE": "Flexible schedule",
+                "SHIFT": "Shift schedule",
+                "REMOTE": "Remote work",
+                "SHIFT_WATCH": "Rotation based work"
+            },
+            "marital_status": "Family status",
+            "driving_license": "Driving license",
+            "have_children": "Have children"
+        },
+        "experience": {
+            "title": "Work experience",
+            "until_now": "present"
+        },
+        "education": {
+            "title": "Education",
+            "level": {
+                "MIDDLE": "General education",
+                "MIDDLE_SPEC": "Secondary specialized education",
+                "UNFINISHED_UNIVERSITY": "Incomplete higher education",
+                "UNIVERSITY": "Higher education",
+                "BACHELOR": "Bachelor's degree",
+                "SPECIALIST": "Expert",
+                "MASTER": "Master's degree",
+                "DOCTOR": "Doctor of Science (Dr.)",
+                "CANDIDATE": "Candidate of Science (Ph.D)"
+            }
+        },
+        "contacts": {
+            "title": "Contacts",
+            "phone": "Phone number",
+            "email": "E-mail"
+        },
+        "adv_training": {
+            "title": "Courses"
+        },
+        "skills": {
+            "title": "Skills",
+            "level": {
+                "BEGINNER": "Beginner",
+                "BASE": "Skillful",
+                "EXPERIENCED": "Experienced",
+                "PROFESSIONAL": "Expert"
+            }
+        },
+        "languages": {
+            "title": "Languages"
+        },
+        "about": {
+            "title": "Custom block"
+        },
+        "hobbies": {
+            "title": "Hobbies"
+        },
+        "recommendations": {
+            "title": "Recommendations"
+        },
+        "publications": {
+            "title": "Publications"
+        },
+        "additional": {
+            "title": "Additional info"
+        }
+    },
+    "ru": {
+        "main_block": {
+            "date_of_birth": "Дата рождения",
+            "city": "Город",
+            "desired_salary": "Желаемая зарплата",
+            "work_conditions": "Занятость",
+            "occupation": "Гражданство",
+            "moving": {
+                "ready": "Готов к переезду",
+                "not_ready": "Не готов к переезду"
+            },
+            "business_trips_ready": "Возможны командировки",
+            "employment": {
+                "FULL_TIME": "Полная занятость",
+                "PART_TIME": "Частичная занятость",
+                "PROJECT": "Проектная работа",
+                "VOLUNTEER": "Волонтёрство",
+                "INTERNSHIP": "Стажировка"
+            },
+            "schedule": {
+                "FULL_TIME": "Полный день",
+                "FLEXIBLE": "Гибкий график",
+                "SHIFT": "Сменный график",
+                "REMOTE": "Удаленная работа",
+                "SHIFT_WATCH": "Вахтовый метод"
+            },
+            "marital_status": "Семейное положение",
+            "driving_license": "Водительские права",
+            "have_children": "есть дети"
+        },
+        "experience": {
+            "title": "Опыт работы",
+            "until_now": "н.в."
+        },
+        "education": {
+            "title": "Образование",
+            "level": {
+                "MIDDLE": "Среднее",
+                "MIDDLE_SPEC": "Среднее специальное",
+                "UNFINISHED_UNIVERSITY": "Неоконченное высшее",
+                "UNIVERSITY": "Высшее",
+                "BACHELOR": "Бакалавр",
+                "SPECIALIST": "Специалист",
+                "MASTER": "Магистр",
+                "DOCTOR": "Доктор наук",
+                "CANDIDATE": "Кандидат наук"
+            }
+        },
+        "contacts": {
+            "title": "Контакты",
+            "phone": "Телефон",
+            "email": "Почта"
+        },
+        "adv_training": {
+            "title": "Курсы повышения квалификации"
+        },
+        "skills": {
+            "title": "Навыки",
+            "level": {
+                "BEGINNER": "Начальный",
+                "BASE": "Базовый",
+                "EXPERIENCED": "Опытный",
+                "PROFESSIONAL": "Профессиональный"
+            }
+        },
+        "languages": {
+            "title": "Языки"
+        },
+        "about": {
+            "title": "О себе"
+        },
+        "hobbies": {
+            "title": "Хобби"
+        },
+        "recommendations": {
+            "title": "Рекоммендации"
+        },
+        "publications": {
+            "title": "Публикации"
+        },
+        "additional": {
+            "title": "Дополнительная информация"
+        }
+    }
+}

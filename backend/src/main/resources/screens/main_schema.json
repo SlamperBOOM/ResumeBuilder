@@ -1,0 +1,25 @@
+{
+    "resume_menu": {
+        "edit": {
+            "key": "resume_menu.edit",
+            "action": "load"
+        },
+        "duplicate": {
+            "key": "resume_menu.duplicate",
+            "action": "duplicate"
+        },
+        "delete": {
+            "key": "resume_menu.delete",
+            "action": "delete"
+        }
+    },
+    "resume_menu_tooltip_title": "resume_menu.tooltip_title",
+    "export_button": {
+        "key": "export_title",
+        "action": "export"
+    },
+    "create_new": {
+        "key": "create_resume",
+        "action": "create_new"
+    }
+}
