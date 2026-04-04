@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.slamperboom.exceptions.ErrorCode;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
@@ -113,13 +115,13 @@ public class Resume implements IResume {
     }
 
     @Override
-    public void updateContent(ContentType contentType, JsonNode content) {
+    public void updateContent(ContentType contentType, JsonNode content) throws UserException {
         try {
             blocks.put(contentType, defaultObjectMapper.treeToValue(content, ContentMapper.mapContent(contentType).getClass()));
             versionOfLastEdit = Settings.getInstance().getVersion();
             isSaved = false;
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK, e);
         }
     }
 

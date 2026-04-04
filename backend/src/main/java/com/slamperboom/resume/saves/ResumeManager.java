@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.slamperboom.exceptions.ErrorCode;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
@@ -27,7 +29,6 @@ import java.util.*;
 public class ResumeManager implements IResumeManager{
     private static final String SAVE_PATH = "saves/";
     private final Logger logger = Logger.getLogger(this.getClass());
-    private final Settings settings = Settings.getInstance();
     private final ObjectMapper objectMapper;
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
@@ -40,21 +41,32 @@ public class ResumeManager implements IResumeManager{
 
     @Override
     public List<SimpleResume> getListOfResumes() {
-        return resumes.values().stream().map(resume -> {
-            var file = resumeFileMap.get(resume.getId());
-            return new SimpleResume(
-                    resume.getId(),
-                    resume.getName(),
-                    LocalDateTime.ofInstant(
-                            Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
-                    ),
-                    HTMLConverter.processHTMLTemplate(resume)
-            );
-        }).sorted((o1, o2) -> o2.lastModificationDate().compareTo(o1.lastModificationDate())).toList();
+        return resumes.values().stream()
+                .map(resume -> {
+                    var file = resumeFileMap.get(resume.getId());
+                    try {
+                        return Optional.of(new SimpleResume(
+                                resume.getId(),
+                                resume.getName(),
+                                LocalDateTime.ofInstant(
+                                        Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
+                                ),
+                                HTMLConverter.processHTMLTemplate(resume)
+                        ));
+                    } catch (UserException e) {
+                        logger.error("Unable to read resume for main screen");
+                        e.printStackTrace();
+                        return Optional.empty();
+                    }
+                })
+                .filter(Optional::isPresent)
+                .map(resume -> (SimpleResume) resume.get())
+                .sorted((o1, o2) -> o2.lastModificationDate().compareTo(o1.lastModificationDate()))
+                .toList();
     }
 
     @Override
-    public void saveResume(String resumeId) {
+    public void saveResume(String resumeId) throws UserException {
         Resume resume = resumes.get(resumeId);
         if (resume.isSaved()) {
             return;
@@ -72,19 +84,18 @@ public class ResumeManager implements IResumeManager{
                 }
                 resumeFileMap.put(resumeId, saveFile);
             }
-            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile), StandardCharsets.UTF_8)) {
-                writer.write(resume.getJson().toPrettyString());
-                resume.save();
-            } catch (IOException e) {
-                logger.errorf("Unable to save resume %s: %s", resume.getId(), e);
-            }
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(saveFile), StandardCharsets.UTF_8);
+            writer.write(resume.getJson().toPrettyString());
+            resume.save();
+            writer.close();
         } catch (IOException e){
             logger.errorf("Unable to save resume %s: %s", resume.getId(), e);
+            throw new UserException(ErrorCode.RESUME_SAVE_ERROR, e);
         }
     }
 
     @Override
-    public void saveAll() {
+    public void saveAll() throws UserException {
         for (Resume resume : resumes.values()) {
             if (!resume.isSaved()) {
                 saveResume(resume.getId());
@@ -108,14 +119,14 @@ public class ResumeManager implements IResumeManager{
                 resumes.put(resume.getId(), resume);
                 resumeFileMap.put(resume.getId(), saveFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.errorf("Unable to read resume %s", e.toString());
             }
         }
     }
 
     @Override
-    public File getSaveFolder() {
-        return new File(SAVE_PATH);
+    public String getSaveFolderPath() {
+        return SAVE_PATH;
     }
 
     @Override
@@ -124,7 +135,7 @@ public class ResumeManager implements IResumeManager{
     }
 
     @Override
-    public String createResume(String resumeName) {
+    public String createResume(String resumeName) throws UserException {
         logger.infof("Creating new resume with name %s", resumeName);
         String resumeId = UUID.randomUUID().toString();
         Resume resume = new Resume(resumeId);
@@ -146,10 +157,10 @@ public class ResumeManager implements IResumeManager{
     }
 
     @Override
-    public String duplicateResume(String duplicateResumeId) {
+    public String duplicateResume(String duplicateResumeId) throws UserException {
         Resume duplicateResume = resumes.get(duplicateResumeId);
         if (duplicateResume == null){
-            throw new RuntimeException();
+            throw new UserException(ErrorCode.NO_RESUME_FOR_DUPLICATE);
         }
         String resumeId = UUID.randomUUID().toString();
 
@@ -162,21 +173,25 @@ public class ResumeManager implements IResumeManager{
             resumes.put(resumeId, newResume);
             saveResume(resumeId);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_DUPLICATE_RESUME, e);
         }
 
         return resumeId;
     }
 
     @Override
-    public void exportResumeToPDF(String resumeID, String savePath) throws IOException {
+    public void exportResumeToPDF(String resumeID, String savePath) throws UserException {
         IResume resume = getResume(resumeID);
         String htmlResume = HTMLConverter.processHTMLTemplate(resume);
-        HTMLConverter.saveHTMLtoPDF(htmlResume, savePath);
+        try {
+            HTMLConverter.saveHTMLtoPDF(htmlResume, savePath);
+        } catch (IOException e) {
+            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+        }
     }
 
     @Override
-    public void deleteResume(String resumeId) {
+    public void deleteResume(String resumeId) throws UserException {
         Resume resume = resumes.get(resumeId);
         if (resume == null) {
             return;
@@ -187,7 +202,7 @@ public class ResumeManager implements IResumeManager{
             resumes.remove(resumeId);
             resumeFileMap.remove(resumeId);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_DELETE_RESUME, e);
         }
     }
 }

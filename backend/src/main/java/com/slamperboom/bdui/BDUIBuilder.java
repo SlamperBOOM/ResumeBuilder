@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
+import com.slamperboom.backend.DialogBuilders;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
@@ -16,19 +18,24 @@ public class BDUIBuilder {
     private final SchemaManager schemaManager = SchemaManager.getInstance();
     private final IResumeManager resumeManager;
     private final ObjectMapper objectMapper;
+    private final DialogBuilders dialogBuilders;
 
     public JsonNode buildMainScreen() {
         ObjectNode result = objectMapper.createObjectNode();
         resumeManager.readAllResumes();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.MAIN_SCREEN));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getAppTranslations().get("main_screen"));
+        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getMainScreenTranslations());
 
-        ArrayNode resumes = objectMapper.createArrayNode();
-        for (var simpleResume : resumeManager.getListOfResumes()) {
-            resumes.add(objectMapper.valueToTree(simpleResume));
+        try {
+            ArrayNode resumes = objectMapper.createArrayNode();
+            for (var simpleResume : resumeManager.getListOfResumes()) {
+                resumes.add(objectMapper.valueToTree(simpleResume));
+            }
+            result.set(BackendConstants.PAYLOAD_KEY, resumes);
+        } catch (UserException e) {
+            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
-        result.set(BackendConstants.PAYLOAD_KEY, resumes);
 
         return result;
     }
@@ -38,22 +45,26 @@ public class BDUIBuilder {
         resumeManager.readAllResumes();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.EDIT_SCREEN));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getAppTranslations().get("edit_screen"));
+        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getEditScreenTranslations());
 
-        ObjectNode payload = objectMapper.createObjectNode();
-        IResume resume = resumeManager.getResume(resumeId);
-        payload.set("resume", resume.getJson());
-        payload.put("preview", HTMLConverter.processHTMLTemplate(resume));
-        result.set(BackendConstants.PAYLOAD_KEY, payload);
+        try {
+            ObjectNode payload = objectMapper.createObjectNode();
+            IResume resume = resumeManager.getResume(resumeId);
+            payload.set("resume", resume.getJson());
+            payload.put("preview", HTMLConverter.processHTMLTemplate(resume));
+            result.set(BackendConstants.PAYLOAD_KEY, payload);
 
-        return result;
+            return result;
+        } catch (UserException e) {
+            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+        }
     }
 
     public JsonNode buildHeader() {
         ObjectNode result = objectMapper.createObjectNode();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.HEADER));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getAppTranslations().get("header"));
+        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getHeaderTranslations());
 
         return result;
     }
@@ -62,7 +73,7 @@ public class BDUIBuilder {
         ObjectNode result = objectMapper.createObjectNode();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.LANGUAGE_DIALOG));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getAppTranslations().get("language_dialog"));
+        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getLanguageDialogTranslations());
 
         ObjectNode payload = objectMapper.createObjectNode();
         ArrayNode locales = objectMapper.createArrayNode();

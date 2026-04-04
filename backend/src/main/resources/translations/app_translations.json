@@ -1,7 +1,19 @@
 {
     "en": {
-        "common": {
-            "new_resume_name": "New resume"
+        "error_messages": {
+            "resume_save_error": "",
+            "unable_to_update_resume_block": "",
+            "unable_to_duplicate_resume": "",
+            "unable_to_delete_resume": "",
+            "temp_file_create_error": ""
+        },
+        "confirmation_dialog": {
+            "delete_confirmation": {
+                "title": "Confirm deletion of ",
+                "text": "Are you sure you want to delete resume? This action is irreversible",
+                "confirm_button_text": "Delete"
+            },
+            "decline_button_text": "Cancel"
         },
         "main_screen": {
             "resume_menu": {
@@ -165,8 +177,28 @@
         }
     },
     "ru": {
-        "common": {
-            "new_resume_name": "New resume"
+        "error_messages": {
+            "resume_save_error": "",
+            "unable_to_update_resume_block": "",
+            "unable_to_duplicate_resume": "",
+            "unable_to_delete_resume": "",
+            "error_while_saving_config": "",
+            "no_resume_for_duplicate": "",
+            "unable_to_save_pdf": ""
+        },
+        "confirmation_dialog": {
+            "delete_confirmation": {
+                "title": "Подтвердите удаление ",
+                "text": "Вы точно хотите удалить резюме? Это действие необратимо",
+                "confirm_button_text": "Удалить",
+                "decline_button_text": "Отмена"
+            },
+            "after_export_confirmation": {
+                "title": "Открыть результат",
+                "text": "Хотите открыть папку с сохраненным резюме?",
+                "confirm_button_text": "Да",
+                "decline_button_text": "Нет"
+            }
         },
         "header": {
             "exit": "Выйти",

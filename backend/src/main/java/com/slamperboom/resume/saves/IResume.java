@@ -1,6 +1,7 @@
 package com.slamperboom.resume.saves;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 
@@ -15,6 +16,6 @@ public interface IResume {
     JsonNode getTranslatedJson();
     String getTemplateName();
     boolean isSaved();
-    void updateContent(ContentType contentType, JsonNode content);
+    void updateContent(ContentType contentType, JsonNode content) throws UserException;
     void updateResumeInformation(JsonNode information);
 }

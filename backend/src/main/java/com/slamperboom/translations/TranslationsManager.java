@@ -3,6 +3,8 @@ package com.slamperboom.translations;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.slamperboom.exceptions.StartupException;
+import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.settings.DynamicSettings;
 import org.jboss.logging.Logger;
 
@@ -24,10 +26,17 @@ public class TranslationsManager {
     private static final String RESUME_TRANSLATIONS_PATH = "/translations/resume_blocks_translations.json";
     private static final String DEFAULT_LOCALE = "en";
 
+    private static final String MAIN_SCREEN_KEY = "main_screen";
+    private static final String HEADER_KEY = "header";
+    private static final String EDIT_SCREEN_KEY = "edit_screen";
+    private static final String LANGUAGE_DIALOG_KEY = "language_dialog";
+    private static final String CONFIRMATION_DIALOG_KEY = "confirmation_dialog";
+    private static final String ERROR_MESSAGES_KEY = "error_messages";
+
     private final Map<String, JsonNode> resumeTranslations;
     private final Map<String, JsonNode> appTranslations;
 
-    public static JsonNode flatten(JsonNode rootNode) {
+    private static JsonNode flatten(JsonNode rootNode) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
 
@@ -84,7 +93,9 @@ public class TranslationsManager {
                 resumeTranslations.put(entry.getKey(), entry.getValue());
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String message = "Error while creating translations manager instance";
+            StartupExceptionHolder.addException(message);
+            throw new StartupException(message, e);
         }
     }
 
@@ -109,12 +120,36 @@ public class TranslationsManager {
         return resumeTranslations.get(DEFAULT_LOCALE);
     }
 
-    public JsonNode getAppTranslations() {
+    private JsonNode getAppTranslations() {
         String currentLocale = getCurrentLocaleString();
         if (appTranslations.containsKey(currentLocale)) {
             return appTranslations.get(currentLocale);
         }
         logger.warnf("Unknown locale \"{}\" for app translations, fallback to \"en\"", currentLocale);
         return appTranslations.get(DEFAULT_LOCALE);
+    }
+
+    public JsonNode getMainScreenTranslations() {
+        return getAppTranslations().get(MAIN_SCREEN_KEY);
+    }
+
+    public JsonNode getEditScreenTranslations() {
+        return getAppTranslations().get(EDIT_SCREEN_KEY);
+    }
+
+    public JsonNode getHeaderTranslations() {
+        return getAppTranslations().get(HEADER_KEY);
+    }
+
+    public JsonNode getLanguageDialogTranslations() {
+        return getAppTranslations().get(LANGUAGE_DIALOG_KEY);
+    }
+
+    public JsonNode getConfirmationDialogTranslations() {
+        return getAppTranslations().get(CONFIRMATION_DIALOG_KEY);
+    }
+
+    public JsonNode getErrorMessagesTranslations() {
+        return getAppTranslations().get(ERROR_MESSAGES_KEY);
     }
 }

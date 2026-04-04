@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import useApi from './useApi';
 import ActionResponseDTO from '../DTO/ActionResponseDTO';
-import { BDUActionParams, BDUActionPayload } from '../utils/appActions';
+import { BDUActionPayload } from '../utils/backendTypes';
 
 type BDUActionApi = {
   [action: string]: (
-    payload?: BDUActionParams,
+    payload?: BDUActionPayload,
   ) => Promise<ActionResponseDTO | null>;
 };
 
@@ -26,6 +26,16 @@ function useActionApi() {
   const performOpenSaveDir = useCallback(
     async (_payload?: BDUActionPayload) => {
       await api.performGetRequest(`${baseAddress}open_save_dir`);
+      return null;
+    },
+    [api],
+  );
+
+  const performOpenLocalDir = useCallback(
+    async (payload?: BDUActionPayload) => {
+      await api.performPostRequest(`${baseAddress}open_local_dir`, {
+        dir_path: payload?.local_dir_path,
+      });
       return null;
     },
     [api],
@@ -100,6 +110,19 @@ function useActionApi() {
     [api],
   );
 
+  const performConfirmDelete = useCallback(
+    async (payload: BDUActionPayload) => {
+      if (!payload || !payload.resume_id) {
+        console.log('No resume id');
+        return null;
+      }
+      return (await api.performDeleteRequest(
+        `${baseAddress}delete/confirm/${payload.resume_id}`,
+      )) as ActionResponseDTO;
+    },
+    [api],
+  );
+
   const performUpdate = useCallback(
     async (payload: BDUActionPayload) => {
       if (!payload || !payload.update_payload) {
@@ -143,7 +166,6 @@ function useActionApi() {
 
   const performExport = useCallback(
     async (payload: BDUActionPayload) => {
-      // TODO диалоговое окно экспорта в пдф
       let resumeName = 'Resume';
       if (payload.resume_name) {
         resumeName = payload.resume_name;
@@ -166,11 +188,13 @@ function useActionApi() {
     return {
       exit: performExit,
       open_save_dir: performOpenSaveDir,
+      open_local_dir: performOpenLocalDir,
       about: performAbout,
       locales: performGetLocales,
       locale: performChangeLocale,
       create_new: performCreateNew,
       delete: performDelete,
+      confirm_delete: performConfirmDelete,
       update: performUpdate,
       duplicate: performDuplucate,
       load: performLoad,
@@ -180,11 +204,13 @@ function useActionApi() {
   }, [
     performExit,
     performOpenSaveDir,
+    performOpenLocalDir,
     performAbout,
     performGetLocales,
     performChangeLocale,
     performCreateNew,
     performDelete,
+    performConfirmDelete,
     performUpdate,
     performDuplucate,
     performLoad,

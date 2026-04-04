@@ -62,7 +62,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
     >
       <AppBar position="static">
         <Toolbar>
-          <Typography color="inherit" variant="h4" marginRight={2}>
+          <Typography variant="h4" marginRight={2}>
             {title}
           </Typography>
           {headerButtons}

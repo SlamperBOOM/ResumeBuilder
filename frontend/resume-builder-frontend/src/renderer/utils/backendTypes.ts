@@ -9,6 +9,23 @@ import {
 
 export type BDUButtonSchema = { key: string; action: string };
 
+export type UpdatePayload = {
+  resume_id: string;
+  resume_info: JSON;
+  content: {
+    block: string;
+    payload: JSON;
+  }[];
+};
+
+export type BDUActionPayload = {
+  locale?: string;
+  resume_id?: string;
+  resume_name?: string;
+  local_dir_path?: string;
+  update_payload?: UpdatePayload;
+};
+
 export type MainScreenSchema = {
   resume_menu: BDUButtonSchema[];
   export_button: BDUButtonSchema;
@@ -47,4 +64,13 @@ export type LanguageDialogSchema = {
   cancel_key: string;
   save_key: string;
   save_action: string;
+};
+
+export type ConfirmationDialogSchema = {
+  title: string;
+  text: string;
+  confirm_button_text: string;
+  decline_button_text: string;
+  confirm_action: string;
+  confirm_action_payload: BDUActionPayload;
 };

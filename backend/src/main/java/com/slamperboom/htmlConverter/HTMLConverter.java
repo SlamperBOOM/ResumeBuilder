@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.slamperboom.exceptions.ErrorCode;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.translations.TranslationsManager;
 import freemarker.template.Template;
@@ -26,12 +28,12 @@ public class HTMLConverter {
      * @param resume Resume class
      * @return HTML document as String
      */
-    public static String processHTMLTemplate(IResume resume){
+    public static String processHTMLTemplate(IResume resume) throws UserException {
         Template template;
         try {
             template = HTMLTemplateManager.getInstance().getTemplate(resume.getTemplateName());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
         HashMap jsonRepresentation;
         try {
@@ -45,7 +47,7 @@ public class HTMLConverter {
                     )
             );
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
 
         StringWriter writer = new StringWriter();
@@ -53,7 +55,7 @@ public class HTMLConverter {
             template.process(jsonRepresentation, writer);
             writer.flush();
         } catch (TemplateException | IOException e) {
-            throw new RuntimeException(e);
+            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
         return writer.toString();
     }
@@ -76,7 +78,6 @@ public class HTMLConverter {
             PdfRendererBuilder builder = new PdfRendererBuilder();
 
             builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
-//            builder.withW3cDocument(new W3CDom().fromJsoup(htmlDoc), new File(".").toURI().toString());
             FontsManager.getInstance().registerFonts(builder);
             builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM); // A4
 

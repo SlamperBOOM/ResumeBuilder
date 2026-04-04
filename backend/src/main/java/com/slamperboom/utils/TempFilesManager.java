@@ -28,7 +28,7 @@ public class TempFilesManager {
         }
     }
 
-    public File createNewTempFile() {
+    public File createNewTempFile() throws IOException {
         String fileName = null;
         for (int i=0;i<10;++i) {
             fileName = UUID.randomUUID() + "_" + UUID.randomUUID();
@@ -45,16 +45,12 @@ public class TempFilesManager {
             tempFileMap.remove(oldestFileName);
         }
         File tempFile;
-        try {
-            tempFile = File.createTempFile(fileName, null);
-            if (tempFile.exists() && !tempFile.delete()) {
-                throw new IOException("Unable to delete old temp file");
-            }
-            if (!tempFile.createNewFile()) {
-                throw new IOException("Unable to create new temp file");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        tempFile = File.createTempFile(fileName, null);
+        if (tempFile.exists() && !tempFile.delete()) {
+            throw new IOException("Unable to delete old temp file");
+        }
+        if (!tempFile.createNewFile()) {
+            throw new IOException("Unable to create new temp file");
         }
         tempFile.deleteOnExit();
         tempFileMap.put(fileName, tempFile);

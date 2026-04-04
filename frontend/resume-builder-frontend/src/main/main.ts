@@ -14,6 +14,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import axios from 'axios';
+import windowStateKeeper from 'electron-window-state';
 import MenuBuilder from './menu';
 import { getFrontendPort, resolveHtmlPath } from './util';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
@@ -41,10 +42,10 @@ function startBackend(): ChildProcessWithoutNullStreams | null {
       [
         '-Xms128m',
         '-Xmx512m',
-        '-jar',
-        jarPath,
         `-Dquarkus.http.port=${backendPort}`,
         `-Dquarkus.http.cors.origins=http://localhost:${getFrontendPort()}`,
+        '-jar',
+        jarPath,
       ],
       {
         stdio: 'pipe',
@@ -97,10 +98,17 @@ const createWindow = async () => {
 
   // backend = startBackend();
 
+  const windowState = windowStateKeeper({
+    defaultWidth: 1200,
+    defaultHeight: 800,
+  });
+
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    minHeight: 600,
+    minWidth: 800,
+    width: windowState.width,
+    height: windowState.height,
     icon: getAssetPath('icon.png'),
     title: appTitle,
     webPreferences: {
@@ -109,6 +117,8 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
+
+  windowState.manage(mainWindow);
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 

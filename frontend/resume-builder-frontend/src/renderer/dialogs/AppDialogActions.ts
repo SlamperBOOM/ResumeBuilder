@@ -1,10 +1,16 @@
+import { ConfirmationDialogSchema } from '../utils/backendTypes';
+
 type AppDialogActions = {
   languageDialog: {
     show: () => void;
     close: () => void;
   };
   infoModal: {
-    show: () => void;
+    show: (title: string | undefined, text: string) => void;
+    close: () => void;
+  };
+  confirmationModal: {
+    show: (schema: ConfirmationDialogSchema) => void;
     close: () => void;
   };
 };

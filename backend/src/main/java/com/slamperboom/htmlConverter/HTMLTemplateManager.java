@@ -1,5 +1,7 @@
 package com.slamperboom.htmlConverter;
 
+import com.slamperboom.exceptions.StartupException;
+import com.slamperboom.exceptions.StartupExceptionHolder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
@@ -39,7 +41,9 @@ public class HTMLTemplateManager {
                             .getResourceAsStream(TEMPLATES_PATH + "templates.properties")
             );
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String message = "Unable to read templates";
+            StartupExceptionHolder.addException(message);
+            throw new StartupException(message);
         }
     }
 

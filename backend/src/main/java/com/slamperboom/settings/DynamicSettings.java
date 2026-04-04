@@ -2,6 +2,10 @@ package com.slamperboom.settings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.slamperboom.exceptions.ErrorCode;
+import com.slamperboom.exceptions.StartupException;
+import com.slamperboom.exceptions.StartupExceptionHolder;
+import com.slamperboom.exceptions.UserException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,28 +42,29 @@ public class DynamicSettings {
                         (ObjectNode) mapper.readTree(settingsFile);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String message = "Error while creating dynamic settings instance";
+            StartupExceptionHolder.addException(message);
+            throw new StartupException(message, e);
         }
     }
 
-    public void saveSettings() {
+    public void saveSettings() throws UserException {
         File configDir = new File(CONFIG_DIR);
         File configFile = new File(SAVE_FILE);
         try{
             if (!configDir.exists() && !configDir.mkdir()) {
-                System.err.println("Unable to save settings");
-                return;
+                throw new IOException("Unable to create config dir");
             }
 
             if (!configFile.exists() && !configFile.createNewFile()) {
-                System.err.println("Unable to save settings");
-                return;
+                throw new IOException("Unable to create config file");
             }
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(SAVE_FILE));
             writer.write(settings.toString());
             writer.close();
         } catch (IOException e){
-            throw new RuntimeException(e);
+            // TODO Подумать про graceful shutdown
+            throw new UserException(ErrorCode.ERROR_WHILE_SAVING_CONFIG, e);
         }
     }
 

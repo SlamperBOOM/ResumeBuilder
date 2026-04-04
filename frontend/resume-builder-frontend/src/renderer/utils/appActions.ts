@@ -1,5 +1,6 @@
-import AppDialogActions from '../dialogs/AppDialogActions';
+import AppDialogActions from '../dialogs/appDialogActions';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import { BDUActionPayload } from './backendTypes';
 
 export enum ScreenSource {
   MAIN,
@@ -10,22 +11,6 @@ export type UpdateScreenPayload = {
   source: ScreenSource;
   screenUpdateFunction: (schema: SchemaResponseDTO) => void;
   resumeId?: string;
-};
-
-export type UpdatePayload = {
-  resume_id: string;
-  resume_info: JSON;
-  content: {
-    block: string;
-    payload: JSON;
-  }[];
-};
-
-export type BDUActionPayload = {
-  locale?: string;
-  resume_id?: string;
-  resume_name?: string;
-  update_payload?: UpdatePayload;
 };
 
 export type BDUActionParams = {

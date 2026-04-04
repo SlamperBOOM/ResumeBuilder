@@ -85,25 +85,6 @@ export function EditArea(props: EditAreaProps) {
           dateAdapter={AdapterDayjs}
           adapterLocale={editSchemaResponse.translations.locale_name}
         >
-          <Button
-            onClick={() =>
-              appActions.performBduAction(
-                editSchema.edit_area.export_button.action,
-                {
-                  payload: {
-                    resume_id: editSchemaResponse.payload.resume.resume_id,
-                    resume_name: editSchemaResponse.payload.resume.resume_name,
-                  },
-                },
-              )
-            }
-          >
-            {
-              editSchemaResponse.translations[
-                editSchema.edit_area.export_button.key
-              ]
-            }
-          </Button>
           <FieldRenderer
             resumeField={editSchema.edit_area.resume_name}
             translations={editSchemaResponse.translations}

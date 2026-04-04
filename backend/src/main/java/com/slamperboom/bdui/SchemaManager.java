@@ -2,6 +2,8 @@ package com.slamperboom.bdui;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slamperboom.exceptions.StartupException;
+import com.slamperboom.exceptions.StartupExceptionHolder;
 
 import java.io.IOException;
 import java.util.EnumMap;
@@ -42,7 +44,9 @@ public class SchemaManager {
                             Objects.requireNonNull(getClass().getResourceAsStream("/screens/language_dialog_schema.json")).readAllBytes()
                     )));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String message = "Unable to read schemas";
+            StartupExceptionHolder.addException(message);
+            throw new StartupException(message);
         }
     }
 

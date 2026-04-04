@@ -3,6 +3,7 @@ package com.slamperboom.backend.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.slamperboom.backend.DialogBuilders;
 import com.slamperboom.bdui.BDUIBuilder;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;
@@ -13,10 +14,10 @@ import jakarta.ws.rs.core.MediaType;
 public class SchemaController {
     private final BDUIBuilder bduiBuilder;
 
-    public SchemaController(IResumeManager resumeManager) {
+    public SchemaController(IResumeManager resumeManager, DialogBuilders dialogBuilders) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        bduiBuilder = new BDUIBuilder(resumeManager, objectMapper);
+        bduiBuilder = new BDUIBuilder(resumeManager, objectMapper, dialogBuilders);
     }
 
     @GET

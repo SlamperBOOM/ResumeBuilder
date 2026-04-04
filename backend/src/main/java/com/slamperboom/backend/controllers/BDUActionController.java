@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.DTO.ExportPayload;
+import com.slamperboom.backend.DTO.OpenLocalDirPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
+import com.slamperboom.backend.DialogBuilders;
 import com.slamperboom.backend.bduAction.BDUActionPerformer;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.jboss.logging.Logger;
 
 import java.util.Optional;
 
@@ -18,10 +19,10 @@ import java.util.Optional;
 public class BDUActionController {
     private final BDUActionPerformer bduActionPerformer;
 
-    public BDUActionController(IResumeManager resumeManager) {
+    public BDUActionController(IResumeManager resumeManager, DialogBuilders builders) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper);
+        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper, builders);
     }
 
     @POST
@@ -46,6 +47,12 @@ public class BDUActionController {
     @Path("/delete/{resumeId}")
     public JsonNode performDelete(String resumeId) {
         return bduActionPerformer.performDelete(resumeId);
+    }
+
+    @DELETE
+    @Path("/delete/confirm/{resumeId}")
+    public JsonNode performDeleteConfirm(String resumeId) {
+        return bduActionPerformer.performConfirmDelete(resumeId);
     }
 
     @POST
@@ -77,6 +84,12 @@ public class BDUActionController {
     @Path("/open_save_dir")
     public void openSaveDir() {
         bduActionPerformer.performOpenSaveDir();
+    }
+
+    @POST
+    @Path("/open_local_dir")
+    public Optional<JsonNode> openLocalDir(OpenLocalDirPayload payload) {
+        return bduActionPerformer.performOpenDir(payload.getDirPath());
     }
 
     @POST

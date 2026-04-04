@@ -2,6 +2,10 @@ package com.slamperboom.htmlConverter;
 
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.slamperboom.exceptions.ErrorCode;
+import com.slamperboom.exceptions.StartupException;
+import com.slamperboom.exceptions.StartupExceptionHolder;
+import com.slamperboom.exceptions.UserException;
 import com.slamperboom.utils.TempFilesManager;
 
 import java.io.*;
@@ -26,7 +30,13 @@ public class FontsManager {
 
     public static FontsManager getInstance() {
         if (fontsManagerInstance == null) {
-            fontsManagerInstance = new FontsManager();
+            try {
+                fontsManagerInstance = new FontsManager();
+            } catch (IOException e){
+                String message = "Error while reading fonts";
+                StartupExceptionHolder.addException(message);
+                throw new StartupException(message, e);
+            }
         }
         return fontsManagerInstance;
     }
@@ -41,7 +51,7 @@ public class FontsManager {
         return "Custom";
     }
 
-    private FontsManager(){
+    private FontsManager() throws IOException {
         fontsMap = new HashMap<>();
         try {
             Enumeration<URL> resources = getClass().getClassLoader().getResources(fontsPath);
@@ -85,8 +95,8 @@ public class FontsManager {
                     }
                 }
             }
-        } catch (IOException | URISyntaxException e){
-            throw new RuntimeException(e);
+        } catch (IOException | URISyntaxException | RuntimeException e){
+            throw new IOException(e);
         }
     }
 
