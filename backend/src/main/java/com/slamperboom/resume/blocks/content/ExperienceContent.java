@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.resume.blocks.content.serializationUtilities.ExperienceDateSerializer;
+import com.slamperboom.resume.blocks.content.serializationUtilities.MarkdownSerializer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ExperienceContent implements IContent {
         private boolean isStillWorking;
 
         @JsonProperty("work_description")
+        @JsonSerialize(using = MarkdownSerializer.class)
         private String workDescription;
     }
 }

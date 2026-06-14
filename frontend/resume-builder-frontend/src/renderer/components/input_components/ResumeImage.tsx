@@ -1,10 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import {
-  Button,
-  Card,
-  CardActions,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardActions, Typography } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { FieldRendererProps, ImageInput } from '../../utils/resumeBlockTypes';
 

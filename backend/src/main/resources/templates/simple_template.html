@@ -10,9 +10,6 @@
           margin: 0;
           color: #333;
         }
-        .multiline {
-          white-space: pre-line;
-        }
         .container {
           max-width: 800px;
           margin: auto;
@@ -73,7 +70,6 @@
           font-size: 0.95rem;
           line-height: 1.4;
           color: #333;
-          white-space: pre-line;
         }
         .edu-block {
           margin-bottom: 1.5rem;
@@ -282,7 +278,7 @@
         <div class="skills">
             <#list blocks["SKILLS"].skills as skill>
             <#if skill.skill_name??>
-            <span class="tag">${skill.skill_name} — <#if skill.skill_level??>${skill.skill_level}</#if></span>
+                <span class="tag">${skill.skill_name}<#if skill.skill_level??> — ${skill.skill_level}</#if></span>
             </#if>
             </#list>
         </div>
@@ -302,12 +298,12 @@
 
     <#if blocks["ABOUT"]?? && blocks["ABOUT"].about_text??>
         <h2>${translations.about.title}</h2>
-        <p class="multiline">${blocks["ABOUT"].about_text}</p>
+        <p>${blocks["ABOUT"].about_text}</p>
     </#if>
 
     <#if blocks["HOBBIES"]?? && blocks["HOBBIES"].hobbies??>
         <h2>${translations.hobbies.title}</h2>
-        <p class="multiline">${blocks["HOBBIES"].hobbies}</p>
+        <p>${blocks["HOBBIES"].hobbies}</p>
     </#if>
 
     <#if blocks["RECOMMENDATIONS"]?? && blocks["RECOMMENDATIONS"].recommendations?? && (blocks["RECOMMENDATIONS"].recommendations?size > 0)>
@@ -338,7 +334,7 @@
 
     <#if blocks["ADDITIONAL"]?? && blocks["ADDITIONAL"].additional_info??>
         <h2>${translations.additional.title}</h2>
-        <p class="multiline">${blocks["ADDITIONAL"].additional_info}</p>
+        <p>${blocks["ADDITIONAL"].additional_info}</p>
     </#if>
 </div>
 </body>
