@@ -29,9 +29,6 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
             marginBottom: 1,
           }}
         >
-          <Button variant="contained" onClick={() => remove(index)}>
-            <DeleteIcon />
-          </Button>
           {Object.keys(currentField.block_format).map((subKey) => {
             const subField = currentField.block_format[subKey];
             const fieldName = `${arrayPath}.${index}.${subField.resume_value}`;
@@ -43,6 +40,9 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
               />
             );
           })}
+          <Button onClick={() => remove(index)}>
+            <DeleteIcon color="error"/>
+          </Button>
         </Box>
       ))}
 

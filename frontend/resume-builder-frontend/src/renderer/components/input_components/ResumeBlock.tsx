@@ -21,7 +21,7 @@ export default function ResumeBlock(props: ResumeBlockProps) {
       }}
       elevation={4}
     >
-      <Typography variant="h5" color="primary">
+      <Typography variant="h5" color="primary" sx={{ marginBottom: 1 }}>
         {translations[schema.block_title]}
       </Typography>
       {Object.keys(schema).map((fieldKey: string) => {

@@ -69,10 +69,10 @@ export default function LanguageDialog(props: LanguageDialogProps) {
       .catch((error) => {
         console.log(error);
       });
-  }, [schemaApi]);
+  }, [schemaApi, appActions.updateScreenMarker]);
 
   const onChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>, value: string) => {
+    (_event: ChangeEvent<HTMLInputElement>, value: string) => {
       setCurrentLocale(value);
     },
     [setCurrentLocale],

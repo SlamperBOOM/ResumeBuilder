@@ -14,7 +14,6 @@ import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.settings.Settings;
 import lombok.Setter;
-import org.jboss.logging.Logger;
 
 import java.util.Map;
 
@@ -38,6 +37,10 @@ public class Resume implements IResume {
     @JsonProperty("resume_name")
     @Setter
     private String resumeName;
+
+    @JsonProperty("resume_locale")
+    @Setter
+    private String resumeLocale;
 
     @JsonProperty("template_name")
     @Setter
@@ -78,6 +81,12 @@ public class Resume implements IResume {
     @JsonIgnore
     public String getName() {
         return resumeName;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getResumeLocale() {
+        return resumeLocale;
     }
 
     @Override
@@ -129,6 +138,7 @@ public class Resume implements IResume {
     public void updateResumeInformation(JsonNode information) {
         this.resumeName = information.get("resume_name").asText();
         this.templateName = information.get("template_name").asText();
+        this.resumeLocale = information.get("resume_locale").asText();
         isSaved = false;
     }
 }

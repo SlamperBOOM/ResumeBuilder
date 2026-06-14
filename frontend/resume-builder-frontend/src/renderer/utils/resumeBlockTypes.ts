@@ -31,11 +31,21 @@ export type DateInput = {
   variant: DateVariant;
 };
 
+export type ImageInput = BaseInput & {
+  empty_text_key: string;
+};
+
 export type DynamicBlock = {
   type: string;
   blocks_list: string;
   block_format: {
-    [field: string]: TextInput | Toggle | TextArea | DropDownList | DateInput;
+    [field: string]:
+      | TextInput
+      | Toggle
+      | TextArea
+      | DropDownList
+      | DateInput
+      | ImageInput;
   };
   add_button_title: string;
 };
@@ -46,10 +56,11 @@ export type ResumeInput =
   | TextArea
   | DropDownList
   | DateInput
+  | ImageInput
   | DynamicBlock;
 
 export type FieldRendererProps = {
   resumeField: ResumeInput;
-  translations: JSON;
+  translations: { field: string; value: string }[];
   fieldNameOverride?: string;
 };

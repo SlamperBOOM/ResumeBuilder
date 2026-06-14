@@ -1,10 +1,12 @@
-package com.slamperboom.backend;
+package com.slamperboom.bdui;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
 import com.slamperboom.backend.DTO.MessageDialogPayload;
+import com.slamperboom.backend.FrontendAction;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

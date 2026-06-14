@@ -6,6 +6,7 @@ import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.resume.blocks.content.enums.MainBlockEmployment;
 import com.slamperboom.resume.blocks.content.enums.MainBlockSchedule;
+import com.slamperboom.resume.blocks.content.serializationUtilities.ImageSerializer;
 import com.slamperboom.resume.blocks.content.serializationUtilities.MainBlockDateSerializer;
 
 import java.time.LocalDate;
@@ -14,8 +15,9 @@ public class MainBlockContent implements IContent {
     @JsonProperty("desired_position")
     private String desiredPosition;
 
-    @JsonProperty("photo_name")
-    private String photoName;
+    @JsonSerialize(using = ImageSerializer.class)
+    @JsonProperty("person_photo_name")
+    private String personPhotoName;
 
     @JsonProperty("last_name")
     private String lastName;

@@ -49,7 +49,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
       .catch((error) => {
         console.log(error);
       });
-  }, [props, schemaApi, appActions]);
+  }, [schemaApi, appActions]);
 
   return (
     <Box

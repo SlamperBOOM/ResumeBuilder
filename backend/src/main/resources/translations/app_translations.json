@@ -5,7 +5,9 @@
             "unable_to_update_resume_block": "",
             "unable_to_duplicate_resume": "",
             "unable_to_delete_resume": "",
-            "temp_file_create_error": ""
+            "error_while_saving_config": "",
+            "no_resume_for_duplicate": "",
+            "unable_to_save_pdf": ""
         },
         "confirmation_dialog": {
             "delete_confirmation": {
@@ -44,9 +46,16 @@
             "resume_name_title": "Resume name",
             "to_main_screen_title": "To main menu",
             "export_title": "Export to PDF",
+            "resume_locale_title": "Resume language",
             "locale_name": "en",
+            "locales": {
+                "en": "English",
+                "ru": "Russian"
+            },
             "main_block": {
                 "title": "Basic information",
+                "person_photo": "Your photo",
+                "empty_person_photo": "Choose your photo",
                 "desired_position": "Desired position",
                 "last_name": "Last name",
                 "first_name": "First name",
@@ -229,9 +238,16 @@
             "resume_name_title": "Название резюме",
             "to_main_screen_title": "В главное меню",
             "export_title": "Экспортировать в PDF",
+            "resume_locale_title": "Язык резюме",
             "locale_name": "ru",
+            "locales": {
+                "en": "Английский",
+                "ru": "Русский"
+            },
             "main_block": {
                 "title": "Основная информация",
+                "person_photo": "Ваше фото",
+                "empty_person_photo": "Выберите своё фото",
                 "desired_position": "Желаемая позиция",
                 "last_name": "Фамилия",
                 "first_name": "Имя",

@@ -6,6 +6,16 @@
             "title": "resume_name_title",
             "resume_value": "resume_name"
         },
+        "resume_locale": {
+            "type": "drop_down_list",
+            "title": "resume_locale_title",
+            "values": {
+                "en": "locales.en",
+                "ru": "locales.ru"
+            },
+            "resume_value": "resume_locale",
+            "default": "en"
+        },
         "export_button": {
             "key": "export_title",
             "action": "export"
@@ -13,6 +23,12 @@
         "resume_blocks": {
             "main_block": {
                 "block_title": "main_block.title",
+                "person_photo": {
+                    "type": "image",
+                    "title": "main_block.person_photo",
+                    "resume_value": "blocks.MAIN_BLOCK.person_photo_name",
+                    "empty_text_key": "main_block.empty_person_photo"
+                },
                 "desired_position": {
                     "type": "text_input",
                     "title": "main_block.desired_position",

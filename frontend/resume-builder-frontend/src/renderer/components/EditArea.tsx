@@ -2,12 +2,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useCallback, useEffect, useRef } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { Button } from '@mui/material';
-import { EditScreenSchema } from '../utils/backendTypes';
+import { EditScreenSchema, UpdatePayload } from '../utils/backendTypes';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import FieldRenderer from './FieldRenderer';
 import ResumeBlock from './input_components/ResumeBlock';
-import { AppActions, ScreenSource, UpdatePayload } from '../utils/appActions';
+import { AppActions, ScreenSource } from '../utils/appActions';
 
 // Add additional locales for date here
 import 'dayjs/locale/ru';
@@ -35,6 +34,7 @@ export function EditArea(props: EditAreaProps) {
         resume_id: data.resume_id,
         resume_info: {
           resume_name: data.resume_name,
+          resume_locale: data.resume_locale,
           template_name: data.template_name,
         },
       };
@@ -87,6 +87,10 @@ export function EditArea(props: EditAreaProps) {
         >
           <FieldRenderer
             resumeField={editSchema.edit_area.resume_name}
+            translations={editSchemaResponse.translations}
+          />
+          <FieldRenderer
+            resumeField={editSchema.edit_area.resume_locale}
             translations={editSchemaResponse.translations}
           />
           {Object.keys(editSchema.edit_area.resume_blocks).map(

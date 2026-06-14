@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.DTO.ExportPayload;
 import com.slamperboom.backend.DTO.OpenLocalDirPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
-import com.slamperboom.backend.DialogBuilders;
+import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.backend.bduAction.BDUActionPerformer;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;

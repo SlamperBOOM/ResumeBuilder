@@ -11,6 +11,7 @@ public interface IResume {
     String getVersionOfLastEdit();
     String getId();
     String getName();
+    String getResumeLocale();
     Map<ContentType, IContent> getBlocks();
     JsonNode getJson();
     JsonNode getTranslatedJson();

@@ -171,6 +171,22 @@ ipcMain.handle('open-file-dialog', async (event, resumeName: string) => {
   return result;
 });
 
+ipcMain.handle('open-image-dialog', async () => {
+  if (!mainWindow) {
+    return undefined;
+  }
+  const result = dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      {
+        name: 'Images',
+        extensions: ['png', 'jpg', 'jpeg'],
+      },
+    ],
+  });
+  return result;
+});
+
 app.on('before-quit', async (event) => {
   if (backend) {
     const result = (

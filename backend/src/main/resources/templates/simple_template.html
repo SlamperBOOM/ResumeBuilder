@@ -118,10 +118,23 @@
             margin-right: 0.4em;
             display: inline-block;
           }
+        .photo-container {
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+        }
+        .photo {
+            width: 150px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <#if blocks["MAIN_BLOCK"].person_photo_name??>
+        <div class="photo-container">
+            <img class="photo" src=${blocks["MAIN_BLOCK"].person_photo_name}>
+        </div>
+    </#if>
     <#if blocks["MAIN_BLOCK"].last_name?? && blocks["MAIN_BLOCK"].first_name??>
         <h1>${blocks["MAIN_BLOCK"].last_name} ${blocks["MAIN_BLOCK"].first_name}</h1>
     </#if>

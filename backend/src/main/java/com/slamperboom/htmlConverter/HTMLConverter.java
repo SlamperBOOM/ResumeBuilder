@@ -1,7 +1,6 @@
 package com.slamperboom.htmlConverter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -12,12 +11,10 @@ import com.slamperboom.translations.TranslationsManager;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.jsoup.Jsoup;
-import org.jsoup.helper.W3CDom;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.Map;
 
 public class HTMLConverter {
     private HTMLConverter(){}
@@ -42,7 +39,7 @@ public class HTMLConverter {
             jsonRepresentation.put(
                     "translations",
                     mapper.treeToValue(
-                            TranslationsManager.getInstance().getResumeTranslations(),
+                            TranslationsManager.getInstance().getResumeTranslations(resume),
                             HashMap.class
                     )
             );

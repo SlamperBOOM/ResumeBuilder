@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
+import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.settings.DynamicSettings;
 import org.jboss.logging.Logger;
 
@@ -111,8 +112,8 @@ public class TranslationsManager {
         return DynamicSettings.getInstance().getLocale();
     }
 
-    public JsonNode getResumeTranslations() {
-        String currentLocale = getCurrentLocaleString();
+    public JsonNode getResumeTranslations(IResume resume) {
+        String currentLocale = resume.getResumeLocale();
         if (resumeTranslations.containsKey(currentLocale)) {
             return resumeTranslations.get(currentLocale);
         }

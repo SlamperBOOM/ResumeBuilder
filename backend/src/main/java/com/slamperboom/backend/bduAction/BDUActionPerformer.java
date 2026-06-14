@@ -6,7 +6,7 @@ import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
 import com.slamperboom.backend.DTO.ExportPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
-import com.slamperboom.backend.DialogBuilders;
+import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.backend.FrontendAction;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.saves.IResume;

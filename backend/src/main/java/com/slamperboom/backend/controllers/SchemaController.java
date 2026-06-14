@@ -3,7 +3,7 @@ package com.slamperboom.backend.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.slamperboom.backend.DialogBuilders;
+import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.bdui.BDUIBuilder;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;

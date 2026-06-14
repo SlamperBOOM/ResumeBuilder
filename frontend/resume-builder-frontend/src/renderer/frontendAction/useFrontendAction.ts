@@ -26,16 +26,17 @@ export const appRoutes = {
 
 function useFrontendAction(
   dialogActions: AppDialogActions,
-  updateCurrentScreen: (payload: UpdateScreenPayload) => Promise<void>,
+  updateScreenViaBool: () => void,
 ) {
   const navigate = useNavigate();
 
   const openMainScreen = useCallback(
     (_params: FrontendActionParams) => {
       navigate(appRoutes.mainScreen);
+      updateScreenViaBool();
       return null;
     },
-    [navigate],
+    [navigate, updateScreenViaBool],
   );
 
   const openEditScreen = useCallback(
@@ -43,20 +44,17 @@ function useFrontendAction(
       navigate(
         appRoutes.editScreen.replace(':resumeId', params.payload.resume_id),
       );
+      updateScreenViaBool();
       return null;
     },
-    [navigate],
+    [navigate, updateScreenViaBool],
   );
 
   const updateScreen = useCallback(
-    (params: FrontendActionParams) => {
-      if (!params.updateScreenPayload) {
-        return null;
-      }
-      updateCurrentScreen(params.updateScreenPayload);
-      return null;
+    (_params: FrontendActionParams) => {
+      updateScreenViaBool();
     },
-    [updateCurrentScreen],
+    [updateScreenViaBool],
   );
 
   const performShowConfirmation = useCallback(

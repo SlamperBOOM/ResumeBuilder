@@ -37,7 +37,9 @@
         "add_button_title": ""
     },
     "image": {
-        "type": "image"
+        "type": "image",
+        "title": "main_block.person_image",
+        "resume_value": ""
     },
     "date": {
         "type": "date",

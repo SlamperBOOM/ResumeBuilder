@@ -54,6 +54,7 @@ export type EditScreenSchema = {
   edit_area: {
     export_button: BDUButtonSchema;
     resume_name: TextInput;
+    resume_locale: DropDownList;
     to_main_screen_title: string;
     resume_blocks: BlockSchema;
   };

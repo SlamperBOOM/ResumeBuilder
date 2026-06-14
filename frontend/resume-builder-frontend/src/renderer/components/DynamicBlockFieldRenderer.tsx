@@ -4,6 +4,7 @@ import ResumeDropDownList from './input_components/ResumeDropDownList';
 import ResumeTextArea from './input_components/ResumeTextArea';
 import ResumeTextInput from './input_components/ResumeTextInput';
 import ResumeToggle from './input_components/ResumeToggle';
+import ResumeImage from './input_components/ResumeImage';
 
 const fieldRegistry = {
   text_input: ResumeTextInput,
@@ -11,6 +12,7 @@ const fieldRegistry = {
   toggle: ResumeToggle,
   drop_down_list: ResumeDropDownList,
   date: ResumeDate,
+  image: ResumeImage,
 };
 
 export default function DynamicBlockFieldRenderer(props: FieldRendererProps) {

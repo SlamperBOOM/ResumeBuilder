@@ -121,7 +121,11 @@ export default function App() {
   );
 
   const actionApi = useActionApi();
-  const frontendActions = useFrontendAction(dialogActions, updateCurrentScreen);
+  const [updateScreenMarker, setUpdateScreenMarker] = useState<boolean>(false);
+  const updateScreen = useCallback(() => {
+    setUpdateScreenMarker(!updateScreenMarker);
+  }, [updateScreenMarker]);
+  const frontendActions = useFrontendAction(dialogActions, updateScreen);
 
   const performBduAction = useCallback(
     (bduAction: string, payload?: BDUActionParams) => {
@@ -134,7 +138,7 @@ export default function App() {
               payload: result.payload,
               updateScreenPayload: payload?.updateScreenPayload,
             });
-            if (frontendActionResult !== null) {
+            if (frontendActionResult) {
               performBduAction(frontendActionResult);
             }
           }
@@ -152,8 +156,16 @@ export default function App() {
       dialogActions,
       performBduAction,
       updateCurrentScreen,
+      updateScreen,
+      updateScreenMarker,
     };
-  }, [dialogActions, performBduAction, updateCurrentScreen]);
+  }, [
+    dialogActions,
+    performBduAction,
+    updateCurrentScreen,
+    updateScreen,
+    updateScreenMarker,
+  ]);
 
   return (
     <>

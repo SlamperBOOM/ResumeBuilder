@@ -11,6 +11,7 @@ import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.settings.Settings;
+import com.slamperboom.translations.TranslationsManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
@@ -142,6 +143,7 @@ public class ResumeManager implements IResumeManager{
         resume.setResumeName(resumeName);
         resume.setVersionOfLastEdit(Settings.getInstance().getVersion());
         resume.setTemplateName("simple_template");
+        resume.setResumeLocale(TranslationsManager.getInstance().getCurrentLocaleString());
 
         Map<ContentType, IContent> blocks = new EnumMap<>(ContentType.class);
         for (ContentType contentType: ContentType.values()) {

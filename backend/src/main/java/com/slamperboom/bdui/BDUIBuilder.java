@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
-import com.slamperboom.backend.DialogBuilders;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.resume.saves.IResume;

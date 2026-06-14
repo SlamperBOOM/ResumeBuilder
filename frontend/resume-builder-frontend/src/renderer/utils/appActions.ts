@@ -22,4 +22,6 @@ export type AppActions = {
   dialogActions: AppDialogActions;
   performBduAction: (bduAction: string, payload?: BDUActionParams) => void;
   updateCurrentScreen: (payload: UpdateScreenPayload) => Promise<void>;
+  updateScreen: () => void;
+  updateScreenMarker: boolean;
 };

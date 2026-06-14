@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import { EditArea } from '../components/EditArea';
+import { EditScreenSchema } from '../utils/backendTypes';
 
 type EditScreenProps = {
   appActions: AppActions;
@@ -33,6 +34,7 @@ export default function EditScreen(props: EditScreenProps) {
   const { appActions } = props;
   const { resumeId } = useParams();
   const [editSchema, setEditSchema] = useState<SchemaResponseDTO>();
+  const schema = editSchema?.schema as EditScreenSchema;
   const layout = JSON.parse(
     localStorage.getItem('editorLayout') || '["40","60"]',
   );
@@ -67,7 +69,7 @@ export default function EditScreen(props: EditScreenProps) {
             localStorage.setItem('editorLayout', JSON.stringify(arraySizes));
           }}
         >
-          {/* Левая часть — форма */}
+          {/* Left part -- Form */}
           <Panel defaultSize={layout[0]} minSize="30">
             <Box
               sx={{
@@ -86,16 +88,12 @@ export default function EditScreen(props: EditScreenProps) {
                 }}
                 sx={{ margin: 2 }}
               >
-                {
-                  editSchema.translations[
-                    editSchema.schema.edit_area.to_main_screen_title
-                  ]
-                }
+                {editSchema.translations[schema.edit_area.to_main_screen_title]}
               </Button>
               <Button
                 onClick={() =>
                   appActions.performBduAction(
-                    editSchema.schema.edit_area.export_button.action,
+                    schema.edit_area.export_button.action,
                     {
                       payload: {
                         resume_id: editSchema.payload.resume.resume_id,
@@ -104,12 +102,9 @@ export default function EditScreen(props: EditScreenProps) {
                     },
                   )
                 }
+                sx={{ marginLeft: 2, marginRight: 2 }}
               >
-                {
-                  editSchema.translations[
-                    editSchema.schema.edit_area.export_button.key
-                  ]
-                }
+                {editSchema.translations[schema.edit_area.export_button.key]}
               </Button>
               <Box
                 sx={{
@@ -137,7 +132,7 @@ export default function EditScreen(props: EditScreenProps) {
             }}
           />
 
-          {/* Правая часть — preview */}
+          {/* Right part — preview */}
           <Panel defaultSize={layout[1]} minSize="30">
             <Box
               sx={{

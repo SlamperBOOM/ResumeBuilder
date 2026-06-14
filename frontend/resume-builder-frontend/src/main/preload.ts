@@ -27,4 +27,5 @@ const electronHandler = {
 contextBridge.exposeInMainWorld('electron', {
   openFileDialog: (resumeName: string) =>
     ipcRenderer.invoke('open-file-dialog', resumeName),
+  openImageDialog: () => ipcRenderer.invoke('open-image-dialog'),
 });
