@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import LanguageDialog from './dialogs/LanguageDialog';

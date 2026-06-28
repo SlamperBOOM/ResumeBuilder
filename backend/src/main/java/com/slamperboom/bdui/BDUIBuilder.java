@@ -7,10 +7,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
+import com.slamperboom.htmlConverter.Template;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.translations.TranslationsManager;
 import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 public class BDUIBuilder {
@@ -50,11 +53,11 @@ public class BDUIBuilder {
             ObjectNode payload = objectMapper.createObjectNode();
             IResume resume = resumeManager.getResume(resumeId);
             payload.set("resume", resume.getJson());
-            payload.put("preview", HTMLConverter.processHTMLTemplate(resume));
+            payload.put("preview", HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume)));
             result.set(BackendConstants.PAYLOAD_KEY, payload);
 
             return result;
-        } catch (UserException e) {
+        } catch (UserException | IOException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
     }
@@ -84,6 +87,31 @@ public class BDUIBuilder {
         }
         payload.set("locales", locales);
         result.set(BackendConstants.PAYLOAD_KEY, payload);
+
+        return result;
+    }
+
+    public JsonNode buildTemplates(String resumeId) {
+        ArrayNode result = objectMapper.createArrayNode();
+
+        var resume = resumeManager.getResume(resumeId);
+
+        if (resume == null) {
+            return dialogBuilders.buildMessageDialogWithoutTitle("No resume with this resume_id");
+        }
+
+        try {
+            for (var template : Template.values()) {
+                ObjectNode templateNode = objectMapper.createObjectNode();
+                templateNode.put("name", template.toString());
+
+                String htmlTemplate = HTMLConverter.processResumeToHTMLWithTemplate(resume, template);
+                templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
+                result.add(templateNode);
+            }
+        } catch (UserException | IOException e) {
+            return dialogBuilders.buildMessageDialogWithoutTitle("error with templates");
+        }
 
         return result;
     }

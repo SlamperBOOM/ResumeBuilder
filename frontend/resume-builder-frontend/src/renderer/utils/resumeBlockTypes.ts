@@ -24,10 +24,7 @@ export enum DateVariant {
   month = 'month',
 }
 
-export type DateInput = {
-  type: string;
-  resume_value: string;
-  title: string;
+export type DateInput = BaseInput & {
   variant: DateVariant;
 };
 
@@ -50,6 +47,10 @@ export type DynamicBlock = {
   add_button_title: string;
 };
 
+export type TemplateChooser = BaseInput & {
+  template_choose_title: string;
+};
+
 export type ResumeInput =
   | TextInput
   | Toggle
@@ -57,10 +58,12 @@ export type ResumeInput =
   | DropDownList
   | DateInput
   | ImageInput
-  | DynamicBlock;
+  | DynamicBlock
+  | TemplateChooser;
 
 export type FieldRendererProps = {
   resumeField: ResumeInput;
   translations: { field: string; value: string }[];
   fieldNameOverride?: string;
+  resumeId: string;
 };

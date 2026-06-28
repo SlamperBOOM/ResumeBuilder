@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import useApi from './useApi';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import TemplatesDTO from '../DTO/TemplatesDTO';
 
 function useSchemaApi() {
   const baseAddress = 'schema/';
@@ -33,14 +34,30 @@ function useSchemaApi() {
     [api],
   );
 
+  const getTemplates = useCallback(
+    async (resumeId: string) => {
+      return (await api.performGetRequest(
+        `${baseAddress}templates/${resumeId}`,
+      )) as TemplatesDTO;
+    },
+    [api],
+  );
+
   return useMemo(() => {
     return {
       getHeader,
       getLanguageDialog,
       getMainScreen,
       getEditScreen,
+      getTemplates,
     };
-  }, [getHeader, getLanguageDialog, getMainScreen, getEditScreen]);
+  }, [
+    getHeader,
+    getLanguageDialog,
+    getMainScreen,
+    getEditScreen,
+    getTemplates,
+  ]);
 }
 
 export default useSchemaApi;

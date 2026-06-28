@@ -9,5 +9,6 @@ public record SimpleResume(
         @JsonProperty("resume_id") String resumeId,
         @JsonProperty("resume_name") String resumeName,
         @JsonProperty("last_modification_date") @JsonSerialize(using = SimpleResumeDateSerializer.class) LocalDateTime lastModificationDate,
-        @JsonProperty("html_preview") String htmlPreview) {
+        @JsonProperty("html_preview") String htmlPreview,
+        @JsonProperty("pdf_preview") String pdfPreview) {
 }

@@ -11,7 +11,7 @@ type SchemaResponseDTO = {
     | HeaderSchema
     | EditScreenSchema
     | LanguageDialogSchema;
-  translations: JSON;
+  translations: { [key: string]: string };
   payload?: JSON;
 };
 

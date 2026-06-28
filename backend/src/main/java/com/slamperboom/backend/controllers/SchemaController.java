@@ -43,4 +43,10 @@ public class SchemaController {
     public JsonNode getLanguageDialog() {
         return bduiBuilder.buildLanguageDialog();
     }
+
+    @GET
+    @Path("/templates/{resumeId}")
+    public JsonNode getTemplates(String resumeId) {
+        return bduiBuilder.buildTemplates(resumeId);
+    }
 }

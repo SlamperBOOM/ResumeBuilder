@@ -21,6 +21,7 @@ export type SimpleResume = {
   resume_name: string;
   last_modification_date: string;
   html_preview: string;
+  pdf_preview: string;
 };
 
 export type ResumeCardProps = {

@@ -5,10 +5,8 @@ import com.slamperboom.exceptions.StartupExceptionHolder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
-import io.quarkus.runtime.util.ClassPathUtils;
 
 import java.io.IOException;
-import java.lang.ClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -45,6 +43,11 @@ public class HTMLTemplateManager {
             StartupExceptionHolder.addException(message);
             throw new StartupException(message);
         }
+    }
+
+    public Template getTemplate(com.slamperboom.htmlConverter.Template templateName) throws IOException {
+        String templateFileName = templateMap.getProperty(templateName.toString());
+        return templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
     }
 
     public Template getTemplate(String templateName) throws IOException {

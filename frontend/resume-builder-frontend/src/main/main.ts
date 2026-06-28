@@ -196,7 +196,7 @@ app.on('before-quit', async (event) => {
           throw new Error(response.response.data);
         })
     ).data as ActionResponseDTO;
-    if (result && result.frontend_action === FrontendActionEnum.CLOSE) {
+    if (result?.frontend_action === FrontendActionEnum.CLOSE) {
       backend?.kill();
     } else {
       event.preventDefault();

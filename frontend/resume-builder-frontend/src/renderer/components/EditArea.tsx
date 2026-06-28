@@ -21,6 +21,9 @@ export function EditArea(props: EditAreaProps) {
   const { appActions, editSchemaResponse, setEditSchema } = props;
   const editSchema = editSchemaResponse.schema as EditScreenSchema;
 
+  const { translations } = editSchemaResponse;
+  const resumeId = editSchemaResponse.payload.resume["resume_id"];
+
   const methods = useForm({
     defaultValues: editSchemaResponse.payload.resume,
     mode: 'onChange',
@@ -83,15 +86,22 @@ export function EditArea(props: EditAreaProps) {
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <LocalizationProvider
           dateAdapter={AdapterDayjs}
-          adapterLocale={editSchemaResponse.translations.locale_name}
+          adapterLocale={translations.locale_name}
         >
           <FieldRenderer
             resumeField={editSchema.edit_area.resume_name}
-            translations={editSchemaResponse.translations}
+            translations={translations}
+            resumeId={resumeId}
           />
           <FieldRenderer
             resumeField={editSchema.edit_area.resume_locale}
-            translations={editSchemaResponse.translations}
+            translations={translations}
+            resumeId={resumeId}
+          />
+          <FieldRenderer
+            resumeField={editSchema.edit_area.template}
+            translations={translations}
+            resumeId={resumeId}
           />
           {Object.keys(editSchema.edit_area.resume_blocks).map(
             (block_key: string) => {
@@ -99,7 +109,8 @@ export function EditArea(props: EditAreaProps) {
               return (
                 <ResumeBlock
                   schema={block}
-                  translations={editSchemaResponse.translations}
+                  translations={translations}
+                  resumeId={resumeId}
                 />
               );
             },

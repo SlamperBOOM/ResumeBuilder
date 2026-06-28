@@ -2,6 +2,7 @@ import {
   DateInput,
   DropDownList,
   DynamicBlock,
+  TemplateChooser,
   TextArea,
   TextInput,
   Toggle,
@@ -52,10 +53,17 @@ export type BlockSchema = {
 
 export type EditScreenSchema = {
   edit_area: {
+    to_main_screen_title: string;
     export_button: BDUButtonSchema;
     resume_name: TextInput;
     resume_locale: DropDownList;
-    to_main_screen_title: string;
+    template: TemplateChooser;
+    preview: {
+      scale_title: string;
+      full_width_option_key: string;
+      full_height_option_key: string;
+      custom_option_key: string;
+    },
     resume_blocks: BlockSchema;
   };
 };

@@ -47,6 +47,14 @@
             "to_main_screen_title": "To main menu",
             "export_title": "Export to PDF",
             "resume_locale_title": "Resume language",
+            "template_name_title": "Chosen template",
+            "template_choose_title": "Choose template",
+            "preview": {
+                "scale_title": "Scale:",
+                "full_width": "Full width",
+                "full_height": "Full height",
+                "custom": "Custom"
+            },
             "locale_name": "en",
             "locales": {
                 "en": "English",
@@ -239,6 +247,14 @@
             "to_main_screen_title": "В главное меню",
             "export_title": "Экспортировать в PDF",
             "resume_locale_title": "Язык резюме",
+            "template_name_title": "Выбранный шаблон",
+            "template_choose_title": "Выберите шаблон",
+            "preview": {
+                "scale_title": "Масштаб:",
+                "full_width": "По ширине",
+                "full_height": "По высоте",
+                "custom": "Произвольный"
+            },
             "locale_name": "ru",
             "locales": {
                 "en": "Английский",

@@ -1,6 +1,10 @@
 {
     "edit_area": {
         "to_main_screen_title": "to_main_screen_title",
+        "export_button": {
+            "key": "export_title",
+            "action": "export"
+        },
         "resume_name": {
             "type": "text_input",
             "title": "resume_name_title",
@@ -16,9 +20,17 @@
             "resume_value": "resume_locale",
             "default": "en"
         },
-        "export_button": {
-            "key": "export_title",
-            "action": "export"
+        "template": {
+            "type": "template",
+            "title": "template_name_title",
+            "resume_value": "template_name",
+            "template_choose_title": "template_choose_title"
+        },
+        "preview": {
+            "scale_title": "preview.scale_title",
+            "full_width_option_key": "preview.full_width",
+            "full_height_option_key": "preview.full_height",
+            "custom_option_key": "preview.custom"
         },
         "resume_blocks": {
             "main_block": {

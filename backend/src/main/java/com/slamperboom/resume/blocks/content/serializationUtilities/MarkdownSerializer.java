@@ -16,7 +16,9 @@ import org.jsoup.safety.Safelist;
 import java.io.IOException;
 import java.util.Arrays;
 
-/// Add this class to a desired field via
+/// This serializer adds Markdown support for input field
+/// Add this class to a desired string field via
+///
 /// `\@JsonSerialize(using = MarkdownSerializer.class)`
 public class MarkdownSerializer extends StdSerializer<String> {
     public MarkdownSerializer() {this(null);}

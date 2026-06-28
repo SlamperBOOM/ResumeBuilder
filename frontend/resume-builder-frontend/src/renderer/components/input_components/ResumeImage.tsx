@@ -53,9 +53,11 @@ export default function ResumeImage(props: FieldRendererProps) {
               size="small"
               onClick={async () => {
                 const path = await window.electron.openImageDialog();
-                console.log(path.filePaths[0]);
+                const fileName = path.filePaths[0];
 
-                controllerField.onChange(path.filePaths[0]);
+                if (fileName) {
+                  controllerField.onChange(fileName);
+                }
               }}
             >
               <Edit />

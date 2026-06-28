@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import ActionResponseDTO from '../DTO/ActionResponseDTO';
 import { backendPort } from '../utils/consts';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import TemplatesDTO from '../DTO/TemplatesDTO';
 
 function useApi() {
   const baseAddress = `http://localhost:${backendPort}/`;
@@ -13,7 +14,7 @@ function useApi() {
         await axios.get(baseAddress + url).catch((response) => {
           throw new Error(response.response.data);
         })
-      ).data as ActionResponseDTO | SchemaResponseDTO;
+      ).data as ActionResponseDTO | SchemaResponseDTO | TemplatesDTO;
     },
     [baseAddress],
   );

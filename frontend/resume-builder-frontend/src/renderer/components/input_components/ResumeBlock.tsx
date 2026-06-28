@@ -1,14 +1,15 @@
-import { Box, Card, Typography } from '@mui/material';
+import { Card, Typography } from '@mui/material';
 import { BlockSchema } from '../../utils/backendTypes';
 import FieldRenderer from '../FieldRenderer';
 
 type ResumeBlockProps = {
   schema: BlockSchema;
   translations: JSON;
+  resumeId: string;
 };
 
 export default function ResumeBlock(props: ResumeBlockProps) {
-  const { schema, translations } = props;
+  const { schema, translations, resumeId } = props;
 
   return (
     <Card
@@ -30,7 +31,11 @@ export default function ResumeBlock(props: ResumeBlockProps) {
         }
         const field = schema[fieldKey];
         return (
-          <FieldRenderer resumeField={field} translations={translations} />
+          <FieldRenderer
+            resumeField={field}
+            translations={translations}
+            resumeId={resumeId}
+          />
         );
       })}
     </Card>

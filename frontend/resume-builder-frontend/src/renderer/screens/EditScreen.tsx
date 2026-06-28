@@ -1,4 +1,15 @@
-import { Box, Button, colors, Paper, Skeleton } from '@mui/material';
+import {
+  Box,
+  Button,
+  colors,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Skeleton,
+  Slider,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -6,6 +17,9 @@ import { AppActions, ScreenSource } from '../utils/appActions';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import { EditArea } from '../components/EditArea';
 import { EditScreenSchema } from '../utils/backendTypes';
+import ResumePDFPreview, {
+  ResumePreviewScaleEnum,
+} from '../components/ResumePDFPreview';
 
 type EditScreenProps = {
   appActions: AppActions;
@@ -30,6 +44,29 @@ function EditScreenSkeleton() {
   );
 }
 
+const previewScaleMarks = [
+  {
+    value: 0.1,
+    label: '10%',
+  },
+  {
+    value: 0.25,
+    label: '25%',
+  },
+  {
+    value: 0.5,
+    label: '50%',
+  },
+  {
+    value: 0.75,
+    label: '75%',
+  },
+  {
+    value: 1,
+    label: '100%',
+  },
+];
+
 export default function EditScreen(props: EditScreenProps) {
   const { appActions } = props;
   const { resumeId } = useParams();
@@ -37,6 +74,14 @@ export default function EditScreen(props: EditScreenProps) {
   const schema = editSchema?.schema as EditScreenSchema;
   const layout = JSON.parse(
     localStorage.getItem('editorLayout') || '["40","60"]',
+  );
+  const previewScaleKey = 'editPreviewScale';
+  const previewModeKey = 'editPreviewMode';
+  const [previewScale, setPreviewScale] = useState(
+    Number.parseInt(localStorage.getItem(previewScaleKey), 10) || 0.5,
+  );
+  const [previewMode, setPreviewMode] = useState<ResumePreviewScaleEnum>(
+    localStorage.getItem(previewModeKey) || ResumePreviewScaleEnum.FULL_HEIGHT,
   );
 
   useEffect(() => {
@@ -73,44 +118,59 @@ export default function EditScreen(props: EditScreenProps) {
           <Panel defaultSize={layout[0]} minSize="30">
             <Box
               sx={{
-                flex: 1,
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 backgroundColor: 'white',
                 borderRight: '1px solid #e0e0e0',
               }}
             >
-              <Button
-                onClick={() => {
-                  appActions.performBduAction('open_main_screen', {
-                    payload: { resume_id: resumeId },
-                  });
+              <Stack
+                spacing={2}
+                sx={{
+                  p: 2,
+                  backgroundColor: 'background.paper',
+                  boxShadow: 1,
+                  zIndex: 1,
                 }}
-                sx={{ margin: 2 }}
               >
-                {editSchema.translations[schema.edit_area.to_main_screen_title]}
-              </Button>
-              <Button
-                onClick={() =>
-                  appActions.performBduAction(
-                    schema.edit_area.export_button.action,
-                    {
-                      payload: {
-                        resume_id: editSchema.payload.resume.resume_id,
-                        resume_name: editSchema.payload.resume.resume_name,
+                <Button
+                  onClick={() => {
+                    appActions.performBduAction('open_main_screen', {
+                      payload: { resume_id: resumeId },
+                    });
+                  }}
+                >
+                  {
+                    editSchema.translations[
+                      schema.edit_area.to_main_screen_title
+                    ]
+                  }
+                </Button>
+
+                <Button
+                  onClick={() =>
+                    appActions.performBduAction(
+                      schema.edit_area.export_button.action,
+                      {
+                        payload: {
+                          resume_id: editSchema.payload.resume.resume_id,
+                          resume_name: editSchema.payload.resume.resume_name,
+                        },
                       },
-                    },
-                  )
-                }
-                sx={{ marginLeft: 2, marginRight: 2 }}
-              >
-                {editSchema.translations[schema.edit_area.export_button.key]}
-              </Button>
+                    )
+                  }
+                >
+                  {editSchema.translations[schema.edit_area.export_button.key]}
+                </Button>
+              </Stack>
+
               <Box
                 sx={{
                   flex: 1,
                   overflowY: 'auto',
-                  padding: 2,
+                  p: 2,
+                  minHeight: 0,
                 }}
               >
                 {editSchema && (
@@ -136,27 +196,116 @@ export default function EditScreen(props: EditScreenProps) {
           <Panel defaultSize={layout[1]} minSize="30">
             <Box
               sx={{
-                // width: '60vw',
-                overflowY: 'auto',
+                height: '100%',
                 display: 'flex',
-                justifyContent: 'center',
-                padding: 4,
+                flexDirection: 'column',
               }}
             >
-              <Paper
-                elevation={2}
+              <Box
                 sx={{
-                  width: '50vw',
-                  padding: 4,
-                  overflow: 'auto',
+                  flex: 1,
+                  overflowY: 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: editSchema && editSchema.payload?.preview,
-                  }}
+                <ResumePDFPreview
+                  preview={editSchema?.payload?.preview}
+                  renderAllPages
+                  scaleType={previewMode}
+                  scale={previewScale}
                 />
-              </Paper>
+              </Box>
+
+              <Box
+                sx={{
+                  position: 'sticky',
+                  bottom: 0,
+                  p: 2,
+                  backgroundColor: 'background.paper',
+                  borderTop: 1,
+                  borderColor: 'divider',
+                  justifyContent: 'center',
+                  display: 'flex',
+                  zIndex: 1,
+                }}
+              >
+                <Stack direction="row" spacing={3} alignItems="center">
+                  <Typography>
+                    {
+                      editSchema.translations[
+                        schema.edit_area.preview.scale_title
+                      ]
+                    }
+                  </Typography>
+                  <RadioGroup
+                    row
+                    value={previewMode}
+                    onChange={(e) => {
+                      setPreviewMode(e.target.value);
+                      localStorage.setItem(previewModeKey, e.target.value);
+                    }}
+                  >
+                    <FormControlLabel
+                      value={ResumePreviewScaleEnum.FULL_WIDTH}
+                      control={<Radio />}
+                      label={
+                        editSchema.translations[
+                          schema.edit_area.preview.full_width_option_key
+                        ]
+                      }
+                    />
+                    <FormControlLabel
+                      value={ResumePreviewScaleEnum.FULL_HEIGHT}
+                      control={<Radio />}
+                      label={
+                        editSchema.translations[
+                          schema.edit_area.preview.full_height_option_key
+                        ]
+                      }
+                    />
+                    <FormControlLabel
+                      value={ResumePreviewScaleEnum.CUSTOM}
+                      control={<Radio />}
+                      label={
+                        editSchema.translations[
+                          schema.edit_area.preview.custom_option_key
+                        ]
+                      }
+                    />
+                  </RadioGroup>
+
+                  <Box
+                    sx={{
+                      flex: 1,
+                      maxWidth: 500,
+                      minWidth: 250,
+                    }}
+                  >
+                    <Slider
+                      min={0.1}
+                      max={1}
+                      step={0.1}
+                      disabled={previewMode !== ResumePreviewScaleEnum.CUSTOM}
+                      value={previewScale}
+                      onChange={(_, value) => {
+                        setPreviewScale(value);
+                        localStorage.setItem(previewScaleKey, value.toString());
+                      }}
+                      marks={previewScaleMarks}
+                    />
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      width: 48,
+                      textAlign: 'right',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {`${previewScale*100}%`}
+                  </Typography>
+                </Stack>
+              </Box>
             </Box>
           </Panel>
         </Group>

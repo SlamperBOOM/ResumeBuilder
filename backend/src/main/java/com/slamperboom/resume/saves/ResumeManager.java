@@ -46,15 +46,17 @@ public class ResumeManager implements IResumeManager{
                 .map(resume -> {
                     var file = resumeFileMap.get(resume.getId());
                     try {
+                        String htmlPreview = HTMLConverter.processResumeToHTML(resume);
                         return Optional.of(new SimpleResume(
                                 resume.getId(),
                                 resume.getName(),
                                 LocalDateTime.ofInstant(
                                         Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
                                 ),
-                                HTMLConverter.processHTMLTemplate(resume)
+                                htmlPreview,
+                                HTMLConverter.saveHTMLtoPDFBase64(htmlPreview)
                         ));
-                    } catch (UserException e) {
+                    } catch (UserException | IOException e) {
                         logger.error("Unable to read resume for main screen");
                         e.printStackTrace();
                         return Optional.empty();
@@ -184,7 +186,7 @@ public class ResumeManager implements IResumeManager{
     @Override
     public void exportResumeToPDF(String resumeID, String savePath) throws UserException {
         IResume resume = getResume(resumeID);
-        String htmlResume = HTMLConverter.processHTMLTemplate(resume);
+        String htmlResume = HTMLConverter.processResumeToHTML(resume);
         try {
             HTMLConverter.saveHTMLtoPDF(htmlResume, savePath);
         } catch (IOException e) {
