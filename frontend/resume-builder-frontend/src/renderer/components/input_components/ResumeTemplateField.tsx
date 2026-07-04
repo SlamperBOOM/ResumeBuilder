@@ -28,6 +28,7 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initDialogOpen, setInitDialogOpen] = useState(false);
   const [templates, setTemplates] = useState<TemplateInfo[]>([]);
+  const [schema, setSchema] = useState<JSON>();
 
   const columnsForTemplateKey = 'columnsForTemplates';
   const [columns, setColumns] = useState<number>(
@@ -40,7 +41,8 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
       schemaApi
         .getTemplates(resumeId)
         .then((response) => {
-          setTemplates(response);
+          setTemplates(response.payload);
+          setSchema(response.schema);
           setInitDialogOpen(false);
           setDialogOpen(true);
           return null;
@@ -141,11 +143,14 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
                           setDialogOpen(false);
                         }}
                       >
-                        <ResumePDFPreview preview={template.preview} scaleType={ResumePreviewScaleEnum.FULL_WIDTH}/>
+                        <ResumePDFPreview
+                          preview={template.preview}
+                          scaleType={ResumePreviewScaleEnum.FULL_WIDTH}
+                        />
 
                         <CardContent>
                           <Typography textAlign="center">
-                            {template.name}
+                            {translations[schema[template.name]?.display_name]}
                           </Typography>
                         </CardContent>
                       </Card>

@@ -19,7 +19,7 @@ export enum ResumePreviewScaleEnum {
 
 type ResumePDFPreviewProps = {
   preview: string;
-  renderAllPages: boolean;
+  renderAllPages?: boolean;
   scaleType: ResumePreviewScaleEnum;
   scale?: number;
 };
@@ -64,10 +64,16 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
     });
   }, [pdf]);
 
-  const onDocumentLoadSuccess = useCallback((pdf) => {
-    setPdf(pdf);
-    setPages(pdf.numPages);
-  }, []);
+  const onDocumentLoadSuccess = useCallback(
+    (pdf) => {
+      setPdf(pdf);
+      setPages(pdf.numPages);
+      if (pdf.numPages !== 0 && currentPage > pdf.numPages) {
+        setCurrentPage(pdf.numPages);
+      }
+    },
+    [currentPage],
+  );
 
   const calculatedScale = useMemo(() => {
     if (!pageSize.width || !containerSize.width) return 1;
@@ -80,7 +86,7 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
         return containerSize.height / pageSize.height;
 
       case ResumePreviewScaleEnum.CUSTOM:
-        return containerSize.width / pageSize.width * scale;
+        return (containerSize.width / pageSize.width) * scale;
 
       default:
         return 1;
@@ -117,7 +123,11 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
             }}
           >
             <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page pageNumber={currentPage} scale={calculatedScale} />
+              <Page
+                pageNumber={currentPage}
+                scale={calculatedScale}
+                renderAnnotationLayer={false}
+              />
             </Document>
           </Box>
 
@@ -166,7 +176,11 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
           }}
         >
           <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page pageNumber={1} scale={calculatedScale} />
+            <Page
+              pageNumber={1}
+              scale={calculatedScale}
+              renderAnnotationLayer={false}
+            />
           </Document>
         </Box>
       )}

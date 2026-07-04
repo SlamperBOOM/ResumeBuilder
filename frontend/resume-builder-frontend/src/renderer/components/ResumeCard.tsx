@@ -15,6 +15,7 @@ import { ReactNode, useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import { AppActions } from '../utils/appActions';
+import ResumePDFPreview, { ResumePreviewScaleEnum } from './ResumePDFPreview';
 
 export type SimpleResume = {
   resume_id: string;
@@ -88,17 +89,10 @@ export function ResumeCard(props: ResumeCardProps) {
           overflow: 'hidden',
         }}
       >
-        {resume.html_preview && (
-          <Box
-            sx={{
-              transform: 'scale(0.4)',
-              transformOrigin: 'top left',
-              width: '250%',
-              pointerEvents: 'none',
-            }}
-            dangerouslySetInnerHTML={{
-              __html: resume.html_preview,
-            }}
+        {resume.pdf_preview && (
+          <ResumePDFPreview
+            preview={resume.pdf_preview}
+            scaleType={ResumePreviewScaleEnum.FULL_HEIGHT}
           />
         )}
       </CardMedia>

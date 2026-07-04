@@ -28,11 +28,10 @@ public class MainBlockDateSerializer extends StdSerializer<LocalDate> {
             jsonGenerator.writeString(date.toString());
         } else {
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy", currentLocale);
-            StringBuilder builder = new StringBuilder();
-            builder.append(dateFormat.format(date)).append(" (");
-            builder.append(ChronoUnit.YEARS.between(date, LocalDate.now()));
-            builder.append(")");
-            jsonGenerator.writeString(builder.toString());
+            String builder = dateFormat.format(date) + " (" +
+                    ChronoUnit.YEARS.between(date, LocalDate.now()) +
+                    ")";
+            jsonGenerator.writeString(builder);
         }
     }
 }

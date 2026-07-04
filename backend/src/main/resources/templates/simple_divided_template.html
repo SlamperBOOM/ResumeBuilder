@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${resume_name}</title>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          font-family: 'Noto Serif', sans-serif;
+          font-size: 0.92rem;
+          line-height: 1.4;
+          background: #ffffff;
+        }
+        .resume {
+          width: 100%;
+          overflow: hidden;
+        }
+        .left, .right {
+          padding: 1.5rem 1.2rem;
+          float: left;
+        }
+        .left {
+          width: 35%;
+          background: #ffffff;
+        }
+        .right {
+          width: 65%;
+          background: #ffffff;
+          border-left: 1px solid #ddd;
+        }
+        h1 {
+          margin-top: 0;
+          font-size: 1.4rem;
+        }
+        h2 {
+          color: #3a7bd5;
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 4px;
+          margin-top: 1.5rem;
+          font-size: 1.05rem;
+        }
+        p {
+          margin: 0.5rem 0;
+        }
+        .tags {
+          margin-top: 0.5rem;
+        }
+        .tags span {
+          display: inline-block;
+          background: #3a7bd5;
+          color: #fff;
+          border-radius: 12px;
+          padding: 0.2rem 0.6rem;
+          margin: 0.2rem 0.2rem 0.2rem 0;
+          font-size: 0.8rem;
+        }
+        ul {
+          padding-left: 0;
+          margin-top: 0.5rem;
+          list-style: none;
+        }
+        a {
+          color: #2a4d69;
+          text-decoration: none;
+        }
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+        .photo {
+            width: 120px;
+        }
+
+        .right ul.boxed-list li {
+          background: #f3f7ff;
+          border-left: 4px solid #3a7bd5;
+          border-radius: 4px;
+          padding: 0.6rem 0.8rem;
+          margin-bottom: 0.6rem;
+        }
+        .right ul.boxed-list li:last-child {
+          margin-bottom: 0;
+        }
+        .rich-text ul {
+          list-style: disc;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .rich-text ol {
+          list-style: decimal;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .rich-text ul li,
+        .rich-text ol li {
+          background: none;
+          border: none;
+          border-radius: 0;
+          padding: 0;
+          margin: 0.2rem 0;
+        }
+
+        .contact-list {
+          list-style: disc;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .contact-list li {
+          margin: 0.2rem 0;
+        }
+
+        .job, .edu-block {
+          margin-bottom: 1rem;
+          padding: 0.8rem 1rem;
+          background: #f3f7ff;
+          border-left: 4px solid #3a7bd5;
+          border-radius: 4px;
+        }
+        .job:last-child, .edu-block:last-child {
+          margin-bottom: 0;
+        }
+        .job p, .edu-block p {
+          margin: 0.3rem 0;
+        }
+        .job-dates {
+          font-size: 0.85rem;
+          color: #666;
+        }
+        .edu-date {
+          font-size: 0.85rem;
+          color: #666;
+        }
+        .course-name {
+          color: #3a7bd5;
+          font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="resume">
+    <div class="left">
+        <#if blocks["MAIN_BLOCK"].person_photo_name??>
+            <div class="photo-container">
+                <img class="photo" src=${blocks["MAIN_BLOCK"].person_photo_name}>
+            </div>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].last_name?? && blocks["MAIN_BLOCK"].first_name??>
+            <h1>${blocks["MAIN_BLOCK"].last_name} ${blocks["MAIN_BLOCK"].first_name}</h1>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].desired_position??>
+            <p>${blocks["MAIN_BLOCK"].desired_position}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].date_of_birth?? && blocks["MAIN_BLOCK"].city??>
+            <p><strong>${translations.main_block.date_of_birth}:</strong> ${blocks["MAIN_BLOCK"].date_of_birth} • <strong>${translations.main_block.city}:</strong> ${blocks["MAIN_BLOCK"].city}</p>
+        <#elseif blocks["MAIN_BLOCK"].date_of_birth??>
+            <p><strong>${translations.main_block.date_of_birth}:</strong> ${blocks["MAIN_BLOCK"].date_of_birth}</p>
+        <#elseif blocks["MAIN_BLOCK"].city??>
+            <p><strong>${translations.main_block.city}:</strong> ${blocks["MAIN_BLOCK"].city}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].desired_salary??>
+            <p><strong>${translations.main_block.desired_salary}:</strong> ${blocks["MAIN_BLOCK"].desired_salary}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].occupation??>
+            <p><strong>${translations.main_block.occupation}:</strong> ${blocks["MAIN_BLOCK"].occupation}</p>
+        </#if>
+
+        <#if blocks["MAIN_BLOCK"].employment?? || blocks["MAIN_BLOCK"].schedule??>
+            <p style="margin-bottom: 0rem"><strong>${translations.main_block.work_conditions}:</strong></p>
+            <p style="margin-top: 0.25rem">
+                <#if blocks["MAIN_BLOCK"].employment??>${translations.main_block.employment[blocks["MAIN_BLOCK"].employment]}</#if>
+                <#if blocks["MAIN_BLOCK"].employment?? && blocks["MAIN_BLOCK"].schedule??>, </#if>
+                <#if blocks["MAIN_BLOCK"].schedule??>${translations.main_block.schedule[blocks["MAIN_BLOCK"].schedule]}</#if>
+            </p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].is_moving_acceptable?? || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+            <p style="margin-top: 0.25rem">
+                <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>
+                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable>
+                        ${translations.main_block.moving.ready}
+                    <#else>
+                        ${translations.main_block.moving.not_ready}
+                    </#if>
+                </#if>
+                <#if blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>, </#if>
+                    ${translations.main_block.business_trips_ready}
+                </#if>
+            </p>
+        </#if>
+
+        <#if blocks["MAIN_BLOCK"].driver_license??>
+            <p><strong>${translations.main_block.driving_license}:</strong> ${blocks["MAIN_BLOCK"].driver_license}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].marital_status?? || blocks["MAIN_BLOCK"].have_children>
+            <p><strong>${translations.main_block.marital_status}:</strong>
+                <#if blocks["MAIN_BLOCK"].marital_status??>${blocks["MAIN_BLOCK"].marital_status}</#if>
+                <#if blocks["MAIN_BLOCK"].marital_status?? && blocks["MAIN_BLOCK"].have_children>, </#if>
+                <#if blocks["MAIN_BLOCK"].have_children>${translations.main_block.have_children}</#if>
+            </p>
+        </#if>
+
+        <#if blocks["CONTACTS"]?? &&
+            (blocks["CONTACTS"].phone_number?? || blocks["CONTACTS"].email?? || (blocks["CONTACTS"].social_nets?? && blocks["CONTACTS"].social_nets?size > 0))>
+        <#assign contact_parts = []>
+        <#if blocks["CONTACTS"].phone_number??>
+            <#assign contact_parts = contact_parts + ["${translations.contacts.phone}: ${blocks[\"CONTACTS\"].phone_number}"]>
+        </#if>
+        <#if blocks["CONTACTS"].email??>
+            <#assign contact_parts = contact_parts + ["${translations.contacts.email}: ${blocks[\"CONTACTS\"].email}"]>
+        </#if>
+        <#if blocks["CONTACTS"].social_nets??>
+            <#list blocks["CONTACTS"].social_nets as nets>
+                <#if nets?? && nets.social_net_profile_link?? && nets.social_net_name??>
+                    <#assign contact_parts = contact_parts + ["<a href=\"${nets.social_net_profile_link}\" target=\"_blank\">${nets.social_net_name}</a>"]>
+                </#if>
+            </#list>
+        </#if>
+        <h2>${translations.contacts.title}</h2>
+        <ul class="contact-list">
+            <#list contact_parts as contact_part>
+            <li>${contact_part}</li>
+            </#list>
+        </ul>
+        </#if>
+
+        <#if blocks["SKILLS"]?? && blocks["SKILLS"].skills?? && (blocks["SKILLS"].skills?size > 0)>
+            <h2>${translations.skills.title}</h2>
+            <div class="tags">
+                <#list blocks["SKILLS"].skills as skill>
+                <#if skill.skill_name??>
+                    <span>${skill.skill_name}<#if skill.skill_level??> — ${skill.skill_level}</#if></span>
+                </#if>
+                </#list>
+            </div>
+        </#if>
+
+        <#if blocks["LANGUAGES"]?? && blocks["LANGUAGES"].languages?? && (blocks["LANGUAGES"].languages?size > 0)>
+            <h2>${translations.languages.title}</h2>
+            <div class="tags">
+                <#list blocks["LANGUAGES"].languages as lang>
+                <#if lang.language??>
+                    <span>${lang.language}<#if lang.language_level??> — ${lang.language_level}</#if></span>
+                </#if>
+                </#list>
+            </div>
+        </#if>
+    </div>
+
+    <div class="right">
+        <#if blocks["EXPERIENCE"]?? && blocks["EXPERIENCE"].experiences?? && (blocks["EXPERIENCE"].experiences?size > 0)>
+            <h2>${translations.experience.title}</h2>
+            <#list blocks["EXPERIENCE"].experiences as job>
+            <#if job.company?? || job.position?? || job.start_date?? || job.end_date?? || job.work_description??>
+                <div class="job">
+                    <p>
+                        <strong>
+                            <#if job.company??>${job.company}</#if>
+                            <#if job.company?? && job.position??> — </#if>
+                            <#if job.position??>${job.position}</#if>
+                        </strong>
+                        <#if job.start_date?? && job.is_still_working?? && job.is_still_working>
+                        <span class="job-dates">(${job.start_date} – ${translations.experience.until_now})</span>
+                        <#elseif job.start_date?? && job.end_date??>
+                        <span class="job-dates">(${job.start_date} – ${job.end_date})</span>
+                        </#if>
+                    </p>
+                    <#if job.work_description??>
+                    <p>${job.work_description}</p>
+                    </#if>
+                </div>
+            </#if>
+            </#list>
+        </#if>
+
+        <#if blocks["EDUCATION"]?? && blocks["EDUCATION"].educations?? && (blocks["EDUCATION"].educations?size > 0)>
+            <h2>${translations.education.title}</h2>
+            <#list blocks["EDUCATION"].educations as edu>
+                <div class="edu-block">
+                    <p>
+                        <strong>
+                            <#if edu.institution??>${edu.institution}</#if>
+                            <#if edu.education_level??> — ${translations.education.level[edu.education_level]}</#if>
+                        </strong>
+                        <#if edu.year_of_graduate??>
+                        <span class="edu-date">${edu.year_of_graduate}</span>
+                        </#if>
+                    </p>
+                    <#if edu.faculty??>
+                    <p>${edu.faculty}<#if edu.speciality??>, ${edu.speciality}</#if></p>
+                    </#if>
+                </div>
+            </#list>
+        </#if>
+
+        <#if blocks["ADVANCED_TRAINING"]?? && blocks["ADVANCED_TRAINING"].trainings?? && (blocks["ADVANCED_TRAINING"].trainings?size > 0)>
+            <h2>${translations.adv_training.title}</h2>
+            <ul class="boxed-list">
+                <#list blocks["ADVANCED_TRAINING"].trainings as course>
+                <li>
+                    <#if course.organization??>${course.organization}</#if>
+                    <#if course.organization?? && course.course_name??> — </#if>
+                    <#if course.course_name??><span class="course-name">${course.course_name}</span></#if>
+                    <#if course.year_of_graduate??>, ${course.year_of_graduate}</#if>
+                </li>
+                </#list>
+            </ul>
+        </#if>
+
+        <#if blocks["ABOUT"]?? && blocks["ABOUT"].about_text??>
+            <h2>${translations.about.title}</h2>
+            <div class="rich-text">${blocks["ABOUT"].about_text}</div>
+        </#if>
+
+        <#if blocks["HOBBIES"]?? && blocks["HOBBIES"].hobbies??>
+            <h2>${translations.hobbies.title}</h2>
+            <div class="rich-text">${blocks["HOBBIES"].hobbies}</div>
+        </#if>
+
+        <#if blocks["RECOMMENDATIONS"]?? && blocks["RECOMMENDATIONS"].recommendations?? && (blocks["RECOMMENDATIONS"].recommendations?size > 0)>
+            <h2>${translations.recommendations.title}</h2>
+            <ul class="boxed-list">
+                <#list blocks["RECOMMENDATIONS"].recommendations as rec>
+                <li>
+                    <#if rec.recommending??>${rec.recommending}</#if>
+                    <#if rec.company??> (${rec.company})</#if><br>
+                    <#if rec.email??>${rec.email}</#if>
+                    <#if rec.phone_number??> | ${rec.phone_number}</#if>
+                </li>
+                </#list>
+            </ul>
+        </#if>
+
+        <#if blocks["PUBLICATIONS"]?? && blocks["PUBLICATIONS"].publications?? && (blocks["PUBLICATIONS"].publications?size > 0)>
+            <h2>${translations.publications.title}</h2>
+            <ul class="boxed-list">
+                <#list blocks["PUBLICATIONS"].publications as pub>
+                <li>
+                    <#if pub.publication??>${pub.publication}</#if>
+                    <#if pub.date??> — ${pub.date}</#if>
+                </li>
+                </#list>
+            </ul>
+        </#if>
+
+        <#if blocks["ADDITIONAL"]?? && blocks["ADDITIONAL"].additional_info??>
+            <h2>${translations.additional.title}</h2>
+            <div class="rich-text">${blocks["ADDITIONAL"].additional_info}</div>
+        </#if>
+    </div>
+</div>
+</body>
+</html>

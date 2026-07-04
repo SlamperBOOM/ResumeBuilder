@@ -3,6 +3,9 @@ export type TemplateInfo = {
   preview: string;
 };
 
-type TemplatesDTO = TemplateInfo[];
+type TemplatesDTO = {
+  payload: TemplateInfo[];
+  schema: JSON;
+};
 
 export default TemplatesDTO;

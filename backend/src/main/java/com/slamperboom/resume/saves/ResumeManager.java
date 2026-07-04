@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
+import com.slamperboom.htmlConverter.HTMLTemplateManager;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
@@ -46,15 +47,13 @@ public class ResumeManager implements IResumeManager{
                 .map(resume -> {
                     var file = resumeFileMap.get(resume.getId());
                     try {
-                        String htmlPreview = HTMLConverter.processResumeToHTML(resume);
                         return Optional.of(new SimpleResume(
                                 resume.getId(),
                                 resume.getName(),
                                 LocalDateTime.ofInstant(
                                         Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
                                 ),
-                                htmlPreview,
-                                HTMLConverter.saveHTMLtoPDFBase64(htmlPreview)
+                                HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume))
                         ));
                     } catch (UserException | IOException e) {
                         logger.error("Unable to read resume for main screen");
@@ -144,7 +143,7 @@ public class ResumeManager implements IResumeManager{
         Resume resume = new Resume(resumeId);
         resume.setResumeName(resumeName);
         resume.setVersionOfLastEdit(Settings.getInstance().getVersion());
-        resume.setTemplateName("simple_template");
+        resume.setTemplateName(HTMLTemplateManager.getDefaultTemplateName());
         resume.setResumeLocale(TranslationsManager.getInstance().getCurrentLocaleString());
 
         Map<ContentType, IContent> blocks = new EnumMap<>(ContentType.class);

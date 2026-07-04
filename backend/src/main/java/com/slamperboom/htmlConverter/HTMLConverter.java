@@ -25,6 +25,7 @@ public class HTMLConverter {
      * Converts constructed resume to HTML document for showing to user
      * or for further converting to PDF
      * @param resume Resume class
+     * @param templateName Name of template
      * @return HTML document as String
      */
     private static String processResumeToHTML(IResume resume, String templateName) throws UserException {

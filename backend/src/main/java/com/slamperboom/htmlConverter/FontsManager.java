@@ -2,25 +2,25 @@ package com.slamperboom.htmlConverter;
 
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
-import com.slamperboom.exceptions.UserException;
 import com.slamperboom.utils.TempFilesManager;
+import org.apache.fontbox.ttf.NamingTable;
+import org.apache.fontbox.ttf.OS2WindowsMetricsTable;
+import org.apache.fontbox.ttf.TTFParser;
+import org.apache.fontbox.ttf.TrueTypeFont;
 
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
@@ -32,7 +32,7 @@ public class FontsManager {
         if (fontsManagerInstance == null) {
             try {
                 fontsManagerInstance = new FontsManager();
-            } catch (IOException e){
+            } catch (IOException e) {
                 String message = "Error while reading fonts";
                 StartupExceptionHolder.addException(message);
                 throw new StartupException(message, e);
@@ -42,75 +42,126 @@ public class FontsManager {
     }
 
     private static final String fontsPath = "templates/fonts/";
-    private final Map<String, File> fontsMap;
+    private static final String[] SUPPORTED_EXTENSIONS = {".ttf", ".otf"};
 
-    private static String getFontFamily(String fileName) {
-        if (fileName.contains("dejavu")) return "DejaVu";
-        if (fileName.contains("roboto")) return "Roboto";
-        if (fileName.contains("noto")) return "Noto Serif";
-        return "Custom";
+    private final List<FontInfo> fonts;
+
+    private String stripExtension(String name) {
+        int dot = name.lastIndexOf('.');
+        return dot > 0 ? name.substring(0, dot) : name;
+    }
+
+    private void registerFontFile(File file, String originalName) {
+        try {
+            try (TrueTypeFont ttf = new TTFParser().parse(file)) {
+                NamingTable naming = ttf.getNaming();
+                String family = (naming != null && naming.getFontFamily() != null)
+                        ? naming.getFontFamily()
+                        : stripExtension(originalName);
+
+                Integer weight = null;
+                Boolean italic = null;
+
+                OS2WindowsMetricsTable os2 = ttf.getOS2Windows();
+                if (os2 != null) {
+                    weight = os2.getWeightClass();
+                    italic = (os2.getFsSelection() & 0x01) != 0; // bit 0 = ITALIC
+                }
+
+                String subFamily = (naming != null) ? naming.getFontSubFamily() : null;
+                if (subFamily != null && subFamily.toLowerCase().contains("italic")) {
+                    italic = true;
+                }
+
+                // Fallback for fonts without usable metadata.
+                String lowerName = originalName.toLowerCase();
+                if (weight == null) {
+                    weight = (lowerName.contains("bold") || lowerName.contains("bd")) ? 700 : 400;
+                }
+                if (italic == null) {
+                    italic = lowerName.contains("italic") || lowerName.matches(".*[^a-z]i\\..*");
+                }
+
+                BaseRendererBuilder.FontStyle style = italic
+                        ? BaseRendererBuilder.FontStyle.ITALIC
+                        : BaseRendererBuilder.FontStyle.NORMAL;
+
+                fonts.add(new FontInfo(file, family, weight, style));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean hasSupportedExtension(String name) {
+        String lower = name.toLowerCase();
+        for (String ext : SUPPORTED_EXTENSIONS) {
+            if (lower.endsWith(ext)) return true;
+        }
+        return false;
+    }
+
+    private void loadFromJar(URL url) throws IOException {
+        JarURLConnection connection = (JarURLConnection) url.openConnection();
+        JarFile jarFile = connection.getJarFile();
+
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            String name = entry.getName();
+            if (name.startsWith(fontsPath) && hasSupportedExtension(name)) {
+                try (InputStream is = jarFile.getInputStream(entry)) {
+                    File tempFile = TempFilesManager.getInstance().createNewTempFile();
+                    try (OutputStream os = new FileOutputStream(tempFile)) {
+                        is.transferTo(os);
+                    }
+                    registerFontFile(tempFile, name);
+                }
+            }
+        }
+    }
+
+    private void loadFromDirectory(URL url) throws IOException, URISyntaxException {
+        Path dir = Paths.get(url.toURI());
+        try (Stream<Path> stream = Files.walk(dir)) {
+            stream
+                .filter(p -> hasSupportedExtension(p.toString()))
+                .forEach(p -> {
+                    try {
+                        File tempFile = TempFilesManager.getInstance().createNewTempFile();
+                        Files.copy(p, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        registerFontFile(tempFile, p.getFileName().toString());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        }
     }
 
     private FontsManager() throws IOException {
-        fontsMap = new HashMap<>();
+        fonts = new ArrayList<>();
         try {
             Enumeration<URL> resources = getClass().getClassLoader().getResources(fontsPath);
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 if ("jar".equals(url.getProtocol())) {
-                    JarURLConnection connection = (JarURLConnection) url.openConnection();
-                    JarFile jarFile = connection.getJarFile();
-
-                    Enumeration<JarEntry> entries = jarFile.entries();
-                    while (entries.hasMoreElements()) {
-                        JarEntry entry = entries.nextElement();
-
-                        String name = entry.getName();
-                        if (name.startsWith(fontsPath) && name.endsWith(".ttf")) {
-                            try (InputStream is = jarFile.getInputStream(entry)) {
-                                File tempFile = TempFilesManager.getInstance().createNewTempFile();
-                                try (OutputStream os = new FileOutputStream(tempFile)) {
-                                    is.transferTo(os);
-                                }
-                                fontsMap.put(name.toLowerCase(), tempFile);
-                            }
-                        }
-                    }
-                }
-
-                else if ("file".equals(url.getProtocol())) {
-                    Path dir = Paths.get(url.toURI());
-                    try (Stream<Path> stream = Files.walk(dir)) {
-                        stream
-                            .filter(p -> p.toString().endsWith(".ttf"))
-                            .forEach(p -> {
-                                try {
-                                    File tempFile = TempFilesManager.getInstance().createNewTempFile();
-                                    Files.copy(p, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                    fontsMap.put(p.getFileName().toString().toLowerCase(), tempFile);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                    }
+                    loadFromJar(url);
+                } else if ("file".equals(url.getProtocol())) {
+                    loadFromDirectory(url);
                 }
             }
-        } catch (IOException | URISyntaxException | RuntimeException e){
+        } catch (IOException | URISyntaxException | RuntimeException e) {
             throw new IOException(e);
+        }
+
+        if (fonts.isEmpty()) {
+            // log
         }
     }
 
     public void registerFonts(PdfRendererBuilder builder) {
-        for (var font: fontsMap.entrySet()) {
-            String fileName = font.getKey();
-            String family = getFontFamily(fileName);
-            int weight = fileName.contains("bd") || fileName.contains("bold") ? 700 : 400;
-            BaseRendererBuilder.FontStyle style = BaseRendererBuilder.FontStyle.NORMAL;
-
-            if (fileName.contains("italic")) {
-                style = BaseRendererBuilder.FontStyle.ITALIC;
-            }
-            builder.useFont(font.getValue(), family, weight, style, false);
+        for (FontInfo font : fonts) {
+            builder.useFont(font.file(), font.family(), font.weight(), font.style(), false);
         }
     }
 }

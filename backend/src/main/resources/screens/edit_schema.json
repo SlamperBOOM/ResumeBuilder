@@ -414,11 +414,5 @@
                 }
             }
         }
-    },
-    "templates_area": [
-        {
-            "template_name": "templates.simple_template_name",
-            "image": "path/to/image/"
-        }
-    ]
+    }
 }

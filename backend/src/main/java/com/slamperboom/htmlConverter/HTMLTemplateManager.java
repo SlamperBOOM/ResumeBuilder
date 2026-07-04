@@ -13,6 +13,7 @@ import java.util.Properties;
 public class HTMLTemplateManager {
     private static HTMLTemplateManager templateManagerInstance;
     private static final String TEMPLATES_PATH = "templates/";
+    private static final String DEFAULT_TEMPLATE = "simple_template";
 
     public static HTMLTemplateManager getInstance() {
         if (templateManagerInstance == null) {
@@ -45,6 +46,10 @@ public class HTMLTemplateManager {
         }
     }
 
+    public static String getDefaultTemplateName() {
+        return DEFAULT_TEMPLATE;
+    }
+
     public Template getTemplate(com.slamperboom.htmlConverter.Template templateName) throws IOException {
         String templateFileName = templateMap.getProperty(templateName.toString());
         return templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
@@ -52,6 +57,10 @@ public class HTMLTemplateManager {
 
     public Template getTemplate(String templateName) throws IOException {
         String templateFileName = templateMap.getProperty(templateName);
-        return templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
+        var template = templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
+        if (template == null) {
+            template = templateConfiguration.getTemplate(getDefaultTemplateName(), StandardCharsets.UTF_8.name());
+        }
+        return template;
     }
 }

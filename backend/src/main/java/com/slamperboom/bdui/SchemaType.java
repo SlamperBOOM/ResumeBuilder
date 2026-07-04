@@ -5,4 +5,5 @@ public enum SchemaType {
     EDIT_SCREEN,
     HEADER,
     LANGUAGE_DIALOG,
+    TEMPLATES,
 }

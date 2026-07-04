@@ -14,13 +14,26 @@ import com.slamperboom.translations.TranslationsManager;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.*;
 
-@RequiredArgsConstructor
 public class BDUIBuilder {
+    private static final int TEMPLATE_COUNT = Template.values().length;
     private final SchemaManager schemaManager = SchemaManager.getInstance();
     private final IResumeManager resumeManager;
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
+    private final ThreadPoolExecutor poolExecutor;
+
+    public BDUIBuilder(IResumeManager resumeManager, ObjectMapper objectMapper, DialogBuilders dialogBuilders) {
+        this.resumeManager = resumeManager;
+        this.objectMapper = objectMapper;
+        this.dialogBuilders = dialogBuilders;
+
+        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(TEMPLATE_COUNT);
+    }
 
     public JsonNode buildMainScreen() {
         ObjectNode result = objectMapper.createObjectNode();
@@ -92,7 +105,9 @@ public class BDUIBuilder {
     }
 
     public JsonNode buildTemplates(String resumeId) {
-        ArrayNode result = objectMapper.createArrayNode();
+        ObjectNode result = objectMapper.createObjectNode();
+
+        result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.TEMPLATES));
 
         var resume = resumeManager.getResume(resumeId);
 
@@ -100,18 +115,36 @@ public class BDUIBuilder {
             return dialogBuilders.buildMessageDialogWithoutTitle("No resume with this resume_id");
         }
 
-        try {
-            for (var template : Template.values()) {
+        List<JsonNode> nodes = new ArrayList<>(TEMPLATE_COUNT);
+        CountDownLatch latch = new CountDownLatch(TEMPLATE_COUNT);
+        for (var template : Template.values()) {
+            poolExecutor.execute(() -> {
                 ObjectNode templateNode = objectMapper.createObjectNode();
                 templateNode.put("name", template.toString());
 
-                String htmlTemplate = HTMLConverter.processResumeToHTMLWithTemplate(resume, template);
-                templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
-                result.add(templateNode);
-            }
-        } catch (UserException | IOException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle("error with templates");
+                String htmlTemplate;
+                try {
+                    htmlTemplate = HTMLConverter.processResumeToHTMLWithTemplate(resume, template);
+                    templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
+                } catch (UserException | IOException e) {
+                    latch.countDown();
+                    throw new RuntimeException(e);
+                }
+                synchronized (nodes) {
+                    nodes.add(templateNode);
+                }
+                latch.countDown();
+            });
         }
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+        }
+        nodes.sort(Comparator.comparing(o -> o.get("name").asText()));
+        result.putArray(BackendConstants.PAYLOAD_KEY).addAll(nodes);
 
         return result;
     }

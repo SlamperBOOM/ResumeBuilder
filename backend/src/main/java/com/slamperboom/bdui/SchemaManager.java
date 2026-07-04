@@ -43,6 +43,10 @@ public class SchemaManager {
                     mapper.readTree(new String(
                             Objects.requireNonNull(getClass().getResourceAsStream("/screens/language_dialog_schema.json")).readAllBytes()
                     )));
+            schemasMap.put(SchemaType.TEMPLATES,
+                    mapper.readTree(new String(
+                            Objects.requireNonNull(getClass().getResourceAsStream("/screens/templates_schema.json")).readAllBytes()
+                    )));
         } catch (IOException e) {
             String message = "Unable to read schemas";
             StartupExceptionHolder.addException(message);

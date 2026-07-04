@@ -13,9 +13,15 @@
             "delete_confirmation": {
                 "title": "Confirm deletion of ",
                 "text": "Are you sure you want to delete resume? This action is irreversible",
-                "confirm_button_text": "Delete"
+                "confirm_button_text": "Delete",
+                "decline_button_text": "Cancel"
             },
-            "decline_button_text": "Cancel"
+            "after_export_confirmation": {
+                "title": "Open result",
+                "text": "Do you want to open folder with saved resume?",
+                "confirm_button_text": "Yes",
+                "decline_button_text": "No"
+            }
         },
         "main_screen": {
             "resume_menu": {
@@ -189,7 +195,12 @@
                 "title": "Additional info"
             },
             "templates": {
-                "simple_template_name": "Simple template"
+                "simple_template_name": "Simple template",
+                "simple_divided_template_name": "Simple divided template",
+                "timeline_template_name": "Timeline style",
+                "simple_template_modern_name": "*ignore*",
+                "simple_template_updated_name": "Modern template",
+                "dossier_template_name": "Dossier style"
             }
         }
     },
@@ -389,7 +400,12 @@
                 "title": "Доп. инфо"
             },
             "templates": {
-                "simple_template_name": "Простой шаблон"
+                "simple_template_name": "Простой шаблон",
+                "simple_divided_template_name": "Простой разделенный шаблон",
+                "timeline_template_name": "В стиле таймлайн",
+                "simple_template_modern_name": "*игнор*",
+                "simple_template_updated_name": "Современный шаблон",
+                "dossier_template_name": "В стиле досье"
             }
         }
     }

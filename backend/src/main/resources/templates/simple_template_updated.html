@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${resume_name}</title>
+    <style>
+        body {
+          font-family: 'Helvetica Neue', Arial, 'Roboto', sans-serif;
+          margin: 0;
+          color: #111827;
+          background: #ffffff;
+        }
+
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+          background: #ffffff;
+          padding: 0 0 3rem 0;
+        }
+
+        .content-pad {
+          padding: 0 2.75rem;
+        }
+
+        h1 {
+          margin: 0 0 0.2rem 0;
+          font-size: 2rem;
+          font-weight: bold;
+          color: #111827;
+        }
+
+        h2 {
+          color: #2563eb;
+          font-size: 0.85rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          border-bottom: 2px solid #2563eb;
+          padding-bottom: 6px;
+          margin: 1.8rem 0 0.9rem 0;
+        }
+
+        .h2-icon {
+          display: inline-block;
+          width: 9px;
+          height: 9px;
+          background: #2563eb;
+          margin-right: 8px;
+        }
+
+        p {
+          color: #4b5563;
+        }
+
+        .header-block {
+          background: #eef4fc;
+          border-bottom: 3px solid #2563eb;
+          padding: 2.2rem 2.75rem 1.6rem 2.75rem;
+          margin-bottom: 1.6rem;
+        }
+
+        .top-row-table {
+          border-collapse: collapse;
+          margin-bottom: 0.4rem;
+        }
+        .top-row-table td {
+          vertical-align: top;
+          padding: 0;
+        }
+        .photo-cell {
+          width: 128px;
+          padding-right: 1.4rem !important;
+        }
+
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            border: 1px solid #c7d7ee;
+        }
+        .photo {
+            width: 120px;
+            display: block;
+        }
+
+        .headline {
+          font-size: 1.05rem;
+          font-weight: bold;
+          color: #2563eb;
+          margin: 0.2rem 0 0 0;
+        }
+
+        .meta-line {
+          font-size: 0.92rem;
+          color: #374151;
+          margin: 0.3rem 0;
+        }
+        .meta-line strong {
+          color: #111827;
+        }
+
+        .work-conditions {
+          background: #ffffff;
+          border: 1px solid #c7d7ee;
+          padding: 0.9rem 1.1rem;
+          margin-top: 0.6rem;
+        }
+        .work-conditions p {
+          margin: 0.15rem 0;
+        }
+        .work-conditions .label {
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 0.72rem;
+          font-weight: bold;
+          color: #6b7280;
+          margin-bottom: 0.35rem;
+        }
+
+        .section {
+          margin-top: 1rem;
+        }
+
+        .contact-item {
+          display: inline-block;
+          width: 46%;
+          vertical-align: top;
+          font-size: 0.92rem;
+          color: #4b5563;
+          margin-bottom: 0.5rem;
+          margin-right: 2%;
+        }
+        .contact a {
+          color: #2563eb;
+          text-decoration: none;
+        }
+
+        .lang-item {
+          display: inline-block;
+          width: 46%;
+          vertical-align: top;
+          font-size: 0.92rem;
+          color: #4b5563;
+          margin-bottom: 0.5rem;
+          margin-right: 2%;
+        }
+
+        ul {
+          margin-top: 0.5rem;
+          padding-left: 1.2rem;
+          color: #4b5563;
+        }
+        ul li {
+          margin-bottom: 0.4rem;
+        }
+
+        ol {
+          margin-top: 0.3rem;
+          padding-left: 1.2rem;
+          color: #4b5563;
+        }
+        ol li {
+          margin-bottom: 0.3rem;
+        }
+
+        .job {
+          margin-bottom: 1.1rem;
+          padding: 1.1rem 1.3rem;
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-left: 4px solid #2563eb;
+        }
+        .job-header:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .job-header .job-title {
+          margin: 0;
+          font-weight: bold;
+          font-size: 1rem;
+          color: #111827;
+          float: left;
+        }
+        .job-dates {
+          font-size: 0.82rem;
+          font-weight: bold;
+          color: #2563eb;
+          background: #eff6ff;
+          border: 1px solid #dbeafe;
+          padding: 0.15rem 0.6rem;
+          white-space: nowrap;
+          float: right;
+        }
+        .job-description {
+          clear: both;
+          margin-top: 0.7rem;
+          margin-bottom: 0;
+          font-size: 0.93rem;
+          line-height: 1.5;
+          color: #4b5563;
+        }
+
+        .edu-block {
+          margin-bottom: 1.1rem;
+          padding: 1.1rem 1.3rem;
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-left: 4px solid #2563eb;
+        }
+        .edu-header:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .edu-header .edu-title {
+          margin: 0;
+          font-weight: bold;
+          font-size: 1rem;
+          color: #111827;
+          float: left;
+        }
+        .edu-date {
+          font-size: 0.82rem;
+          font-weight: bold;
+          color: #2563eb;
+          background: #eff6ff;
+          border: 1px solid #dbeafe;
+          padding: 0.15rem 0.6rem;
+          white-space: nowrap;
+          float: right;
+        }
+        .edu-spec {
+          clear: both;
+          margin-bottom: 0;
+          margin-top: 0.6rem;
+          font-size: 0.93rem;
+          color: #4b5563;
+        }
+
+        .tag {
+          display: inline-block;
+          background: #eff6ff;
+          color: #2563eb;
+          border: 1px solid #dbeafe;
+          padding: 0.3rem 0.85rem;
+          margin: 0.2rem 0.4rem 0.2rem 0;
+          font-size: 0.85rem;
+        }
+
+        .about-text, .hobbies-text, .additional-text {
+          font-size: 0.95rem;
+          line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-block">
+        <table class="top-row-table">
+            <tr>
+                <#if blocks["MAIN_BLOCK"].person_photo_name??>
+                <td class="photo-cell">
+                    <div class="photo-container">
+                        <img class="photo" src=${blocks["MAIN_BLOCK"].person_photo_name}>
+                    </div>
+                </td>
+                </#if>
+                <td>
+                    <#if blocks["MAIN_BLOCK"].last_name?? && blocks["MAIN_BLOCK"].first_name??>
+                        <h1>${blocks["MAIN_BLOCK"].last_name} ${blocks["MAIN_BLOCK"].first_name}</h1>
+                    </#if>
+                    <#if blocks["MAIN_BLOCK"].desired_position??>
+                        <p class="headline">${blocks["MAIN_BLOCK"].desired_position}</p>
+                    </#if>
+                </td>
+            </tr>
+        </table>
+
+        <#if blocks["MAIN_BLOCK"].date_of_birth?? && blocks["MAIN_BLOCK"].city??>
+            <p class="meta-line"><strong>${translations.main_block.date_of_birth}:</strong> ${blocks["MAIN_BLOCK"].date_of_birth} &bull; <strong>${translations.main_block.city}:</strong> ${blocks["MAIN_BLOCK"].city}</p>
+        <#elseif blocks["MAIN_BLOCK"].date_of_birth??>
+            <p class="meta-line"><strong>${translations.main_block.date_of_birth}:</strong> ${blocks["MAIN_BLOCK"].date_of_birth}</p>
+        <#elseif blocks["MAIN_BLOCK"].city??>
+            <p class="meta-line"><strong>${translations.main_block.city}:</strong> ${blocks["MAIN_BLOCK"].city}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].desired_salary??>
+            <p class="meta-line"><strong>${translations.main_block.desired_salary}:</strong> ${blocks["MAIN_BLOCK"].desired_salary}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].occupation??>
+            <p class="meta-line"><strong>${translations.main_block.occupation}:</strong> ${blocks["MAIN_BLOCK"].occupation}</p>
+        </#if>
+        <div class="work-conditions">
+            <p class="label">${translations.main_block.work_conditions}</p>
+            <#if blocks["MAIN_BLOCK"].employment?? || blocks["MAIN_BLOCK"].schedule??>
+                <p>
+                    <#if blocks["MAIN_BLOCK"].employment??>${translations.main_block.employment[blocks["MAIN_BLOCK"].employment]}</#if>
+                    <#if blocks["MAIN_BLOCK"].employment?? && blocks["MAIN_BLOCK"].schedule??>, </#if>
+                    <#if blocks["MAIN_BLOCK"].schedule??>${translations.main_block.schedule[blocks["MAIN_BLOCK"].schedule]}</#if>
+                </p>
+            </#if>
+            <#if blocks["MAIN_BLOCK"].is_moving_acceptable?? || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+                <p>
+                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>
+                        <#if blocks["MAIN_BLOCK"].is_moving_acceptable>
+                            ${translations.main_block.moving.ready}
+                        <#else>
+                            ${translations.main_block.moving.not_ready}
+                        </#if>
+                    </#if>
+                    <#if blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+                        <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>, </#if>
+                        ${translations.main_block.business_trips_ready}
+                    </#if>
+                </p>
+            </#if>
+        </div>
+
+        <#if blocks["MAIN_BLOCK"].driver_license??>
+            <p class="meta-line"><strong>${translations.main_block.driving_license}:</strong> ${blocks["MAIN_BLOCK"].driver_license}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].marital_status?? || blocks["MAIN_BLOCK"].have_children>
+            <p class="meta-line"><strong>${translations.main_block.marital_status}:</strong>
+                <#if blocks["MAIN_BLOCK"].marital_status??>${blocks["MAIN_BLOCK"].marital_status}</#if>
+                <#if blocks["MAIN_BLOCK"].marital_status?? && blocks["MAIN_BLOCK"].have_children>, </#if>
+                <#if blocks["MAIN_BLOCK"].have_children>${translations.main_block.have_children}</#if>
+            </p>
+        </#if>
+    </div>
+
+    <div class="content-pad">
+    <#if blocks["CONTACTS"]?? &&
+        (blocks["CONTACTS"].phone_number?? || blocks["CONTACTS"].email?? || (blocks["CONTACTS"].social_nets?? && blocks["CONTACTS"].social_nets?size > 0))>
+    <h2><span class="h2-icon"></span>${translations.contacts.title}</h2>
+    <div class="contact">
+        <#if blocks["CONTACTS"].phone_number??>
+            <div class="contact-item">${translations.contacts.phone}: ${blocks["CONTACTS"].phone_number}</div>
+        </#if>
+        <#if blocks["CONTACTS"].email??>
+            <div class="contact-item">${translations.contacts.email}: ${blocks["CONTACTS"].email}</div>
+        </#if>
+        <#if blocks["CONTACTS"].social_nets??>
+            <#list blocks["CONTACTS"].social_nets as nets>
+                <#if nets?? && nets.social_net_profile_link?? && nets.social_net_name??>
+                    <div class="contact-item"><a href=${nets.social_net_profile_link} target="_blank">${nets.social_net_name}</a></div>
+                </#if>
+            </#list>
+        </#if>
+    </div>
+    </#if>
+
+    <#if blocks["EXPERIENCE"]?? && blocks["EXPERIENCE"].experiences?? && (blocks["EXPERIENCE"].experiences?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.experience.title}</h2>
+        <#list blocks["EXPERIENCE"].experiences as job>
+        <#if job.company?? || job.position?? || job.start_date?? || job.end_date?? || job.work_description??>
+            <div class="job">
+                <div class="job-header">
+                    <p class="job-title">
+                        <#if job.company??>${job.company}</#if>
+                        <#if job.company?? && job.position??> &mdash; </#if>
+                        <#if job.position??>${job.position}</#if>
+                    </p>
+                    <#if job.start_date?? && job.is_still_working?? && job.is_still_working>
+                    <span class="job-dates">${job.start_date} &ndash; ${translations.experience.until_now}</span>
+                    <#elseif job.start_date?? && job.end_date??>
+                    <span class="job-dates">${job.start_date} &ndash; ${job.end_date}</span>
+                    </#if>
+                </div>
+                <#if job.work_description??>
+                <p class="job-description">${job.work_description}</p>
+                </#if>
+            </div>
+        </#if>
+        </#list>
+    </#if>
+
+    <#if blocks["EDUCATION"]?? && blocks["EDUCATION"].educations?? && (blocks["EDUCATION"].educations?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.education.title}</h2>
+        <#list blocks["EDUCATION"].educations as edu>
+            <div class="edu-block">
+                <div class="edu-header">
+                    <p class="edu-title">
+                        <#if edu.institution??>${edu.institution}</#if>
+                        <#if edu.education_level??> &mdash; ${translations.education.level[edu.education_level]}</#if>
+                    </p>
+                    <#if edu.year_of_graduate??>
+                    <span class="edu-date">${edu.year_of_graduate}</span>
+                    </#if>
+                </div>
+            <#if edu.faculty??>
+            <p class="edu-spec">${edu.faculty}<#if edu.speciality??>, ${edu.speciality}</#if></p>
+            </#if>
+            </div>
+        </#list>
+    </#if>
+
+    <#if blocks["ADVANCED_TRAINING"]?? && blocks["ADVANCED_TRAINING"].trainings?? && (blocks["ADVANCED_TRAINING"].trainings?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.adv_training.title}</h2>
+        <ul>
+            <#list blocks["ADVANCED_TRAINING"].trainings as course>
+            <li>
+                <#if course.course_name??>${course.course_name}</#if>
+                <#if course.organization??> &mdash; ${course.organization}</#if>
+                <#if course.year_of_graduate??>, ${course.year_of_graduate}</#if>
+            </li>
+            </#list>
+        </ul>
+    </#if>
+
+    <#if blocks["SKILLS"]?? && blocks["SKILLS"].skills?? && (blocks["SKILLS"].skills?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.skills.title}</h2>
+        <div class="skills">
+            <#list blocks["SKILLS"].skills as skill>
+            <#if skill.skill_name??>
+                <span class="tag">${skill.skill_name}<#if skill.skill_level??> &mdash; ${skill.skill_level}</#if></span>
+            </#if>
+            </#list>
+        </div>
+    </#if>
+
+    <#if blocks["LANGUAGES"]?? && blocks["LANGUAGES"].languages?? && (blocks["LANGUAGES"].languages?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.languages.title}</h2>
+        <div class="languages">
+            <#list blocks["LANGUAGES"].languages as lang>
+            <div class="lang-item">
+                <#if lang.language??>${lang.language}</#if>
+                <#if lang.language_level??> &mdash; ${lang.language_level}</#if>
+            </div>
+            </#list>
+        </div>
+    </#if>
+
+    <#if blocks["ABOUT"]?? && blocks["ABOUT"].about_text??>
+        <h2><span class="h2-icon"></span>${translations.about.title}</h2>
+        <p class="about-text">${blocks["ABOUT"].about_text}</p>
+    </#if>
+
+    <#if blocks["HOBBIES"]?? && blocks["HOBBIES"].hobbies??>
+        <h2><span class="h2-icon"></span>${translations.hobbies.title}</h2>
+        <p class="hobbies-text">${blocks["HOBBIES"].hobbies}</p>
+    </#if>
+
+    <#if blocks["RECOMMENDATIONS"]?? && blocks["RECOMMENDATIONS"].recommendations?? && (blocks["RECOMMENDATIONS"].recommendations?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.recommendations.title}</h2>
+        <ul>
+            <#list blocks["RECOMMENDATIONS"].recommendations as rec>
+            <li>
+                <#if rec.recommending??>${rec.recommending}</#if>
+                <#if rec.company??> (${rec.company})</#if><br>
+                <#if rec.email??>${rec.email}</#if>
+                <#if rec.phone_number??> | ${rec.phone_number}</#if>
+            </li>
+            </#list>
+        </ul>
+    </#if>
+
+    <#if blocks["PUBLICATIONS"]?? && blocks["PUBLICATIONS"].publications?? && (blocks["PUBLICATIONS"].publications?size > 0)>
+        <h2><span class="h2-icon"></span>${translations.publications.title}</h2>
+        <ul>
+            <#list blocks["PUBLICATIONS"].publications as pub>
+            <li>
+                <#if pub.publication??>${pub.publication}</#if>
+                <#if pub.date??> &mdash; ${pub.date}</#if>
+            </li>
+            </#list>
+        </ul>
+    </#if>
+
+    <#if blocks["ADDITIONAL"]?? && blocks["ADDITIONAL"].additional_info??>
+        <h2><span class="h2-icon"></span>${translations.additional.title}</h2>
+        <p class="additional-text">${blocks["ADDITIONAL"].additional_info}</p>
+    </#if>
+    </div>
+</div>
+</body>
+</html>
