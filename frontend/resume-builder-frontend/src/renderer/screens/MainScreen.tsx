@@ -1,8 +1,7 @@
-import { Box, Button, Skeleton, Stack } from '@mui/material';
+import { Box, Button, Skeleton } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { MainScreenSchema } from '../utils/backendTypes';
-import './Screens.css';
 import { ResumeCard, SimpleResume } from '../components/ResumeCard';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 
@@ -13,32 +12,22 @@ type MainScreenProps = {
 function MainScreenSkeleton() {
   const animation = 'wave';
   return (
-    <Stack spacing={2}>
-      {Object.keys([1, 2, 3, 4, 5, 6]).map((_key: string) => {
-        return (
-          <Stack spacing={2} direction="row">
-            <Skeleton
-              variant="rounded"
-              width="33vw"
-              height="20vh"
-              animation={animation}
-            />
-            <Skeleton
-              variant="rounded"
-              width="33vw"
-              height="20vh"
-              animation={animation}
-            />
-            <Skeleton
-              variant="rounded"
-              width="33vw"
-              height="20vh"
-              animation={animation}
-            />
-          </Stack>
-        );
-      })}
-    </Stack>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: 3,
+      }}
+    >
+      {[1, 2, 3, 4, 5, 6].map((key: number) => (
+        <Skeleton
+          key={key}
+          variant="rounded"
+          height={320}
+          animation={animation}
+        />
+      ))}
+    </Box>
   );
 }
 
@@ -114,7 +103,15 @@ export default function MainScreen(props: MainScreenProps) {
               paddingRight: 1,
             }}
           >
-            <div className="resume_grid">{resumeCards}</div>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: 3,
+              }}
+            >
+              {resumeCards}
+            </Box>
           </Box>
         </>
       ) : (

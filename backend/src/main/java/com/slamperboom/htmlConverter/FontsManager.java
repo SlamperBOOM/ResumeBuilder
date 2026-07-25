@@ -9,6 +9,7 @@ import org.apache.fontbox.ttf.NamingTable;
 import org.apache.fontbox.ttf.OS2WindowsMetricsTable;
 import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeFont;
+import org.jboss.logging.Logger;
 
 import java.io.*;
 import java.net.JarURLConnection;
@@ -44,6 +45,7 @@ public class FontsManager {
     private static final String fontsPath = "templates/fonts/";
     private static final String[] SUPPORTED_EXTENSIONS = {".ttf", ".otf"};
 
+    private final Logger logger = Logger.getLogger(this.getClass());
     private final List<FontInfo> fonts;
 
     private String stripExtension(String name) {
@@ -51,45 +53,41 @@ public class FontsManager {
         return dot > 0 ? name.substring(0, dot) : name;
     }
 
-    private void registerFontFile(File file, String originalName) {
-        try {
-            try (TrueTypeFont ttf = new TTFParser().parse(file)) {
-                NamingTable naming = ttf.getNaming();
-                String family = (naming != null && naming.getFontFamily() != null)
-                        ? naming.getFontFamily()
-                        : stripExtension(originalName);
+    private void registerFontFile(File file, String originalName) throws IOException {
+        try (TrueTypeFont ttf = new TTFParser().parse(file)) {
+            NamingTable naming = ttf.getNaming();
+            String family = (naming != null && naming.getFontFamily() != null)
+                    ? naming.getFontFamily()
+                    : stripExtension(originalName);
 
-                Integer weight = null;
-                Boolean italic = null;
+            Integer weight = null;
+            Boolean italic = null;
 
-                OS2WindowsMetricsTable os2 = ttf.getOS2Windows();
-                if (os2 != null) {
-                    weight = os2.getWeightClass();
-                    italic = (os2.getFsSelection() & 0x01) != 0; // bit 0 = ITALIC
-                }
-
-                String subFamily = (naming != null) ? naming.getFontSubFamily() : null;
-                if (subFamily != null && subFamily.toLowerCase().contains("italic")) {
-                    italic = true;
-                }
-
-                // Fallback for fonts without usable metadata.
-                String lowerName = originalName.toLowerCase();
-                if (weight == null) {
-                    weight = (lowerName.contains("bold") || lowerName.contains("bd")) ? 700 : 400;
-                }
-                if (italic == null) {
-                    italic = lowerName.contains("italic") || lowerName.matches(".*[^a-z]i\\..*");
-                }
-
-                BaseRendererBuilder.FontStyle style = italic
-                        ? BaseRendererBuilder.FontStyle.ITALIC
-                        : BaseRendererBuilder.FontStyle.NORMAL;
-
-                fonts.add(new FontInfo(file, family, weight, style));
+            OS2WindowsMetricsTable os2 = ttf.getOS2Windows();
+            if (os2 != null) {
+                weight = os2.getWeightClass();
+                italic = (os2.getFsSelection() & 0x01) != 0; // bit 0 = ITALIC
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            String subFamily = (naming != null) ? naming.getFontSubFamily() : null;
+            if (subFamily != null && subFamily.toLowerCase().contains("italic")) {
+                italic = true;
+            }
+
+            // Fallback for fonts without usable metadata.
+            String lowerName = originalName.toLowerCase();
+            if (weight == null) {
+                weight = (lowerName.contains("bold") || lowerName.contains("bd")) ? 700 : 400;
+            }
+            if (italic == null) {
+                italic = lowerName.contains("italic") || lowerName.matches(".*[^a-z]i\\..*");
+            }
+
+            BaseRendererBuilder.FontStyle style = italic
+                    ? BaseRendererBuilder.FontStyle.ITALIC
+                    : BaseRendererBuilder.FontStyle.NORMAL;
+
+            fonts.add(new FontInfo(file, family, weight, style));
         }
     }
 
@@ -132,7 +130,9 @@ public class FontsManager {
                         Files.copy(p, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         registerFontFile(tempFile, p.getFileName().toString());
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        String message = "Unable to read fonts";
+                        StartupExceptionHolder.addException(message);
+                        throw new StartupException(message);
                     }
                 });
         }
@@ -151,11 +151,11 @@ public class FontsManager {
                 }
             }
         } catch (IOException | URISyntaxException | RuntimeException e) {
-            throw new IOException(e);
+            logger.error("Unable to load fonts");
         }
 
         if (fonts.isEmpty()) {
-            // log
+            logger.error("No fonts were found. This should not happen");
         }
     }
 

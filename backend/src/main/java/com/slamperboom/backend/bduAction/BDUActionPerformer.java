@@ -70,6 +70,8 @@ public class BDUActionPerformer {
                 resume.updateContent(block.getBlock(), block.getPayload());
             }
             resumeManager.saveResume(resumeId);
+            logger.infof("Updated resume with id %s", resumeId);
+            logger.debugf("Update payload: ", payload);
             return objectMapper.createObjectNode()
                     .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.UPDATE_CURRENT_SCREEN.toString());
         } catch (UserException e) {
@@ -105,7 +107,7 @@ public class BDUActionPerformer {
     public JsonNode performDuplicate(String resumeId) {
         try {
             String newResumeId = resumeManager.duplicateResume(resumeId);
-            logger.infof("Duplicating resume with id %s. New resume id %s", resumeId, newResumeId);
+            logger.infof("Duplicating resume with id %s. New resume id: %s", resumeId, newResumeId);
             return objectMapper.createObjectNode()
                     .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_MAIN_SCREEN.toString());
         } catch (UserException e) {
@@ -118,7 +120,6 @@ public class BDUActionPerformer {
             resumeManager.exportResumeToPDF(payload.getResumeId(), payload.getSavePath());
             logger.infof("Exporting resume with id %s to PDF. PDF file located at %s", payload.getResumeId(), payload.getSavePath());
         } catch (UserException e) {
-            e.printStackTrace();
             return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage()));
         }
         ConfirmationDialogPayload confirmPayload = new ConfirmationDialogPayload();
@@ -145,6 +146,7 @@ public class BDUActionPerformer {
     public Optional<JsonNode> performOpenDir(String dirPath) {
         try {
             Desktop.getDesktop().open(new File(dirPath));
+            logger.info("Open resume dir");
             return Optional.empty();
         } catch (IOException e) {
             return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(""));

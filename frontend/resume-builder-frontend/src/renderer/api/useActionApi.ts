@@ -61,7 +61,7 @@ function useActionApi() {
 
   const performChangeLocale = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.locale) {
+      if (!payload?.locale) {
         console.log('No locale set');
         return null;
       }
@@ -85,7 +85,7 @@ function useActionApi() {
 
   const performDuplucate = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.resume_id) {
+      if (!payload?.resume_id) {
         console.log('No resume id');
         return null;
       }
@@ -99,7 +99,7 @@ function useActionApi() {
 
   const performDelete = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.resume_id) {
+      if (!payload?.resume_id) {
         console.log('No resume id');
         return null;
       }
@@ -112,7 +112,7 @@ function useActionApi() {
 
   const performConfirmDelete = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.resume_id) {
+      if (!payload?.resume_id) {
         console.log('No resume id');
         return null;
       }
@@ -125,7 +125,7 @@ function useActionApi() {
 
   const performUpdate = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.update_payload) {
+      if (!payload?.update_payload) {
         console.log('No data for update');
         return null;
       }
@@ -139,7 +139,7 @@ function useActionApi() {
 
   const performLoad = useCallback(
     async (payload: BDUActionPayload) => {
-      if (!payload || !payload.resume_id) {
+      if (!payload?.resume_id) {
         console.log('No resume id');
         return null;
       }

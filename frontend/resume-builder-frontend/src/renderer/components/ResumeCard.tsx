@@ -74,6 +74,8 @@ export function ResumeCard(props: ResumeCardProps) {
         display: 'flex',
         flexDirection: 'column',
         transition: '0.2s',
+        width: '100%',
+        minWidth: 0,
         '&:hover': {
           boxShadow: 6,
           transform: 'translateY(-2px)',
@@ -83,7 +85,7 @@ export function ResumeCard(props: ResumeCardProps) {
       {/* Preview */}
       <CardMedia
         sx={{
-          height: 220,
+          height: 320,
           backgroundColor: '#eef2f6',
           position: 'relative',
           overflow: 'hidden',

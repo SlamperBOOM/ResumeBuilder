@@ -35,7 +35,7 @@ public class ResumeManager implements IResumeManager{
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
 
-    public ResumeManager() {
+    private ResumeManager() {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         readAllResumes();
@@ -111,6 +111,7 @@ public class ResumeManager implements IResumeManager{
         File[] saves = savesDir.listFiles();
         if (saves == null) {
             savesDir.mkdir();
+            logger.info("Resume save dir was created");
             return;
         }
         for (File saveFile : saves) {

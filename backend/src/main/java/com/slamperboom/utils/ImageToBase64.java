@@ -6,10 +6,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 
 public class ImageToBase64 {
-    private ImageToBase64() {
-        /* This utility class should not be instantiated */
-    }
-
+    private ImageToBase64() {}
 
     public static String imageToDataUri(String path) throws IOException {
         Path imagePath = Path.of(path);

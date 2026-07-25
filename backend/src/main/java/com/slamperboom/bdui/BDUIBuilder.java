@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
@@ -11,7 +12,8 @@ import com.slamperboom.htmlConverter.Template;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.translations.TranslationsManager;
-import lombok.RequiredArgsConstructor;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,18 +21,22 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
 
+@ApplicationScoped
 public class BDUIBuilder {
     private static final int TEMPLATE_COUNT = Template.values().length;
-    private final SchemaManager schemaManager = SchemaManager.getInstance();
+    private final Logger logger = Logger.getLogger(this.getClass());
+    private final SchemaManager schemaManager;
     private final IResumeManager resumeManager;
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
     private final ThreadPoolExecutor poolExecutor;
 
-    public BDUIBuilder(IResumeManager resumeManager, ObjectMapper objectMapper, DialogBuilders dialogBuilders) {
+    private BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager) {
         this.resumeManager = resumeManager;
-        this.objectMapper = objectMapper;
         this.dialogBuilders = dialogBuilders;
+        this.schemaManager = schemaManager;
+        this.objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
 
         poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(TEMPLATE_COUNT);
     }
@@ -52,6 +58,7 @@ public class BDUIBuilder {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
 
+        logger.info("Built main screen");
         return result;
     }
 
@@ -69,6 +76,7 @@ public class BDUIBuilder {
             payload.put("preview", HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume)));
             result.set(BackendConstants.PAYLOAD_KEY, payload);
 
+            logger.infof("Built edit screen for resume %s", resumeId);
             return result;
         } catch (UserException | IOException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
@@ -128,7 +136,7 @@ public class BDUIBuilder {
                     templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
                 } catch (UserException | IOException e) {
                     latch.countDown();
-                    throw new RuntimeException(e);
+                    return;
                 }
                 synchronized (nodes) {
                     nodes.add(templateNode);
@@ -146,6 +154,7 @@ public class BDUIBuilder {
         nodes.sort(Comparator.comparing(o -> o.get("name").asText()));
         result.putArray(BackendConstants.PAYLOAD_KEY).addAll(nodes);
 
+        logger.infof("Built templates for resume %s", resumeId);
         return result;
     }
 }

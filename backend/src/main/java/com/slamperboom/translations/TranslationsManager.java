@@ -117,7 +117,7 @@ public class TranslationsManager {
         if (resumeTranslations.containsKey(currentLocale)) {
             return resumeTranslations.get(currentLocale);
         }
-        logger.warnf("Unknown locale \"{}\" for resume translations, fallback to \"en\"", currentLocale);
+        logger.warnf("Unknown locale \"%s\" for resume translations, fallback to \"en\"", currentLocale);
         return resumeTranslations.get(DEFAULT_LOCALE);
     }
 
@@ -126,7 +126,7 @@ public class TranslationsManager {
         if (appTranslations.containsKey(currentLocale)) {
             return appTranslations.get(currentLocale);
         }
-        logger.warnf("Unknown locale \"{}\" for app translations, fallback to \"en\"", currentLocale);
+        logger.warnf("Unknown locale \"%s\" for app translations, fallback to \"en\"", currentLocale);
         return appTranslations.get(DEFAULT_LOCALE);
     }
 

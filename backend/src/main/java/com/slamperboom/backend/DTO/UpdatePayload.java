@@ -22,4 +22,13 @@ public class UpdatePayload {
         private ContentType block;
         private JsonNode payload;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "resumeId='" + resumeId + '\'' +
+                ", resumeInfo=" + resumeInfo +
+                ", content=" + content +
+                '}';
+    }
 }
