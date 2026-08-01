@@ -170,7 +170,7 @@ function useActionApi() {
       if (payload.resume_name) {
         resumeName = payload.resume_name;
       }
-      const files = await window.electron.openFileDialog(resumeName);
+      const files = await window.electron.openSaveFileDialog(resumeName);
       if (!files) {
         console.log('No file chosen');
         return null;
@@ -179,6 +179,21 @@ function useActionApi() {
       return (await api.performPostRequest(`${baseAddress}export`, {
         resume_id: payload?.resume_id,
         save_path: files,
+      })) as ActionResponseDTO;
+    },
+    [api],
+  );
+
+  const performImport = useCallback(
+    async (_payload: BDUActionPayload) => {
+      const files = await window.electron.openFileDialog();
+      if (!files) {
+        console.log('No file chosen');
+        return null;
+      }
+      console.log(files);
+      return (await api.performPostRequest(`${baseAddress}import`, {
+        file_name: files,
       })) as ActionResponseDTO;
     },
     [api],
@@ -200,6 +215,7 @@ function useActionApi() {
       load: performLoad,
       open_main_screen: performOpenMainScreen,
       export: performExport,
+      import: performImport,
     } as BDUActionApi;
   }, [
     performExit,
@@ -216,6 +232,7 @@ function useActionApi() {
     performLoad,
     performOpenMainScreen,
     performExport,
+    performImport,
   ]);
 }
 

@@ -16,6 +16,7 @@ public interface IResumeManager {
     IResume getResume(String resumeID);
     String createResume(String resumeName) throws UserException;
     String duplicateResume(String duplicateResumeId) throws UserException;
+    String importResumeFromFile(String fileName) throws UserException;
     void exportResumeToPDF(String resumeID, String savePath) throws UserException;
     void deleteResume(String resumeId) throws UserException;
 }

@@ -30,8 +30,9 @@
                 "delete": "Delete",
                 "tooltip_title": "Actions"
             },
-            "create_resume": "Create resume",
-            "export_title": "Export to PDF"
+            "create_resume_title": "Create resume",
+            "export_title": "Export to PDF",
+            "import_title": "Import resume"
         },
         "header": {
             "exit": "Exit",
@@ -250,8 +251,9 @@
                 "delete": "Удалить",
                 "tooltip_title": "Действия"
             },
-            "create_resume": "Создать резюме",
-            "export_title": "Экспортировать в PDF"
+            "create_resume_title": "Создать резюме",
+            "export_title": "Экспортировать в PDF",
+            "import_title": "Импортировать резюме"
         },
         "edit_screen": {
             "resume_name_title": "Название резюме",

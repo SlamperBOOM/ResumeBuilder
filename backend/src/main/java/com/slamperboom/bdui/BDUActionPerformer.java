@@ -1,12 +1,12 @@
-package com.slamperboom.backend.bduAction;
+package com.slamperboom.bdui;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
+import com.slamperboom.backend.DTO.CustomDialogPayload;
 import com.slamperboom.backend.DTO.ExportPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
-import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.backend.FrontendAction;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.saves.IResume;
@@ -137,6 +137,18 @@ public class BDUActionPerformer {
                 ));
 
         return Optional.of(dialogBuilders.buildConfirmationDialog(confirmPayload));
+    }
+
+    public JsonNode performImport(String fileName) {
+        String resumeId;
+        try {
+            resumeId = resumeManager.importResumeFromFile(fileName);
+        } catch (UserException e) {
+            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+        }
+        return objectMapper.createObjectNode()
+                .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_EDIT_SCREEN.toString())
+                .set(BackendConstants.PAYLOAD_KEY, objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId));
     }
 
     public void performOpenSaveDir() {

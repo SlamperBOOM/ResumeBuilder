@@ -184,6 +184,21 @@ public class ResumeManager implements IResumeManager{
     }
 
     @Override
+    public String importResumeFromFile(String fileName) throws UserException {
+        File importedResumeFile = new File(fileName);
+        try {
+            JsonNode json = objectMapper.readTree(importedResumeFile);
+            Resume resume = objectMapper.treeToValue(json, Resume.class);
+            resumes.put(resume.getId(), resume);
+            saveResume(resume.getId());
+            return resume.getId();
+        } catch (IOException e) {
+            logger.errorf("Unable to read resume %s", e.toString());
+            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+        }
+    }
+
+    @Override
     public void exportResumeToPDF(String resumeID, String savePath) throws UserException {
         IResume resume = getResume(resumeID);
         String htmlResume = HTMLConverter.processResumeToHTML(resume);

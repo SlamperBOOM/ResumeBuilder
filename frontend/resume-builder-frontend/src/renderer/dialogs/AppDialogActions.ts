@@ -1,4 +1,7 @@
-import { ConfirmationDialogSchema } from '../utils/backendTypes';
+import {
+  ConfirmationDialogSchema,
+  CustomDialogSchema,
+} from '../utils/backendTypes';
 
 type AppDialogActions = {
   languageDialog: {
@@ -11,6 +14,10 @@ type AppDialogActions = {
   };
   confirmationModal: {
     show: (schema: ConfirmationDialogSchema) => void;
+    close: () => void;
+  };
+  customModal: {
+    show: (schema: CustomDialogSchema) => void;
     close: () => void;
   };
 };

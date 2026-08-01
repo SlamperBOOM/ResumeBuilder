@@ -19,7 +19,11 @@
         "action": "export"
     },
     "create_new": {
-        "key": "create_resume",
+        "key": "create_resume_title",
         "action": "create_new"
+    },
+    "import_button": {
+        "key": "import_title",
+        "action": "import"
     }
 }

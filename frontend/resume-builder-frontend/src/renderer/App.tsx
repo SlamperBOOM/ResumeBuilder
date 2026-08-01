@@ -21,7 +21,11 @@ import EditScreen from './screens/EditScreen';
 import useSchemaApi from './api/useSchemaApi';
 import InfoDialog from './dialogs/InfoDialog';
 import ConfirmationDialog from './dialogs/ConfirmationDialog';
-import { ConfirmationDialogSchema } from './utils/backendTypes';
+import {
+  ConfirmationDialogSchema,
+  CustomDialogSchema,
+} from './utils/backendTypes';
+import CustomDialog from './dialogs/CustomDialog';
 
 export default function App() {
   // language dialog
@@ -64,6 +68,22 @@ export default function App() {
   const confirmationModalCloseCallback = useCallback(() => {
     setConfirmationModalShow(false);
   }, [setConfirmationModalShow]);
+
+  // custom dialog
+
+  const [customDialogShow, setCustomDialogShow] = useState<boolean>(false);
+  const [customDialogSchema, setCustomDialogSchema] =
+    useState<CustomDialogSchema>();
+  const customDialogShowCallback = useCallback(
+    (schema: CustomDialogSchema) => {
+      setCustomDialogSchema(schema);
+      setCustomDialogShow(true);
+    },
+    [setCustomDialogSchema, setCustomDialogShow],
+  );
+  const customDialogCloseCallback = useCallback(() => {
+    setCustomDialogShow(false);
+  }, [setCustomDialogShow]);
 
   // app actions
 
@@ -179,6 +199,11 @@ export default function App() {
       <ConfirmationDialog
         showState={confirmationModalShow}
         confirmationDialogSchema={confirmationModalSchema}
+        appActions={appActions}
+      />
+      <CustomDialog
+        showState={customDialogShow}
+        customDialogSchema={customDialogSchema}
         appActions={appActions}
       />
       <HeaderWrapper appActions={appActions}>

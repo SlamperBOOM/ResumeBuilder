@@ -32,6 +32,7 @@ export type MainScreenSchema = {
   export_button: BDUButtonSchema;
   resume_menu_tooltip_title: string;
   create_new: BDUButtonSchema;
+  import_button: BDUButtonSchema;
 };
 
 export type HeaderSchema = {
@@ -82,4 +83,17 @@ export type ConfirmationDialogSchema = {
   decline_button_text: string;
   confirm_action: string;
   confirm_action_payload: BDUActionPayload;
+};
+
+export type CustomActionButton = {
+  title: string;
+  action: string;
+  payload: JSON;
+};
+
+export type CustomDialogSchema = {
+  title: string;
+  text: string;
+  decline_button_text: string;
+  actions: CustomActionButton[];
 };

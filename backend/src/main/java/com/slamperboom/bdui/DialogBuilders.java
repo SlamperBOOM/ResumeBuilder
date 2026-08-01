@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
+import com.slamperboom.backend.DTO.CustomDialogPayload;
 import com.slamperboom.backend.DTO.MessageDialogPayload;
 import com.slamperboom.backend.FrontendAction;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -32,5 +33,12 @@ public class DialogBuilders {
         confirmationNode.put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.SHOW_CONFIRMATION.toString());
         confirmationNode.set(BackendConstants.PAYLOAD_KEY, objectMapper.valueToTree(payload));
         return confirmationNode;
+    }
+
+    public JsonNode buildCustomDialog(CustomDialogPayload payload) {
+        ObjectNode customDialogNode = objectMapper.createObjectNode();
+        customDialogNode.put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.SHOW_CUSTOM_DIALOG.toString());
+        customDialogNode.set(BackendConstants.PAYLOAD_KEY, objectMapper.valueToTree(payload));
+        return customDialogNode;
     }
 }

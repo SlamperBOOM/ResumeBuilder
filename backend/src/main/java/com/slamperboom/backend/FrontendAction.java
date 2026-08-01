@@ -6,6 +6,7 @@ public enum FrontendAction {
     UPDATE_CURRENT_SCREEN,
     SHOW_MESSAGE,
     SHOW_CONFIRMATION,
+    SHOW_CUSTOM_DIALOG,
     OPEN_ABOUT,
     LOCALE_DIALOG,
     CLOSE

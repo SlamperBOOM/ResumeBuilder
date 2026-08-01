@@ -53,6 +53,7 @@ function useFrontendAction(
   const updateScreen = useCallback(
     (_params: FrontendActionParams) => {
       updateScreenViaBool();
+      return null;
     },
     [updateScreenViaBool],
   );
@@ -81,6 +82,18 @@ function useFrontendAction(
     [dialogActions.infoModal],
   );
 
+  const performShowCustomDialog = useCallback(
+    (params: FrontendActionParams) => {
+      if (!params.payload) {
+        console.log('No data for custom dialog');
+        return null;
+      }
+      dialogActions.customModal.show(params.payload);
+      return null;
+    },
+    [dialogActions.customModal],
+  );
+
   const performOpenAbout = useCallback((params: FrontendActionParams) => {
     const aboutWindow = window.open('', 'modal');
     aboutWindow?.document.writeln(params.payload ?? 'Halo');
@@ -107,6 +120,7 @@ function useFrontendAction(
       UPDATE_CURRENT_SCREEN: updateScreen,
       SHOW_MESSAGE: performShowMessage,
       SHOW_CONFIRMATION: performShowConfirmation,
+      SHOW_CUSTOM_DIALOG: performShowCustomDialog,
       CLOSE: performClose,
       OPEN_ABOUT: performOpenAbout,
       LOCALE_DIALOG: performLocaleDialog,
@@ -119,6 +133,7 @@ function useFrontendAction(
     performOpenAbout,
     performShowConfirmation,
     performShowMessage,
+    performShowCustomDialog,
     updateScreen,
   ]);
 }

@@ -1,7 +1,7 @@
 import { Box, Button, Skeleton } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
-import { MainScreenSchema } from '../utils/backendTypes';
+import { MainScreenSchema, BDUButtonSchema } from '../utils/backendTypes';
 import { ResumeCard, SimpleResume } from '../components/ResumeCard';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 
@@ -36,8 +36,8 @@ export default function MainScreen(props: MainScreenProps) {
 
   const [mainSchema, setMainSchema] = useState<SchemaResponseDTO | null>(null);
   const [resumeCards, setResumeCards] = useState<Iterable<ReactNode>>([]);
-  const [newButtonTitle, setNewButtonTitle] = useState<string>();
-  const [newButtonAction, setNewButtonAction] = useState<string>('');
+  const [newButton, setNewButton] = useState<BDUButtonSchema>();
+  const [importButton, setImportButton] = useState<BDUButtonSchema>();
 
   useEffect(() => {
     appActions.updateCurrentScreen({
@@ -51,8 +51,8 @@ export default function MainScreen(props: MainScreenProps) {
       return;
     }
     const screenSchema = mainSchema.schema as MainScreenSchema;
-    setNewButtonTitle(mainSchema.translations[screenSchema.create_new.key]);
-    setNewButtonAction(screenSchema.create_new.action);
+    setNewButton(screenSchema.create_new);
+    setImportButton(screenSchema.import_button);
 
     const cards: ReactNode[] = [];
     mainSchema.payload.forEach((resume: SimpleResume) => {
@@ -76,7 +76,7 @@ export default function MainScreen(props: MainScreenProps) {
         minHeight: 0,
       }}
     >
-      {mainSchema ? (
+      {mainSchema && newButton && importButton ? (
         <>
           <Box
             sx={{
@@ -87,13 +87,24 @@ export default function MainScreen(props: MainScreenProps) {
             <Button
               variant="contained"
               onClick={() => {
-                appActions.performBduAction(newButtonAction);
+                appActions.performBduAction(newButton.action);
               }}
               sx={{
                 margin: 2,
               }}
             >
-              {newButtonTitle}
+              {mainSchema.translations[newButton!.key]}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                appActions.performBduAction(importButton.action);
+              }}
+              sx={{
+                margin: 2,
+              }}
+            >
+              {mainSchema.translations[importButton.key]}
             </Button>
           </Box>
           <Box

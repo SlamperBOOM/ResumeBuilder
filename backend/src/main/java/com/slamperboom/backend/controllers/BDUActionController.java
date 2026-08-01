@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.DTO.ExportPayload;
+import com.slamperboom.backend.DTO.ImportPayload;
 import com.slamperboom.backend.DTO.OpenLocalDirPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
 import com.slamperboom.bdui.DialogBuilders;
-import com.slamperboom.backend.bduAction.BDUActionPerformer;
+import com.slamperboom.bdui.BDUActionPerformer;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -78,6 +79,12 @@ public class BDUActionController {
     @Path("/export")
     public Optional<JsonNode> performExport(ExportPayload payload) {
         return bduActionPerformer.performExport(payload);
+    }
+
+    @POST
+    @Path("/import")
+    public JsonNode performImport(ImportPayload payload) {
+        return bduActionPerformer.performImport(payload.getFileName());
     }
 
     @GET

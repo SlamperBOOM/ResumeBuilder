@@ -10,12 +10,11 @@
  */
 import path from 'path';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import axios from 'axios';
 import windowStateKeeper from 'electron-window-state';
-import MenuBuilder from './menu';
 import { getFrontendPort, resolveHtmlPath } from './util';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
 import { appTitle, backendPort } from '../renderer/utils/consts';
@@ -160,7 +159,7 @@ const createWindow = async () => {
   new AppUpdater();
 };
 
-ipcMain.handle('open-file-dialog', async (event, resumeName: string) => {
+ipcMain.handle('open-save-file-dialog', async (event, resumeName: string) => {
   if (!mainWindow) {
     return undefined;
   }
@@ -169,6 +168,16 @@ ipcMain.handle('open-file-dialog', async (event, resumeName: string) => {
   });
 
   return result;
+});
+
+ipcMain.handle('open-file-dialog', async (event) => {
+  if (!mainWindow) {
+    return undefined;
+  }
+  const result = dialog.showOpenDialogSync(mainWindow, {
+    properties: ['openFile'],
+  });
+  return result ? result[0] : [];
 });
 
 ipcMain.handle('open-image-dialog', async () => {
