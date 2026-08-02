@@ -6,9 +6,6 @@ import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class Settings {
@@ -23,6 +20,7 @@ public class Settings {
 
     private static final String VERSION = "current_version";
     private static final String DEFAULT_RESUME_NAME = "default_resume_name";
+    private static final String RESUME_SAVE_PATH = "save_path";
 
     private final JsonNode staticSettings;
 
@@ -43,4 +41,6 @@ public class Settings {
     }
 
     public String getDefaultNewResumeName() {return staticSettings.get(DEFAULT_RESUME_NAME).asText();}
+
+    public String getResumeSavePath() {return staticSettings.get(RESUME_SAVE_PATH).asText();}
 }

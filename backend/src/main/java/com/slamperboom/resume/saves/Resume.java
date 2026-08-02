@@ -53,7 +53,7 @@ public class Resume implements IResume {
     @JsonIgnore
     private boolean isSaved = false;
 
-    protected Resume(@JsonProperty("resume_id") String id) {
+    public Resume(@JsonProperty("resume_id") String id) {
         this.id = id;
 
         defaultObjectMapper = new ObjectMapper();
@@ -135,10 +135,14 @@ public class Resume implements IResume {
     }
 
     @Override
-    public void updateResumeInformation(JsonNode information) {
-        this.resumeName = information.get("resume_name").asText();
-        this.templateName = information.get("template_name").asText();
-        this.resumeLocale = information.get("resume_locale").asText();
-        isSaved = false;
+    public void updateResumeInformation(JsonNode information) throws UserException {
+        try {
+            this.resumeName = information.get("resume_name").asText();
+            this.templateName = information.get("template_name").asText();
+            this.resumeLocale = information.get("resume_locale").asText();
+            isSaved = false;
+        } catch (NullPointerException e) {
+            throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK);
+        }
     }
 }

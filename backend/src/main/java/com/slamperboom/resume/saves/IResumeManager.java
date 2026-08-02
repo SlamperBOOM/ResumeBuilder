@@ -11,7 +11,6 @@ public interface IResumeManager {
     void saveResume(String resumeId) throws UserException;
     void saveAll() throws UserException;
     void readAllResumes();
-    String getSaveFolderPath();
 
     IResume getResume(String resumeID);
     String createResume(String resumeName) throws UserException;

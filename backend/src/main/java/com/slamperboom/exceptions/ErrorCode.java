@@ -9,8 +9,9 @@ public enum ErrorCode {
     UNABLE_TO_DUPLICATE_RESUME("unable_to_duplicate_resume"),
     UNABLE_TO_DELETE_RESUME("unable_to_delete_resume"),
     ERROR_WHILE_SAVING_CONFIG("error_while_saving_config"),
-    NO_RESUME_FOR_DUPLICATE("no_resume_for_duplicate"),
-    UNABLE_TO_SAVE_PDF("unable_to_save_pdf");
+    UNABLE_TO_SAVE_PDF("unable_to_save_pdf"),
+    RESUME_NOT_FOUND("resume_not_found"),
+    UNABLE_TO_PERFORM_ACTION("unable_to_perform_action");
 
     private final String code;
 

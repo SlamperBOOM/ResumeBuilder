@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.BackendConstants;
+import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.htmlConverter.Template;
@@ -72,6 +73,9 @@ public class BDUIBuilder {
         try {
             ObjectNode payload = objectMapper.createObjectNode();
             IResume resume = resumeManager.getResume(resumeId);
+            if (resume == null) {
+                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+            }
             payload.set("resume", resume.getJson());
             payload.put("preview", HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume)));
             result.set(BackendConstants.PAYLOAD_KEY, payload);
@@ -120,7 +124,7 @@ public class BDUIBuilder {
         var resume = resumeManager.getResume(resumeId);
 
         if (resume == null) {
-            return dialogBuilders.buildMessageDialogWithoutTitle("No resume with this resume_id");
+            return dialogBuilders.buildMessageDialogWithoutTitle(new UserException(ErrorCode.RESUME_NOT_FOUND).getMessage());
         }
 
         List<JsonNode> nodes = new ArrayList<>(TEMPLATE_COUNT);
@@ -135,6 +139,7 @@ public class BDUIBuilder {
                     htmlTemplate = HTMLConverter.processResumeToHTMLWithTemplate(resume, template);
                     templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
                 } catch (UserException | IOException e) {
+                    logger.warnf("Unable to create preview for resume %s", resume.getId());
                     latch.countDown();
                     return;
                 }

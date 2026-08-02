@@ -26,45 +26,63 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @ApplicationScoped
 public class ResumeManager implements IResumeManager{
-    private static final String SAVE_PATH = "saves/";
     private final Logger logger = Logger.getLogger(this.getClass());
     private final ObjectMapper objectMapper;
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
+    private final ThreadPoolExecutor poolExecutor;
 
     private ResumeManager() {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         readAllResumes();
+
+        poolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
     }
 
     @Override
-    public List<SimpleResume> getListOfResumes() {
-        return resumes.values().stream()
-                .map(resume -> {
-                    var file = resumeFileMap.get(resume.getId());
-                    try {
-                        return Optional.of(new SimpleResume(
-                                resume.getId(),
-                                resume.getName(),
-                                LocalDateTime.ofInstant(
-                                        Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
-                                ),
-                                HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume))
-                        ));
-                    } catch (UserException | IOException e) {
-                        logger.error("Unable to read resume for main screen");
-                        e.printStackTrace();
-                        return Optional.empty();
-                    }
-                })
-                .filter(Optional::isPresent)
-                .map(resume -> (SimpleResume) resume.get())
-                .sorted((o1, o2) -> o2.lastModificationDate().compareTo(o1.lastModificationDate()))
-                .toList();
+    public List<SimpleResume> getListOfResumes() throws UserException {
+        List<SimpleResume> nodes = new ArrayList<>(resumes.size());
+        CountDownLatch latch = new CountDownLatch(resumes.size());
+        for (var resume : resumes.values()) {
+            poolExecutor.execute(() -> {
+                var file = resumeFileMap.get(resume.getId());
+                SimpleResume simpleResume;
+                try {
+                    simpleResume = new SimpleResume(
+                            resume.getId(),
+                            resume.getName(),
+                            LocalDateTime.ofInstant(
+                                    Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
+                            ),
+                            HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume))
+                    );
+                } catch (UserException | IOException e) {
+                    logger.errorf("Unable to build simple resume object for %s", resume.getId());
+                    latch.countDown();
+                    return;
+                }
+                synchronized (nodes) {
+                    nodes.add(simpleResume);
+                }
+                latch.countDown();
+            });
+        }
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
+        }
+
+        nodes.sort((o1, o2) -> o2.lastModificationDate().compareTo(o1.lastModificationDate()));
+        return nodes;
     }
 
     @Override
@@ -74,13 +92,14 @@ public class ResumeManager implements IResumeManager{
             return;
         }
         File saveFile = resumeFileMap.get(resumeId);
+        String savePath = Settings.getInstance().getResumeSavePath();
         try {
             if (saveFile == null || !saveFile.exists()) {
-                File saveDir = new File(SAVE_PATH);
+                File saveDir = new File(savePath);
                 if (!saveDir.exists() && !saveDir.mkdir()) {
                     throw new IOException("Cannot create saves directory");
                 }
-                saveFile = new File(SAVE_PATH + resume.getId() + ".json");
+                saveFile = new File(savePath + resume.getId() + ".json");
                 if (!saveFile.exists() && !saveFile.createNewFile()) {
                     throw new IOException("Cannot create save file for resume \"" + resume.getName() + "\"");
                 }
@@ -107,7 +126,7 @@ public class ResumeManager implements IResumeManager{
 
     @Override
     public void readAllResumes() {
-        File savesDir = new File(SAVE_PATH);
+        File savesDir = new File(Settings.getInstance().getResumeSavePath());
         File[] saves = savesDir.listFiles();
         if (saves == null) {
             savesDir.mkdir();
@@ -125,11 +144,6 @@ public class ResumeManager implements IResumeManager{
                 logger.errorf("Unable to read resume %s", e.toString());
             }
         }
-    }
-
-    @Override
-    public String getSaveFolderPath() {
-        return SAVE_PATH;
     }
 
     @Override
@@ -164,7 +178,7 @@ public class ResumeManager implements IResumeManager{
     public String duplicateResume(String duplicateResumeId) throws UserException {
         Resume duplicateResume = resumes.get(duplicateResumeId);
         if (duplicateResume == null){
-            throw new UserException(ErrorCode.NO_RESUME_FOR_DUPLICATE);
+            throw new UserException(ErrorCode.RESUME_NOT_FOUND);
         }
         String resumeId = UUID.randomUUID().toString();
 

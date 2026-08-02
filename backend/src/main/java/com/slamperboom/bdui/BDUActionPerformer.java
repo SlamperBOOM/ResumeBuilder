@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
-import com.slamperboom.backend.DTO.CustomDialogPayload;
 import com.slamperboom.backend.DTO.ExportPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
 import com.slamperboom.backend.FrontendAction;
+import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
@@ -63,6 +63,9 @@ public class BDUActionPerformer {
         try {
             String resumeId = payload.getResumeId();
             IResume resume = resumeManager.getResume(resumeId);
+            if (resume == null) {
+                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+            }
             if (payload.getResumeInfo() != null) {
                 resume.updateResumeInformation(payload.getResumeInfo());
             }
@@ -82,8 +85,17 @@ public class BDUActionPerformer {
     public JsonNode performDelete(String resumeId) {
         ConfirmationDialogPayload payload = new ConfirmationDialogPayload();
         JsonNode translations = TranslationsManager.getInstance().getConfirmationDialogTranslations();
+        IResume resume;
+        try {
+            resume = resumeManager.getResume(resumeId);
+            if (resume == null) {
+                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+            }
+        } catch (UserException e) {
+            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+        }
 
-        payload.setTitle(translations.get("delete_confirmation.title").asText() + resumeManager.getResume(resumeId).getName());
+        payload.setTitle(translations.get("delete_confirmation.title").asText() + resume.getName());
         payload.setText(translations.get("delete_confirmation.text").asText());
         payload.setConfirmButtonText(translations.get("delete_confirmation.confirm_button_text").asText());
         payload.setDeclineButtonText(translations.get("delete_confirmation.decline_button_text").asText());
@@ -152,15 +164,18 @@ public class BDUActionPerformer {
     }
 
     public void performOpenSaveDir() {
-        performOpenDir(resumeManager.getSaveFolderPath());
+        performOpenDir(Settings.getInstance().getResumeSavePath());
     }
 
     public Optional<JsonNode> performOpenDir(String dirPath) {
         try {
+            if (!Desktop.isDesktopSupported()) {
+                throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION);
+            }
             Desktop.getDesktop().open(new File(dirPath));
             logger.info("Open resume dir");
             return Optional.empty();
-        } catch (IOException e) {
+        } catch (UserException | IOException e) {
             return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(""));
         }
     }

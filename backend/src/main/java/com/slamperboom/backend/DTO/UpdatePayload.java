@@ -19,7 +19,9 @@ public class UpdatePayload {
 
     @Getter
     public static class Content {
+        @JsonProperty("block")
         private ContentType block;
+        @JsonProperty("payload")
         private JsonNode payload;
     }
 

@@ -43,7 +43,7 @@ public class ContentMapper {
             case RECOMMENDATIONS -> {
                 return new RecommendationsContent();
             }
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException();
         }
 
     }

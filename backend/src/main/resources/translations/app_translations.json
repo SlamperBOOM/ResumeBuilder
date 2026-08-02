@@ -6,8 +6,9 @@
             "unable_to_duplicate_resume": "",
             "unable_to_delete_resume": "",
             "error_while_saving_config": "",
-            "no_resume_for_duplicate": "",
-            "unable_to_save_pdf": ""
+            "unable_to_save_pdf": "",
+            "resume_not_found": "",
+            "unable_to_perform_action": ""
         },
         "confirmation_dialog": {
             "delete_confirmation": {
@@ -212,8 +213,9 @@
             "unable_to_duplicate_resume": "",
             "unable_to_delete_resume": "",
             "error_while_saving_config": "",
-            "no_resume_for_duplicate": "",
-            "unable_to_save_pdf": ""
+            "unable_to_save_pdf": "",
+            "resume_not_found": "",
+            "unable_to_perform_action": ""
         },
         "confirmation_dialog": {
             "delete_confirmation": {

@@ -18,5 +18,5 @@ public interface IResume {
     String getTemplateName();
     boolean isSaved();
     void updateContent(ContentType contentType, JsonNode content) throws UserException;
-    void updateResumeInformation(JsonNode information);
+    void updateResumeInformation(JsonNode information) throws UserException;
 }
