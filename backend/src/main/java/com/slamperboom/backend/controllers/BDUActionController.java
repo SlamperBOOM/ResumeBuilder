@@ -70,7 +70,7 @@ public class BDUActionController {
     }
 
     @POST
-    @Path("/duplicate")
+    @Path("/duplicate/{resumeId}")
     public JsonNode performDuplicate(String resumeId) {
         return bduActionPerformer.performDuplicate(resumeId);
     }

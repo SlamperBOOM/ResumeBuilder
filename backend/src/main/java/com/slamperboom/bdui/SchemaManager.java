@@ -15,7 +15,7 @@ import java.util.Objects;
 public class SchemaManager {
     private final Map<SchemaType, JsonNode> schemasMap;
 
-    private SchemaManager(){
+    SchemaManager(){
         schemasMap = new EnumMap<>(SchemaType.class);
 
         ObjectMapper mapper = new ObjectMapper();

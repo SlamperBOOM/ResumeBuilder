@@ -36,9 +36,10 @@ public class ResumeManager implements IResumeManager{
     private final ObjectMapper objectMapper;
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
+    private final Map<String, Long> lastKnownModified = new HashMap<>();
     private final ThreadPoolExecutor poolExecutor;
 
-    private ResumeManager() {
+    ResumeManager() {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         readAllResumes();
@@ -109,6 +110,7 @@ public class ResumeManager implements IResumeManager{
             writer.write(resume.getJson().toPrettyString());
             resume.save();
             writer.close();
+            lastKnownModified.put(resumeId, saveFile.lastModified());
         } catch (IOException e){
             logger.errorf("Unable to save resume %s: %s", resume.getId(), e);
             throw new UserException(ErrorCode.RESUME_SAVE_ERROR, e);
@@ -128,22 +130,65 @@ public class ResumeManager implements IResumeManager{
     public void readAllResumes() {
         File savesDir = new File(Settings.getInstance().getResumeSavePath());
         File[] saves = savesDir.listFiles();
+
         if (saves == null) {
             savesDir.mkdir();
             logger.info("Resume save dir was created");
-            return;
+            saves = new File[0];
         }
+
+        Set<String> idsOnDisk = new HashSet<>();
+
         for (File saveFile : saves) {
+            String fileId = resumeIdFromFileName(saveFile.getName());
+            if (fileId == null) {
+                continue; // not a "<id>.json" resume file - ignore
+            }
+            idsOnDisk.add(fileId);
+
+            long onDiskModified = saveFile.lastModified();
+            Long knownModified = lastKnownModified.get(fileId);
+            boolean isNewToUs = knownModified == null;
+            boolean changedOnDisk = knownModified != null && onDiskModified > knownModified;
+
+            if (!isNewToUs && !changedOnDisk) {
+                continue; // already in sync with what's in memory - skip re-parsing it
+            }
+
             try {
                 JsonNode json = objectMapper.readTree(saveFile);
                 Resume resume = objectMapper.treeToValue(json, Resume.class);
                 resume.save();
                 resumes.put(resume.getId(), resume);
                 resumeFileMap.put(resume.getId(), saveFile);
+                lastKnownModified.put(resume.getId(), onDiskModified);
             } catch (IOException e) {
                 logger.errorf("Unable to read resume %s", e.toString());
             }
         }
+
+        // Drop resumes we previously confirmed were backed by a file on disk but whose file
+        // has since disappeared (deleted/moved outside the app - or, during tests,
+        // FileSystemIsolationExtension swapping "saves/" out from under us between tests).
+        // A resume that only exists in memory and has never been synced from/to disk yet
+        // (no entry in lastKnownModified - e.g. mid-creation, before saveResume() has run)
+        // is left untouched, so genuinely unsaved data is never silently discarded here.
+        Iterator<Map.Entry<String, Long>> it = lastKnownModified.entrySet().iterator();
+        while (it.hasNext()) {
+            String id = it.next().getKey();
+            if (!idsOnDisk.contains(id)) {
+                resumes.remove(id);
+                resumeFileMap.remove(id);
+                it.remove();
+            }
+        }
+    }
+
+    private String resumeIdFromFileName(String fileName) {
+        if (!fileName.endsWith(".json")) {
+            return null;
+        }
+        return fileName.substring(0, fileName.length() - ".json".length());
     }
 
     @Override
@@ -234,6 +279,7 @@ public class ResumeManager implements IResumeManager{
             Files.delete(resumeFile.toPath());
             resumes.remove(resumeId);
             resumeFileMap.remove(resumeId);
+            lastKnownModified.remove(resumeId);
         } catch (IOException e) {
             throw new UserException(ErrorCode.UNABLE_TO_DELETE_RESUME, e);
         }

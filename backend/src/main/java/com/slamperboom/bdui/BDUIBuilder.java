@@ -32,7 +32,7 @@ public class BDUIBuilder {
     private final DialogBuilders dialogBuilders;
     private final ThreadPoolExecutor poolExecutor;
 
-    private BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager) {
+    BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager) {
         this.resumeManager = resumeManager;
         this.dialogBuilders = dialogBuilders;
         this.schemaManager = schemaManager;

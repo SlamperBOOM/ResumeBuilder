@@ -74,7 +74,7 @@ public class BDUActionPerformer {
             }
             resumeManager.saveResume(resumeId);
             logger.infof("Updated resume with id %s", resumeId);
-            logger.debugf("Update payload: ", payload);
+            logger.debugf("Update payload: %s", payload);
             return objectMapper.createObjectNode()
                     .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.UPDATE_CURRENT_SCREEN.toString());
         } catch (UserException e) {
