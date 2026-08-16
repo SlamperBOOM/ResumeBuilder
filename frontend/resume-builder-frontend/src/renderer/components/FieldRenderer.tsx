@@ -23,7 +23,10 @@ export default function FieldRenderer(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride, resumeId } = props;
   const Component = fieldRegistry[resumeField.type];
 
-  if (!Component) return null;
+  if (!Component) {
+    console.warn(`Unknown resume field type: "${resumeField.type}"`);
+    return null;
+  }
 
   return (
     <Component

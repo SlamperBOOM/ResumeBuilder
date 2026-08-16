@@ -26,7 +26,11 @@ export default function ResumeDropDownList(props: FieldRendererProps) {
           >
             {Object.keys(currentField.values).map((key: string) => {
               const title = currentField.values[key];
-              return <MenuItem value={key}>{translations[title]}</MenuItem>;
+              return (
+                <MenuItem key={key} value={key}>
+                  {translations[title]}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>

@@ -1,17 +1,10 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
-import { ReactNode, ReactElement, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import useSchemaApi from '../api/useSchemaApi';
 import { AppActions } from '../utils/appActions';
 
 type HeaderWrapperProps = {
-  children:
-    | string
-    | number
-    | boolean
-    | ReactElement
-    | Iterable<ReactNode>
-    | null
-    | undefined;
+  children: ReactNode;
   appActions: AppActions;
 };
 

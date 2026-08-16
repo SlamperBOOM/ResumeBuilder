@@ -20,8 +20,11 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
   const { showState, confirmationDialogSchema, appActions } = props;
 
   const confirmActionCallback = useCallback(() => {
-    appActions.performBduAction(confirmationDialogSchema!.confirm_action, {
-      payload: confirmationDialogSchema!.confirm_action_payload,
+    if (!confirmationDialogSchema) {
+      return;
+    }
+    appActions.performBduAction(confirmationDialogSchema.confirm_action, {
+      payload: confirmationDialogSchema.confirm_action_payload,
     });
   }, [appActions, confirmationDialogSchema]);
 

@@ -61,9 +61,11 @@ export type ResumeInput =
   | DynamicBlock
   | TemplateChooser;
 
+export type Translations = { [key: string]: string };
+
 export type FieldRendererProps = {
   resumeField: ResumeInput;
-  translations: { field: string; value: string }[];
+  translations: Translations;
   fieldNameOverride?: string;
   resumeId: string;
 };

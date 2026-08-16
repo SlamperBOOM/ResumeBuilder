@@ -12,11 +12,23 @@ export type BDUButtonSchema = { key: string; action: string };
 
 export type UpdatePayload = {
   resume_id: string;
-  resume_info: JSON;
+  resume_info: {
+    resume_name: string;
+    resume_locale: string;
+    template_name: string;
+  };
   content: {
     block: string;
-    payload: JSON;
+    payload: unknown;
   }[];
+};
+
+export type ResumeFormValues = {
+  resume_id: string;
+  resume_name: string;
+  resume_locale: string;
+  template_name: string;
+  blocks: { [blockKey: string]: unknown };
 };
 
 export type BDUActionPayload = {
@@ -64,7 +76,7 @@ export type EditScreenSchema = {
       full_width_option_key: string;
       full_height_option_key: string;
       custom_option_key: string;
-    },
+    };
     resume_blocks: BlockSchema;
   };
 };

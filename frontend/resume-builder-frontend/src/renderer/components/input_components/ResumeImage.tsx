@@ -49,7 +49,6 @@ export default function ResumeImage(props: FieldRendererProps) {
 
           <CardActions sx={{ justifyContent: 'center' }}>
             <Button
-              component="label"
               size="small"
               onClick={async () => {
                 const path = await window.electron.openImageDialog();

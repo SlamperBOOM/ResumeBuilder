@@ -4,6 +4,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -19,17 +20,20 @@ export enum ResumePreviewScaleEnum {
 
 type ResumePDFPreviewProps = {
   preview: string;
-  renderAllPages?: boolean;
+  // Shows prev/next page navigation controls below the preview.
+  // Note: only a single page is ever rendered at a time - this does
+  // NOT render every page of the document simultaneously.
+  paginated?: boolean;
   scaleType: ResumePreviewScaleEnum;
   scale?: number;
 };
 
 export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
-  const { preview, renderAllPages, scale = 1, scaleType } = props;
+  const { preview, paginated, scale = 1, scaleType } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [pdf, setPdf] = useState<PDFDocumentProxy>(null);
+  const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [pageSize, setPageSize] = useState({ width: 0, height: 0 });
   const [containerSize, setContainerSize] = useState({
     width: 0,
@@ -65,11 +69,11 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
   }, [pdf]);
 
   const onDocumentLoadSuccess = useCallback(
-    (pdf) => {
-      setPdf(pdf);
-      setPages(pdf.numPages);
-      if (pdf.numPages !== 0 && currentPage > pdf.numPages) {
-        setCurrentPage(pdf.numPages);
+    (loadedPdf: PDFDocumentProxy) => {
+      setPdf(loadedPdf);
+      setPages(loadedPdf.numPages);
+      if (loadedPdf.numPages !== 0 && currentPage > loadedPdf.numPages) {
+        setCurrentPage(loadedPdf.numPages);
       }
     },
     [currentPage],
@@ -108,81 +112,58 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
         flexDirection: 'column',
       }}
     >
-      {renderAllPages ? (
-        <>
-          <Box
-            ref={containerRef}
-            sx={{
-              flex: 1,
-              overflow: 'auto',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              backgroundColor: '#eeeeee',
-              p: 2,
-            }}
-          >
-            <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page
-                pageNumber={currentPage}
-                scale={calculatedScale}
-                renderAnnotationLayer={false}
-              />
-            </Document>
-          </Box>
+      <Box
+        ref={containerRef}
+        sx={{
+          flex: 1,
+          overflow: 'auto',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          backgroundColor: '#eeeeee',
+          p: 2,
+        }}
+      >
+        <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page
+            pageNumber={currentPage}
+            scale={calculatedScale}
+            renderAnnotationLayer={false}
+          />
+        </Document>
+      </Box>
 
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              p: 1,
-              borderTop: 1,
-              borderColor: 'divider',
-              backgroundColor: 'background.paper',
-            }}
-          >
-            <IconButton
-              onClick={() => setCurrentPage((p) => p - 1)}
-              disabled={currentPage <= 1}
-            >
-              <NavigateBeforeIcon />
-            </IconButton>
-
-            <Typography>
-              {currentPage} / {pages}
-            </Typography>
-
-            <IconButton
-              onClick={() => setCurrentPage((p) => p + 1)}
-              disabled={currentPage >= pages}
-            >
-              <NavigateNextIcon />
-            </IconButton>
-          </Stack>
-        </>
-      ) : (
-        <Box
-          ref={containerRef}
+      {paginated && (
+        <Stack
+          direction="row"
+          spacing={2}
+          justifyContent="center"
+          alignItems="center"
           sx={{
-            flex: 1,
-            overflow: 'auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            backgroundColor: '#eeeeee',
-            p: 2,
+            p: 1,
+            borderTop: 1,
+            borderColor: 'divider',
+            backgroundColor: 'background.paper',
           }}
         >
-          <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
-            <Page
-              pageNumber={1}
-              scale={calculatedScale}
-              renderAnnotationLayer={false}
-            />
-          </Document>
-        </Box>
+          <IconButton
+            onClick={() => setCurrentPage((p) => p - 1)}
+            disabled={currentPage <= 1}
+          >
+            <NavigateBeforeIcon />
+          </IconButton>
+
+          <Typography>
+            {currentPage} / {pages}
+          </Typography>
+
+          <IconButton
+            onClick={() => setCurrentPage((p) => p + 1)}
+            disabled={currentPage >= pages}
+          >
+            <NavigateNextIcon />
+          </IconButton>
+        </Stack>
       )}
     </Box>
   );

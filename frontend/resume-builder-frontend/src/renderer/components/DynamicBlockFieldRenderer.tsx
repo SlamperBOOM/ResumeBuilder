@@ -16,16 +16,20 @@ const fieldRegistry = {
 };
 
 export default function DynamicBlockFieldRenderer(props: FieldRendererProps) {
-  const { resumeField, translations, fieldNameOverride } = props;
+  const { resumeField, translations, fieldNameOverride, resumeId } = props;
   const Component = fieldRegistry[resumeField.type];
 
-  if (!Component) return null;
+  if (!Component) {
+    console.warn(`Unknown dynamic block field type: "${resumeField.type}"`);
+    return null;
+  }
 
   return (
     <Component
       resumeField={resumeField}
       translations={translations}
       fieldNameOverride={fieldNameOverride}
+      resumeId={resumeId}
     />
   );
 }

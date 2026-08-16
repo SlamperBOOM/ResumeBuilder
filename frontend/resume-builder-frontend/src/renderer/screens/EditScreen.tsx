@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   colors,
@@ -44,6 +45,27 @@ function EditScreenSkeleton() {
   );
 }
 
+function EditScreenError(props: { onRetry: () => void }) {
+  const { onRetry } = props;
+  return (
+    <Box
+      sx={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+      }}
+    >
+      <Alert severity="error">Failed to load the resume editor.</Alert>
+      <Button variant="contained" onClick={onRetry}>
+        Retry
+      </Button>
+    </Box>
+  );
+}
+
 const previewScaleMarks = [
   {
     value: 0.1,
@@ -72,25 +94,47 @@ export default function EditScreen(props: EditScreenProps) {
   const { resumeId } = useParams();
   const [editSchema, setEditSchema] = useState<SchemaResponseDTO>();
   const schema = editSchema?.schema as EditScreenSchema;
-  const layout = JSON.parse(
-    localStorage.getItem('editorLayout') || '["40","60"]',
-  );
+  const layout = (() => {
+    try {
+      const parsed = JSON.parse(
+        localStorage.getItem('editorLayout') || '["40","60"]',
+      );
+      return Array.isArray(parsed) && parsed.length === 2
+        ? parsed
+        : ['40', '60'];
+    } catch {
+      return ['40', '60'];
+    }
+  })();
   const previewScaleKey = 'editPreviewScale';
   const previewModeKey = 'editPreviewMode';
   const [previewScale, setPreviewScale] = useState(
     Number.parseInt(localStorage.getItem(previewScaleKey), 10) || 0.5,
   );
-  const [previewMode, setPreviewMode] = useState<ResumePreviewScaleEnum>(
-    localStorage.getItem(previewModeKey) || ResumePreviewScaleEnum.FULL_HEIGHT,
-  );
+  const [previewMode, setPreviewMode] = useState<ResumePreviewScaleEnum>(() => {
+    const stored = localStorage.getItem(previewModeKey);
+    const validModes = Object.values(ResumePreviewScaleEnum) as string[];
+    return validModes.includes(stored ?? '')
+      ? (stored as ResumePreviewScaleEnum)
+      : ResumePreviewScaleEnum.FULL_HEIGHT;
+  });
+
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    appActions.updateCurrentScreen({
-      source: ScreenSource.EDIT,
-      screenUpdateFunction: setEditSchema,
-      resumeId,
-    });
-  }, [appActions, resumeId]);
+    setLoadError(false);
+    appActions
+      .updateCurrentScreen({
+        source: ScreenSource.EDIT,
+        screenUpdateFunction: setEditSchema,
+        resumeId,
+      })
+      .catch((error) => {
+        console.error('Failed to load edit screen', error);
+        setLoadError(true);
+      });
+  }, [appActions, resumeId, retryCount]);
 
   return (
     <Box
@@ -210,7 +254,7 @@ export default function EditScreen(props: EditScreenProps) {
               >
                 <ResumePDFPreview
                   preview={editSchema?.payload?.preview}
-                  renderAllPages
+                  paginated
                   scaleType={previewMode}
                   scale={previewScale}
                 />
@@ -302,15 +346,17 @@ export default function EditScreen(props: EditScreenProps) {
                       fontVariantNumeric: 'tabular-nums',
                     }}
                   >
-                    {`${previewScale*100}%`}
+                    {`${previewScale * 100}%`}
                   </Typography>
                 </Stack>
               </Box>
             </Box>
           </Panel>
         </Group>
+      ) : loadError ? (
+        <EditScreenError onRetry={() => setRetryCount((c) => c + 1)} />
       ) : (
-        EditScreenSkeleton()
+        <EditScreenSkeleton />
       )}
     </Box>
   );

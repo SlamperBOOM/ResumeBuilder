@@ -5,7 +5,7 @@ import { DynamicBlock, FieldRendererProps } from '../../utils/resumeBlockTypes';
 import DynamicBlockFieldRenderer from '../DynamicBlockFieldRenderer';
 
 export default function ResumeDynamicBlock(props: FieldRendererProps) {
-  const { resumeField, translations } = props;
+  const { resumeField, translations, resumeId } = props;
   const currentField = resumeField as DynamicBlock;
 
   const arrayPath = currentField.blocks_list;
@@ -21,6 +21,7 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
     <>
       {fields.map((item, index) => (
         <Box
+          key={item.id}
           sx={{
             border: 1,
             padding: 2,
@@ -34,14 +35,16 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
             const fieldName = `${arrayPath}.${index}.${subField.resume_value}`;
             return (
               <DynamicBlockFieldRenderer
+                key={subKey}
                 resumeField={subField}
                 translations={translations}
                 fieldNameOverride={fieldName}
+                resumeId={resumeId}
               />
             );
           })}
           <Button onClick={() => remove(index)}>
-            <DeleteIcon color="error"/>
+            <DeleteIcon color="error" />
           </Button>
         </Box>
       ))}

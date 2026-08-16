@@ -41,6 +41,10 @@ function useFrontendAction(
 
   const openEditScreen = useCallback(
     (params: FrontendActionParams) => {
+      if (!params.payload || !params.payload.resume_id) {
+        console.log('No resume id for edit screen');
+        return null;
+      }
       navigate(
         appRoutes.editScreen.replace(':resumeId', params.payload.resume_id),
       );
@@ -94,11 +98,17 @@ function useFrontendAction(
     [dialogActions.customModal],
   );
 
-  const performOpenAbout = useCallback((params: FrontendActionParams) => {
-    const aboutWindow = window.open('', 'modal');
-    aboutWindow?.document.writeln(params.payload ?? 'Halo');
-    return null;
-  }, []);
+  const performOpenAbout = useCallback(
+    (params: FrontendActionParams) => {
+      // Render through InfoDialog (React text rendering, escaped by
+      // default) instead of window.open + document.writeln, which
+      // inserted backend-supplied content as raw, unescaped HTML.
+      const text = typeof params.payload === 'string' ? params.payload : 'Halo';
+      dialogActions.infoModal.show(undefined, text);
+      return null;
+    },
+    [dialogActions.infoModal],
+  );
 
   const performLocaleDialog = useCallback(
     (_params: FrontendActionParams) => {

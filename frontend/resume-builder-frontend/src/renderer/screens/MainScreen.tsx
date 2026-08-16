@@ -1,7 +1,7 @@
-import { Box, Button, Skeleton } from '@mui/material';
-import { ReactNode, useEffect, useState } from 'react';
+import { Alert, Box, Button, Skeleton } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
-import { MainScreenSchema, BDUButtonSchema } from '../utils/backendTypes';
+import { MainScreenSchema } from '../utils/backendTypes';
 import { ResumeCard, SimpleResume } from '../components/ResumeCard';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 
@@ -31,42 +31,65 @@ function MainScreenSkeleton() {
   );
 }
 
+function MainScreenError(props: { onRetry: () => void }) {
+  const { onRetry } = props;
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+        p: 4,
+      }}
+    >
+      <Alert severity="error">Failed to load resumes.</Alert>
+      <Button variant="contained" onClick={onRetry}>
+        Retry
+      </Button>
+    </Box>
+  );
+}
+
 export default function MainScreen(props: MainScreenProps) {
   const { appActions } = props;
 
   const [mainSchema, setMainSchema] = useState<SchemaResponseDTO | null>(null);
-  const [resumeCards, setResumeCards] = useState<Iterable<ReactNode>>([]);
-  const [newButton, setNewButton] = useState<BDUButtonSchema>();
-  const [importButton, setImportButton] = useState<BDUButtonSchema>();
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    appActions.updateCurrentScreen({
-      source: ScreenSource.MAIN,
-      screenUpdateFunction: setMainSchema,
-    });
-  }, [appActions]);
+    setLoadError(false);
+    appActions
+      .updateCurrentScreen({
+        source: ScreenSource.MAIN,
+        screenUpdateFunction: setMainSchema,
+      })
+      .catch((error) => {
+        console.error('Failed to load main screen', error);
+        setLoadError(true);
+      });
+  }, [appActions, retryCount]);
 
-  useEffect(() => {
+  const screenSchema = mainSchema?.schema as MainScreenSchema | undefined;
+  const newButton = screenSchema?.create_new;
+  const importButton = screenSchema?.import_button;
+
+  const resumeCards = useMemo(() => {
     if (!mainSchema) {
-      return;
+      return [];
     }
-    const screenSchema = mainSchema.schema as MainScreenSchema;
-    setNewButton(screenSchema.create_new);
-    setImportButton(screenSchema.import_button);
-
-    const cards: ReactNode[] = [];
-    mainSchema.payload.forEach((resume: SimpleResume) => {
-      cards.push(
-        <ResumeCard
-          key={resume.resume_id}
-          resume={resume}
-          schema={mainSchema}
-          appActions={appActions}
-        />,
-      );
-    });
-    setResumeCards(cards);
-  }, [appActions, mainSchema]);
+    const resumes = (mainSchema.payload as SimpleResume[]) ?? [];
+    return resumes.map((resume) => (
+      <ResumeCard
+        key={resume.resume_id}
+        resume={resume}
+        schema={mainSchema}
+        appActions={appActions}
+      />
+    ));
+  }, [mainSchema, appActions]);
 
   return (
     <Box
@@ -93,7 +116,7 @@ export default function MainScreen(props: MainScreenProps) {
                 margin: 2,
               }}
             >
-              {mainSchema.translations[newButton!.key]}
+              {mainSchema.translations[newButton.key]}
             </Button>
             <Button
               variant="contained"
@@ -125,8 +148,10 @@ export default function MainScreen(props: MainScreenProps) {
             </Box>
           </Box>
         </>
+      ) : loadError ? (
+        <MainScreenError onRetry={() => setRetryCount((c) => c + 1)} />
       ) : (
-        MainScreenSkeleton()
+        <MainScreenSkeleton />
       )}
     </Box>
   );

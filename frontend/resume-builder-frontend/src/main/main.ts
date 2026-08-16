@@ -81,8 +81,6 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-  console.log(javaPath);
-  console.log(jarPath);
   if (isDebug) {
     await installExtensions();
   }
@@ -111,6 +109,9 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     title: appTitle,
     webPreferences: {
+      // contextIsolation: true,
+      // nodeIntegration: false,
+      // sandbox: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -132,8 +133,6 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  // const menuBuilder = new MenuBuilder(mainWindow);
-  // menuBuilder.buildMenu();
   mainWindow.removeMenu();
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -163,21 +162,23 @@ ipcMain.handle('open-save-file-dialog', async (event, resumeName: string) => {
   if (!mainWindow) {
     return undefined;
   }
-  const result = dialog.showSaveDialogSync(mainWindow, {
+  const result = await dialog.showSaveDialog(mainWindow, {
     defaultPath: `${resumeName}.pdf`,
   });
 
-  return result;
+  return result.canceled ? undefined : result.filePath;
 });
 
 ipcMain.handle('open-file-dialog', async (event) => {
   if (!mainWindow) {
     return undefined;
   }
-  const result = dialog.showOpenDialogSync(mainWindow, {
+  const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
   });
-  return result ? result[0] : [];
+  return result.canceled || result.filePaths.length === 0
+    ? undefined
+    : result.filePaths[0];
 });
 
 ipcMain.handle('open-image-dialog', async () => {
@@ -201,8 +202,11 @@ app.on('before-quit', async (event) => {
     const result = (
       await axios
         .post(`http://localhost:${backendPort}/action/exit`)
-        .catch((response) => {
-          throw new Error(response.response.data);
+        .catch((error) => {
+          const message = axios.isAxiosError(error)
+            ? (error.response?.data ?? error.message)
+            : String(error);
+          throw new Error(message);
         })
     ).data as ActionResponseDTO;
     if (result?.frontend_action === FrontendActionEnum.CLOSE) {

@@ -1,5 +1,6 @@
 import { Controller, useFormContext } from 'react-hook-form';
 import {
+  Alert,
   Card,
   CardContent,
   Dialog,
@@ -14,7 +15,7 @@ import {
   TemplateChooser,
 } from '../../utils/resumeBlockTypes';
 import useSchemaApi from '../../api/useSchemaApi';
-import { TemplateInfo } from '../../DTO/TemplatesDTO';
+import { TemplateInfo, TemplateSchema } from '../../DTO/TemplatesDTO';
 import ResumePDFPreview, { ResumePreviewScaleEnum } from '../ResumePDFPreview';
 
 const CARD_ASPECT_RATIO = 210 / 297;
@@ -30,7 +31,8 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initDialogOpen, setInitDialogOpen] = useState(false);
   const [templates, setTemplates] = useState<TemplateInfo[]>([]);
-  const [schema, setSchema] = useState<JSON>();
+  const [schema, setSchema] = useState<TemplateSchema>();
+  const [loadError, setLoadError] = useState(false);
 
   const [contentEl, setContentEl] = useState<HTMLDivElement | null>(null);
   const contentRef = useCallback((node: HTMLDivElement | null) => {
@@ -70,11 +72,14 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
           setTemplates(response.payload);
           setSchema(response.schema);
           setInitDialogOpen(false);
+          setLoadError(false);
           setDialogOpen(true);
           return null;
         })
         .catch(() => {
           setDialogOpen(false);
+          setInitDialogOpen(false);
+          setLoadError(true);
         });
     }
   }, [resumeId, schemaApi, initDialogOpen]);
@@ -93,6 +98,11 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
             margin="normal"
             sx={{ cursor: 'pointer' }}
           />
+          {loadError && (
+            <Alert severity="error" onClose={() => setLoadError(false)}>
+              Failed to load templates. Please try again.
+            </Alert>
+          )}
           <Dialog
             open={dialogOpen}
             onClose={() => setDialogOpen(false)}

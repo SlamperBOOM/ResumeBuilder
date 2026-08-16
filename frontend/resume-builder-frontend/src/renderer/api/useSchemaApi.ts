@@ -28,7 +28,7 @@ function useSchemaApi() {
   const getEditScreen = useCallback(
     async (resumeId: string) => {
       return (await api.performGetRequest(
-        `${baseAddress}edit_screen/${resumeId}`,
+        `${baseAddress}edit_screen/${encodeURIComponent(resumeId)}`,
       )) as SchemaResponseDTO;
     },
     [api],
@@ -37,7 +37,7 @@ function useSchemaApi() {
   const getTemplates = useCallback(
     async (resumeId: string) => {
       return (await api.performGetRequest(
-        `${baseAddress}templates/${resumeId}`,
+        `${baseAddress}templates/${encodeURIComponent(resumeId)}`,
       )) as TemplatesDTO;
     },
     [api],

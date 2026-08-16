@@ -70,7 +70,6 @@ export default function App() {
   }, [setConfirmationModalShow]);
 
   // custom dialog
-
   const [customDialogShow, setCustomDialogShow] = useState<boolean>(false);
   const [customDialogSchema, setCustomDialogSchema] =
     useState<CustomDialogSchema>();
@@ -101,10 +100,16 @@ export default function App() {
         show: confirmationModalShowCallback,
         close: confirmationModalCloseCallback,
       },
+      customModal: {
+        show: customDialogShowCallback,
+        close: customDialogCloseCallback,
+      },
     };
   }, [
     confirmationModalCloseCallback,
     confirmationModalShowCallback,
+    customDialogCloseCallback,
+    customDialogShowCallback,
     infoModalCloseCallback,
     infoModalShowCallback,
     languageDialogCloseCallback,
@@ -141,20 +146,38 @@ export default function App() {
   );
 
   const actionApi = useActionApi();
-  const [updateScreenMarker, setUpdateScreenMarker] = useState<boolean>(false);
+  const [updateScreenMarker, setUpdateScreenMarker] = useState<number>(0);
   const updateScreen = useCallback(() => {
-    setUpdateScreenMarker(!updateScreenMarker);
-  }, [updateScreenMarker]);
+    setUpdateScreenMarker((previous) => previous + 1);
+  }, []);
   const frontendActions = useFrontendAction(dialogActions, updateScreen);
 
   const performBduAction = useCallback(
     (bduAction: string, payload?: BDUActionParams) => {
-      actionApi[bduAction](payload?.payload)
+      const action = actionApi[bduAction];
+      if (!action) {
+        console.error(`Unknown BDU action received: "${bduAction}"`);
+        dialogActions.infoModal.show(
+          undefined,
+          `Unknown action received from the backend: "${bduAction}"`,
+        );
+        return;
+      }
+      action(payload?.payload)
         .then((result: ActionResponseDTO | null) => {
           if (result) {
-            const frontendActionResult = frontendActions[
-              result.frontend_action
-            ]({
+            const frontendAction = frontendActions[result.frontend_action];
+            if (!frontendAction) {
+              console.error(
+                `Unknown frontend action received: "${result.frontend_action}"`,
+              );
+              dialogActions.infoModal.show(
+                undefined,
+                `Unknown frontend action received from the backend: "${result.frontend_action}"`,
+              );
+              return null;
+            }
+            const frontendActionResult = frontendAction({
               payload: result.payload,
               updateScreenPayload: payload?.updateScreenPayload,
             });
@@ -164,11 +187,14 @@ export default function App() {
           }
           return null;
         })
-        .catch((error: any) => {
-          console.log(error);
+        .catch((error: unknown) => {
+          console.error(error);
+          const message =
+            error instanceof Error ? error.message : String(error);
+          dialogActions.infoModal.show(undefined, message);
         });
     },
-    [actionApi, frontendActions],
+    [actionApi, frontendActions, dialogActions],
   );
 
   const appActions: AppActions = useMemo(() => {

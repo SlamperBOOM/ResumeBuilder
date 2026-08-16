@@ -66,7 +66,7 @@ function useActionApi() {
         return null;
       }
       return (await api.performPostRequest(
-        `${baseAddress}locale/set/${payload.locale}`,
+        `${baseAddress}locale/set/${encodeURIComponent(payload.locale)}`,
         null,
       )) as ActionResponseDTO;
     },
@@ -83,15 +83,15 @@ function useActionApi() {
     [api],
   );
 
-  const performDuplucate = useCallback(
+  const performDuplicate = useCallback(
     async (payload: BDUActionPayload) => {
       if (!payload?.resume_id) {
         console.log('No resume id');
         return null;
       }
       return (await api.performPostRequest(
-        `${baseAddress}duplicate`,
-        payload.resume_id,
+        `${baseAddress}duplicate/${encodeURIComponent(payload.resume_id)}`,
+        null,
       )) as ActionResponseDTO;
     },
     [api],
@@ -104,7 +104,7 @@ function useActionApi() {
         return null;
       }
       return (await api.performDeleteRequest(
-        `${baseAddress}delete/${payload.resume_id}`,
+        `${baseAddress}delete/${encodeURIComponent(payload.resume_id)}`,
       )) as ActionResponseDTO;
     },
     [api],
@@ -117,7 +117,7 @@ function useActionApi() {
         return null;
       }
       return (await api.performDeleteRequest(
-        `${baseAddress}delete/confirm/${payload.resume_id}`,
+        `${baseAddress}delete/confirm/${encodeURIComponent(payload.resume_id)}`,
       )) as ActionResponseDTO;
     },
     [api],
@@ -144,7 +144,7 @@ function useActionApi() {
         return null;
       }
       return (await api.performGetRequest(
-        `${baseAddress}load/${payload.resume_id}`,
+        `${baseAddress}load/${encodeURIComponent(payload.resume_id)}`,
       )) as ActionResponseDTO;
     },
     [api],
@@ -157,7 +157,7 @@ function useActionApi() {
         return null;
       }
       return (await api.performPostRequest(
-        `${baseAddress}open_main_screen/${payload.resume_id}`,
+        `${baseAddress}open_main_screen/${encodeURIComponent(payload.resume_id)}`,
         null,
       )) as ActionResponseDTO;
     },
@@ -211,7 +211,7 @@ function useActionApi() {
       delete: performDelete,
       confirm_delete: performConfirmDelete,
       update: performUpdate,
-      duplicate: performDuplucate,
+      duplicate: performDuplicate,
       load: performLoad,
       open_main_screen: performOpenMainScreen,
       export: performExport,
@@ -228,7 +228,7 @@ function useActionApi() {
     performDelete,
     performConfirmDelete,
     performUpdate,
-    performDuplucate,
+    performDuplicate,
     performLoad,
     performOpenMainScreen,
     performExport,

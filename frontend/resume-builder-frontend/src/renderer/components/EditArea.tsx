@@ -2,7 +2,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useCallback, useEffect, useRef } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { EditScreenSchema, UpdatePayload } from '../utils/backendTypes';
+import {
+  EditScreenSchema,
+  ResumeFormValues,
+  UpdatePayload,
+} from '../utils/backendTypes';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import FieldRenderer from './FieldRenderer';
 import ResumeBlock from './input_components/ResumeBlock';
@@ -22,7 +26,7 @@ export function EditArea(props: EditAreaProps) {
   const editSchema = editSchemaResponse.schema as EditScreenSchema;
 
   const { translations } = editSchemaResponse;
-  const resumeId = editSchemaResponse.payload.resume["resume_id"];
+  const resumeId = editSchemaResponse.payload.resume.resume_id;
 
   const methods = useForm({
     defaultValues: editSchemaResponse.payload.resume,
@@ -31,7 +35,12 @@ export function EditArea(props: EditAreaProps) {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const onSubmit = useCallback(
-    (data: JSON) => {
+    (data: ResumeFormValues) => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+
       console.log('Saving resume: ', data);
       const updatePayload: UpdatePayload = {
         resume_id: data.resume_id,
@@ -40,10 +49,10 @@ export function EditArea(props: EditAreaProps) {
           resume_locale: data.resume_locale,
           template_name: data.template_name,
         },
+        content: [],
       };
 
-      updatePayload.content = [];
-      Object.keys(data.blocks).forEach((blockKey: string) => {
+      Object.keys(data.blocks ?? {}).forEach((blockKey: string) => {
         const block = data.blocks[blockKey];
         updatePayload.content.push({
           block: blockKey,
@@ -108,6 +117,7 @@ export function EditArea(props: EditAreaProps) {
               const block = editSchema.edit_area.resume_blocks[block_key];
               return (
                 <ResumeBlock
+                  key={block_key}
                   schema={block}
                   translations={translations}
                   resumeId={resumeId}

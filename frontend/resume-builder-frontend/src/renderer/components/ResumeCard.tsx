@@ -15,6 +15,7 @@ import { ReactNode, useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import { AppActions } from '../utils/appActions';
+import { MainScreenSchema } from '../utils/backendTypes';
 import ResumePDFPreview, { ResumePreviewScaleEnum } from './ResumePDFPreview';
 
 export type SimpleResume = {
@@ -33,6 +34,7 @@ export type ResumeCardProps = {
 
 export function ResumeCard(props: ResumeCardProps) {
   const { resume, schema, appActions } = props;
+  const screenSchema = schema.schema as MainScreenSchema;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -47,8 +49,8 @@ export function ResumeCard(props: ResumeCardProps) {
   };
 
   const resumeMenuButtons: ReactNode[] = [];
-  Object.keys(schema.schema.resume_menu).forEach((key) => {
-    const menuButton = schema.schema.resume_menu[key];
+  Object.keys(screenSchema.resume_menu).forEach((key) => {
+    const menuButton = screenSchema.resume_menu[key];
     resumeMenuButtons.push(
       <MenuItem
         key={menuButton.action}
@@ -127,7 +129,7 @@ export function ResumeCard(props: ResumeCardProps) {
           <Grid>
             <Tooltip
               title={
-                schema.translations[schema.schema.resume_menu_tooltip_title]
+                schema.translations[screenSchema.resume_menu_tooltip_title]
               }
             >
               <IconButton onClick={handleMenuOpen}>
@@ -158,7 +160,7 @@ export function ResumeCard(props: ResumeCardProps) {
             variant="text"
             fullWidth
             onClick={() => {
-              appActions.performBduAction(schema.schema.export_button.action, {
+              appActions.performBduAction(screenSchema.export_button.action, {
                 payload: {
                   resume_id: resume.resume_id,
                   resume_name: resume.resume_name,
@@ -166,7 +168,7 @@ export function ResumeCard(props: ResumeCardProps) {
               });
             }}
           >
-            {schema.translations[schema.schema.export_button.key]}
+            {schema.translations[screenSchema.export_button.key]}
           </Button>
         </Box>
       </CardContent>

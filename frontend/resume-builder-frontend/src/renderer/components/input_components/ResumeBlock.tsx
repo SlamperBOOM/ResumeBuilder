@@ -1,10 +1,11 @@
 import { Card, Typography } from '@mui/material';
 import { BlockSchema } from '../../utils/backendTypes';
+import { Translations } from '../../utils/resumeBlockTypes';
 import FieldRenderer from '../FieldRenderer';
 
 type ResumeBlockProps = {
   schema: BlockSchema;
-  translations: JSON;
+  translations: Translations;
   resumeId: string;
 };
 
@@ -32,6 +33,7 @@ export default function ResumeBlock(props: ResumeBlockProps) {
         const field = schema[fieldKey];
         return (
           <FieldRenderer
+            key={fieldKey}
             resumeField={field}
             translations={translations}
             resumeId={resumeId}
