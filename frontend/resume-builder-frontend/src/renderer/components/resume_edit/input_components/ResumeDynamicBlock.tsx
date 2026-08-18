@@ -1,7 +1,7 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Box, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DynamicBlock, FieldRendererProps } from '../../utils/resumeBlockTypes';
+import { DynamicBlock, FieldRendererProps } from '../../../utils/resumeBlockTypes';
 import DynamicBlockFieldRenderer from '../DynamicBlockFieldRenderer';
 
 export default function ResumeDynamicBlock(props: FieldRendererProps) {

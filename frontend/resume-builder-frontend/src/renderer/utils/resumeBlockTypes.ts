@@ -1,3 +1,5 @@
+import { Translations } from './translations';
+
 export type BaseInput = {
   type: string;
   title: string;
@@ -60,8 +62,6 @@ export type ResumeInput =
   | ImageInput
   | DynamicBlock
   | TemplateChooser;
-
-export type Translations = { [key: string]: string };
 
 export type FieldRendererProps = {
   resumeField: ResumeInput;

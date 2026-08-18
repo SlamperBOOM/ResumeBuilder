@@ -1,26 +1,16 @@
-import {
-  Alert,
-  Box,
-  Button,
-  colors,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Skeleton,
-  Slider,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, colors, Skeleton, Stack } from '@mui/material';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
-import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import { BDU_ACTION_OPEN_MAIN_SCREEN } from '../api/useActionApi';
 import { EditArea } from '../components/EditArea';
-import { EditScreenSchema } from '../utils/backendTypes';
+import { useTranslate } from '../utils/translations';
 import ResumePDFPreview, {
   ResumePreviewScaleEnum,
 } from '../components/ResumePDFPreview';
+import PreviewControls from '../components/PreviewControls';
+import EditScreenResponse from '../DTO/EditScreenResponse';
 
 type EditScreenProps = {
   appActions: AppActions;
@@ -45,55 +35,11 @@ function EditScreenSkeleton() {
   );
 }
 
-function EditScreenError(props: { onRetry: () => void }) {
-  const { onRetry } = props;
-  return (
-    <Box
-      sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 2,
-      }}
-    >
-      <Alert severity="error">Failed to load the resume editor.</Alert>
-      <Button variant="contained" onClick={onRetry}>
-        Retry
-      </Button>
-    </Box>
-  );
-}
-
-const previewScaleMarks = [
-  {
-    value: 0.1,
-    label: '10%',
-  },
-  {
-    value: 0.25,
-    label: '25%',
-  },
-  {
-    value: 0.5,
-    label: '50%',
-  },
-  {
-    value: 0.75,
-    label: '75%',
-  },
-  {
-    value: 1,
-    label: '100%',
-  },
-];
-
 export default function EditScreen(props: EditScreenProps) {
   const { appActions } = props;
   const { resumeId } = useParams();
-  const [editSchema, setEditSchema] = useState<SchemaResponseDTO>();
-  const schema = editSchema?.schema as EditScreenSchema;
+  const [editSchema, setEditSchema] = useState<EditScreenResponse | null>(null);
+  const schema = editSchema?.schema;
   const layout = (() => {
     try {
       const parsed = JSON.parse(
@@ -119,8 +65,21 @@ export default function EditScreen(props: EditScreenProps) {
       : ResumePreviewScaleEnum.FULL_HEIGHT;
   });
 
-  const [loadError, setLoadError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
+  const { translations } = editSchema ?? {};
+  const translateKey = useTranslate(translations);
+
+  const handlePreviewModeChange = useCallback(
+    (mode: ResumePreviewScaleEnum) => {
+      setPreviewMode(mode);
+      localStorage.setItem(previewModeKey, mode);
+    },
+    [],
+  );
+
+  const handlePreviewScaleChange = useCallback((scale: number) => {
+    setPreviewScale(scale);
+    localStorage.setItem(previewScaleKey, scale.toString());
+  }, []);
 
   useEffect(() => {
     setLoadError(false);
@@ -180,16 +139,12 @@ export default function EditScreen(props: EditScreenProps) {
               >
                 <Button
                   onClick={() => {
-                    appActions.performBduAction('open_main_screen', {
+                    appActions.performBduAction(BDU_ACTION_OPEN_MAIN_SCREEN, {
                       payload: { resume_id: resumeId },
                     });
                   }}
                 >
-                  {
-                    editSchema.translations[
-                      schema.edit_area.to_main_screen_title
-                    ]
-                  }
+                  {translateKey(schema.edit_area.to_main_screen_title)}
                 </Button>
 
                 <Button
@@ -205,7 +160,7 @@ export default function EditScreen(props: EditScreenProps) {
                     )
                   }
                 >
-                  {editSchema.translations[schema.edit_area.export_button.key]}
+                  {translateKey(schema.edit_area.export_button.key)}
                 </Button>
               </Stack>
 
@@ -260,101 +215,25 @@ export default function EditScreen(props: EditScreenProps) {
                 />
               </Box>
 
-              <Box
-                sx={{
-                  position: 'sticky',
-                  bottom: 0,
-                  p: 2,
-                  backgroundColor: 'background.paper',
-                  borderTop: 1,
-                  borderColor: 'divider',
-                  justifyContent: 'center',
-                  display: 'flex',
-                  zIndex: 1,
-                }}
-              >
-                <Stack direction="row" spacing={3} alignItems="center">
-                  <Typography>
-                    {
-                      editSchema.translations[
-                        schema.edit_area.preview.scale_title
-                      ]
-                    }
-                  </Typography>
-                  <RadioGroup
-                    row
-                    value={previewMode}
-                    onChange={(e) => {
-                      setPreviewMode(e.target.value);
-                      localStorage.setItem(previewModeKey, e.target.value);
-                    }}
-                  >
-                    <FormControlLabel
-                      value={ResumePreviewScaleEnum.FULL_WIDTH}
-                      control={<Radio />}
-                      label={
-                        editSchema.translations[
-                          schema.edit_area.preview.full_width_option_key
-                        ]
-                      }
-                    />
-                    <FormControlLabel
-                      value={ResumePreviewScaleEnum.FULL_HEIGHT}
-                      control={<Radio />}
-                      label={
-                        editSchema.translations[
-                          schema.edit_area.preview.full_height_option_key
-                        ]
-                      }
-                    />
-                    <FormControlLabel
-                      value={ResumePreviewScaleEnum.CUSTOM}
-                      control={<Radio />}
-                      label={
-                        editSchema.translations[
-                          schema.edit_area.preview.custom_option_key
-                        ]
-                      }
-                    />
-                  </RadioGroup>
-
-                  <Box
-                    sx={{
-                      flex: 1,
-                      maxWidth: 500,
-                      minWidth: 250,
-                    }}
-                  >
-                    <Slider
-                      min={0.1}
-                      max={1}
-                      step={0.1}
-                      disabled={previewMode !== ResumePreviewScaleEnum.CUSTOM}
-                      value={previewScale}
-                      onChange={(_, value) => {
-                        setPreviewScale(value);
-                        localStorage.setItem(previewScaleKey, value.toString());
-                      }}
-                      marks={previewScaleMarks}
-                    />
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      width: 48,
-                      textAlign: 'right',
-                      fontVariantNumeric: 'tabular-nums',
-                    }}
-                  >
-                    {`${previewScale * 100}%`}
-                  </Typography>
-                </Stack>
-              </Box>
+              <PreviewControls
+                scaleTitle={translateKey(schema.edit_area.preview.scale_title)}
+                fullWidthLabel={translateKey(
+                  schema.edit_area.preview.full_width_option_key,
+                )}
+                fullHeightLabel={translateKey(
+                  schema.edit_area.preview.full_height_option_key,
+                )}
+                customLabel={translateKey(
+                  schema.edit_area.preview.custom_option_key,
+                )}
+                previewMode={previewMode}
+                onPreviewModeChange={handlePreviewModeChange}
+                previewScale={previewScale}
+                onPreviewScaleChange={handlePreviewScaleChange}
+              />
             </Box>
           </Panel>
         </Group>
-      ) : loadError ? (
-        <EditScreenError onRetry={() => setRetryCount((c) => c + 1)} />
       ) : (
         <EditScreenSkeleton />
       )}

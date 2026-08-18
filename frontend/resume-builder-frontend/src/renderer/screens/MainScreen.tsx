@@ -1,9 +1,8 @@
 import { Alert, Box, Button, Skeleton } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
-import { MainScreenSchema } from '../utils/backendTypes';
-import { ResumeCard, SimpleResume } from '../components/ResumeCard';
-import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import { ResumeCard } from '../components/ResumeCard';
+import MainScreenResponse from '../DTO/MainScreenResponse';
 
 type MainScreenProps = {
   appActions: AppActions;
@@ -55,7 +54,7 @@ function MainScreenError(props: { onRetry: () => void }) {
 export default function MainScreen(props: MainScreenProps) {
   const { appActions } = props;
 
-  const [mainSchema, setMainSchema] = useState<SchemaResponseDTO | null>(null);
+  const [mainSchema, setMainSchema] = useState<MainScreenResponse | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
@@ -72,7 +71,7 @@ export default function MainScreen(props: MainScreenProps) {
       });
   }, [appActions, retryCount]);
 
-  const screenSchema = mainSchema?.schema as MainScreenSchema | undefined;
+  const screenSchema = mainSchema?.schema;
   const newButton = screenSchema?.create_new;
   const importButton = screenSchema?.import_button;
 
@@ -80,7 +79,7 @@ export default function MainScreen(props: MainScreenProps) {
     if (!mainSchema) {
       return [];
     }
-    const resumes = (mainSchema.payload as SimpleResume[]) ?? [];
+    const resumes = mainSchema.payload ?? [];
     return resumes.map((resume) => (
       <ResumeCard
         key={resume.resume_id}

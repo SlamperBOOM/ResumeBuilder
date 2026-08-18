@@ -13,10 +13,10 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   FieldRendererProps,
   TemplateChooser,
-} from '../../utils/resumeBlockTypes';
-import useSchemaApi from '../../api/useSchemaApi';
-import { TemplateInfo, TemplateSchema } from '../../DTO/TemplatesDTO';
-import ResumePDFPreview, { ResumePreviewScaleEnum } from '../ResumePDFPreview';
+} from '../../../utils/resumeBlockTypes';
+import useSchemaApi from '../../../api/useSchemaApi';
+import { TemplateInfo, TemplateSchema } from '../../../DTO/TemplatesDTO';
+import ResumePDFPreview, { ResumePreviewScaleEnum } from '../../ResumePDFPreview';
 
 const CARD_ASPECT_RATIO = 210 / 297;
 

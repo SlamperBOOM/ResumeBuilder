@@ -3,27 +3,27 @@ import { useCallback, useEffect, useRef } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import {
-  EditScreenSchema,
   ResumeFormValues,
   UpdatePayload,
 } from '../utils/backendTypes';
-import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
-import FieldRenderer from './FieldRenderer';
-import ResumeBlock from './input_components/ResumeBlock';
+import EditScreenResponse from '../DTO/EditScreenResponse';
+import FieldRenderer from './resume_edit/FieldRenderer';
+import ResumeBlock from './resume_edit/input_components/ResumeBlock';
 import { AppActions, ScreenSource } from '../utils/appActions';
+import { BDU_ACTION_UPDATE } from '../api/useActionApi';
 
 // Add additional locales for date here
 import 'dayjs/locale/ru';
 
 export type EditAreaProps = {
   appActions: AppActions;
-  editSchemaResponse: SchemaResponseDTO;
-  setEditSchema: (schema: SchemaResponseDTO) => void;
+  editSchemaResponse: EditScreenResponse;
+  setEditSchema: (schema: EditScreenResponse) => void;
 };
 
 export function EditArea(props: EditAreaProps) {
   const { appActions, editSchemaResponse, setEditSchema } = props;
-  const editSchema = editSchemaResponse.schema as EditScreenSchema;
+  const editSchema = editSchemaResponse.schema;
 
   const { translations } = editSchemaResponse;
   const resumeId = editSchemaResponse.payload.resume.resume_id;
@@ -59,7 +59,7 @@ export function EditArea(props: EditAreaProps) {
           payload: block,
         });
       });
-      appActions.performBduAction('update', {
+      appActions.performBduAction(BDU_ACTION_UPDATE, {
         payload: { update_payload: updatePayload },
         updateScreenPayload: {
           source: ScreenSource.EDIT,

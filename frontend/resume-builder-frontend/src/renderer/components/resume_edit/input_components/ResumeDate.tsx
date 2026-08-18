@@ -6,7 +6,7 @@ import {
   DateInput,
   DateVariant,
   FieldRendererProps,
-} from '../../utils/resumeBlockTypes';
+} from '../../../utils/resumeBlockTypes';
 
 export default function ResumeDate(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;

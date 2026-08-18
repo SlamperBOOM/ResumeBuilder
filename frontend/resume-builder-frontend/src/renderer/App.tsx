@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import LanguageDialog from './dialogs/LanguageDialog';
@@ -12,7 +12,7 @@ import {
   UpdateScreenPayload,
 } from './utils/appActions';
 import ActionResponseDTO from './DTO/ActionResponseDTO';
-import useActionApi from './api/useActionApi';
+import useActionApi, { BduActionName } from './api/useActionApi';
 import useFrontendAction, {
   appRoutes,
 } from './frontendAction/useFrontendAction';
@@ -153,7 +153,7 @@ export default function App() {
   const frontendActions = useFrontendAction(dialogActions, updateScreen);
 
   const performBduAction = useCallback(
-    (bduAction: string, payload?: BDUActionParams) => {
+    (bduAction: BduActionName | (string & {}), payload?: BDUActionParams) => {
       const action = actionApi[bduAction];
       if (!action) {
         console.error(`Unknown BDU action received: "${bduAction}"`);
@@ -182,7 +182,10 @@ export default function App() {
               updateScreenPayload: payload?.updateScreenPayload,
             });
             if (frontendActionResult) {
-              performBduAction(frontendActionResult);
+              performBduAction(
+                frontendActionResult.bduAction,
+                frontendActionResult.payload,
+              );
             }
           }
           return null;

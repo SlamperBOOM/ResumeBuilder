@@ -1,6 +1,6 @@
 import { Card, Typography } from '@mui/material';
-import { BlockSchema } from '../../utils/backendTypes';
-import { Translations } from '../../utils/resumeBlockTypes';
+import { BlockSchema } from '../../../utils/backendTypes';
+import { Translations } from '../../../utils/resumeBlockTypes';
 import FieldRenderer from '../FieldRenderer';
 
 type ResumeBlockProps = {
@@ -8,6 +8,8 @@ type ResumeBlockProps = {
   translations: Translations;
   resumeId: string;
 };
+
+const NON_FIELD_KEYS: Set<string> = new Set(['block_title']);
 
 export default function ResumeBlock(props: ResumeBlockProps) {
   const { schema, translations, resumeId } = props;
@@ -27,7 +29,7 @@ export default function ResumeBlock(props: ResumeBlockProps) {
         {translations[schema.block_title]}
       </Typography>
       {Object.keys(schema).map((fieldKey: string) => {
-        if (fieldKey === 'block_title') {
+        if (NON_FIELD_KEYS.has(fieldKey)) {
           return null;
         }
         const field = schema[fieldKey];

@@ -2,6 +2,10 @@ import { useCallback, useMemo } from 'react';
 import useApi from './useApi';
 import ActionResponseDTO from '../DTO/ActionResponseDTO';
 import { BDUActionPayload } from '../utils/backendTypes';
+import { actionResponseSchema } from './apiSchemasValidation';
+import { validatePickedPath } from './validatePickedPath';
+
+const baseAddress = 'action/';
 
 type BDUActionApi = {
   [action: string]: (
@@ -9,164 +13,151 @@ type BDUActionApi = {
   ) => Promise<ActionResponseDTO | null>;
 };
 
-function useActionApi() {
-  const baseAddress = 'action/';
+type ActionRequestConfig = {
+  method: 'get' | 'post' | 'delete';
+  buildUrl: (payload?: BDUActionPayload) => string;
+  buildBody?: (payload?: BDUActionPayload) => unknown;
+  isValid?: (payload?: BDUActionPayload) => boolean;
+  invalidMessage?: string;
+  returnsResponse?: boolean;
+};
+
+const actionConfigs = {
+  exit: {
+    method: 'post',
+    buildUrl: () => 'exit',
+  },
+  open_save_dir: {
+    method: 'get',
+    buildUrl: () => 'open_save_dir',
+    returnsResponse: false,
+  },
+  open_local_dir: {
+    method: 'post',
+    buildUrl: () => 'open_local_dir',
+    buildBody: (payload) => ({ dir_path: payload?.local_dir_path }),
+    isValid: (payload) => validatePickedPath(payload?.local_dir_path),
+    invalidMessage: 'Invalid or missing local directory path',
+    returnsResponse: false,
+  },
+  about: {
+    method: 'get',
+    buildUrl: () => 'about',
+  },
+  locales: {
+    method: 'get',
+    buildUrl: () => 'locales',
+  },
+  locale: {
+    method: 'post',
+    buildUrl: (payload) =>
+      `locale/set/${encodeURIComponent(payload?.locale ?? '')}`,
+    isValid: (payload) => Boolean(payload?.locale),
+    invalidMessage: 'No locale set',
+  },
+  create_new: {
+    method: 'post',
+    buildUrl: () => 'create_new',
+  },
+  duplicate: {
+    method: 'post',
+    buildUrl: (payload) =>
+      `duplicate/${encodeURIComponent(payload?.resume_id ?? '')}`,
+    isValid: (payload) => Boolean(payload?.resume_id),
+    invalidMessage: 'No resume id',
+  },
+  delete: {
+    method: 'delete',
+    buildUrl: (payload) =>
+      `delete/${encodeURIComponent(payload?.resume_id ?? '')}`,
+    isValid: (payload) => Boolean(payload?.resume_id),
+    invalidMessage: 'No resume id',
+  },
+  confirm_delete: {
+    method: 'delete',
+    buildUrl: (payload) =>
+      `delete/confirm/${encodeURIComponent(payload?.resume_id ?? '')}`,
+    isValid: (payload) => Boolean(payload?.resume_id),
+    invalidMessage: 'No resume id',
+  },
+  update: {
+    method: 'post',
+    buildUrl: () => 'update',
+    buildBody: (payload) => payload?.update_payload,
+    isValid: (payload) => Boolean(payload?.update_payload),
+    invalidMessage: 'No data for update',
+  },
+  load: {
+    method: 'get',
+    buildUrl: (payload) =>
+      `load/${encodeURIComponent(payload?.resume_id ?? '')}`,
+    isValid: (payload) => Boolean(payload?.resume_id),
+    invalidMessage: 'No resume id',
+  },
+  open_main_screen: {
+    method: 'post',
+    buildUrl: (payload) =>
+      `open_main_screen/${encodeURIComponent(payload?.resume_id ?? '')}`,
+    isValid: (payload) => Boolean(payload?.resume_id),
+    invalidMessage: 'No resume id',
+  },
+} satisfies Record<string, ActionRequestConfig>;
+
+export type BduActionName = keyof typeof actionConfigs | 'export' | 'import';
+
+export const BDU_ACTION_UPDATE: BduActionName = 'update';
+export const BDU_ACTION_OPEN_MAIN_SCREEN: BduActionName = 'open_main_screen';
+
+function createBduAction(
+  api: ReturnType<typeof useApi>,
+  config: ActionRequestConfig,
+): (payload?: BDUActionPayload) => Promise<ActionResponseDTO | null> {
+  return async (payload) => {
+    if (config.isValid && !config.isValid(payload)) {
+      console.log(config.invalidMessage ?? 'Invalid payload for BDU action');
+      return null;
+    }
+
+    const url = `${baseAddress}${config.buildUrl(payload)}`;
+    let data: ActionResponseDTO;
+
+    switch (config.method) {
+      case 'get':
+        data = await api.performGetRequest<ActionResponseDTO>(
+          url,
+          actionResponseSchema,
+        );
+        break;
+      case 'delete':
+        data = await api.performDeleteRequest<ActionResponseDTO>(
+          url,
+          actionResponseSchema,
+        );
+        break;
+      case 'post':
+      default:
+        data = await api.performPostRequest<ActionResponseDTO>(
+          url,
+          config.buildBody ? config.buildBody(payload) : null,
+          actionResponseSchema,
+        );
+        break;
+    }
+
+    return config.returnsResponse === false ? null : data;
+  };
+}
+
+export default function useActionApi() {
   const api = useApi();
 
-  const performExit = useCallback(
-    async (_payload?: BDUActionPayload) => {
-      return (await api.performPostRequest(
-        `${baseAddress}exit`,
-        null,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performOpenSaveDir = useCallback(
-    async (_payload?: BDUActionPayload) => {
-      await api.performGetRequest(`${baseAddress}open_save_dir`);
-      return null;
-    },
-    [api],
-  );
-
-  const performOpenLocalDir = useCallback(
-    async (payload?: BDUActionPayload) => {
-      await api.performPostRequest(`${baseAddress}open_local_dir`, {
-        dir_path: payload?.local_dir_path,
-      });
-      return null;
-    },
-    [api],
-  );
-
-  const performAbout = useCallback(
-    async (_payload?: BDUActionPayload) => {
-      return (await api.performGetRequest(
-        `${baseAddress}about`,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performGetLocales = useCallback(
-    async (_payload?: BDUActionPayload) => {
-      return (await api.performGetRequest(
-        `${baseAddress}locales`,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performChangeLocale = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.locale) {
-        console.log('No locale set');
-        return null;
-      }
-      return (await api.performPostRequest(
-        `${baseAddress}locale/set/${encodeURIComponent(payload.locale)}`,
-        null,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performCreateNew = useCallback(
-    async (_payload: BDUActionPayload) => {
-      return (await api.performPostRequest(
-        `${baseAddress}create_new`,
-        null,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performDuplicate = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.resume_id) {
-        console.log('No resume id');
-        return null;
-      }
-      return (await api.performPostRequest(
-        `${baseAddress}duplicate/${encodeURIComponent(payload.resume_id)}`,
-        null,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performDelete = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.resume_id) {
-        console.log('No resume id');
-        return null;
-      }
-      return (await api.performDeleteRequest(
-        `${baseAddress}delete/${encodeURIComponent(payload.resume_id)}`,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performConfirmDelete = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.resume_id) {
-        console.log('No resume id');
-        return null;
-      }
-      return (await api.performDeleteRequest(
-        `${baseAddress}delete/confirm/${encodeURIComponent(payload.resume_id)}`,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performUpdate = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.update_payload) {
-        console.log('No data for update');
-        return null;
-      }
-      return (await api.performPostRequest(
-        `${baseAddress}update`,
-        payload?.update_payload,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performLoad = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload?.resume_id) {
-        console.log('No resume id');
-        return null;
-      }
-      return (await api.performGetRequest(
-        `${baseAddress}load/${encodeURIComponent(payload.resume_id)}`,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
-  const performOpenMainScreen = useCallback(
-    async (payload: BDUActionPayload) => {
-      if (!payload || !payload.resume_id) {
-        console.log('No resume id');
-        return null;
-      }
-      return (await api.performPostRequest(
-        `${baseAddress}open_main_screen/${encodeURIComponent(payload.resume_id)}`,
-        null,
-      )) as ActionResponseDTO;
-    },
-    [api],
-  );
-
   const performExport = useCallback(
-    async (payload: BDUActionPayload) => {
+    async (payload?: BDUActionPayload) => {
       let resumeName = 'Resume';
+      if (!payload) {
+        console.log('No payload provided');
+        return null;
+      }
       if (payload.resume_name) {
         resumeName = payload.resume_name;
       }
@@ -175,65 +166,51 @@ function useActionApi() {
         console.log('No file chosen');
         return null;
       }
-      console.log(files);
-      return (await api.performPostRequest(`${baseAddress}export`, {
-        resume_id: payload?.resume_id,
-        save_path: files,
-      })) as ActionResponseDTO;
+      if (!validatePickedPath(files, { allowedExtensions: ['.pdf'] })) {
+        console.error('Rejected export path from dialog:', files);
+        return null;
+      }
+      return api.performPostRequest<ActionResponseDTO>(
+        `${baseAddress}export`,
+        {
+          resume_id: payload?.resume_id,
+          save_path: files,
+        },
+        actionResponseSchema,
+      );
     },
     [api],
   );
 
   const performImport = useCallback(
-    async (_payload: BDUActionPayload) => {
+    async (_payload?: BDUActionPayload) => {
       const files = await window.electron.openFileDialog();
       if (!files) {
         console.log('No file chosen');
         return null;
       }
-      console.log(files);
-      return (await api.performPostRequest(`${baseAddress}import`, {
-        file_name: files,
-      })) as ActionResponseDTO;
+      if (!validatePickedPath(files)) {
+        console.error('Rejected import path from dialog:', files);
+        return null;
+      }
+      return api.performPostRequest<ActionResponseDTO>(
+        `${baseAddress}import`,
+        {
+          file_name: files,
+        },
+        actionResponseSchema,
+      );
     },
     [api],
   );
 
   return useMemo(() => {
-    return {
-      exit: performExit,
-      open_save_dir: performOpenSaveDir,
-      open_local_dir: performOpenLocalDir,
-      about: performAbout,
-      locales: performGetLocales,
-      locale: performChangeLocale,
-      create_new: performCreateNew,
-      delete: performDelete,
-      confirm_delete: performConfirmDelete,
-      update: performUpdate,
-      duplicate: performDuplicate,
-      load: performLoad,
-      open_main_screen: performOpenMainScreen,
-      export: performExport,
-      import: performImport,
-    } as BDUActionApi;
-  }, [
-    performExit,
-    performOpenSaveDir,
-    performOpenLocalDir,
-    performAbout,
-    performGetLocales,
-    performChangeLocale,
-    performCreateNew,
-    performDelete,
-    performConfirmDelete,
-    performUpdate,
-    performDuplicate,
-    performLoad,
-    performOpenMainScreen,
-    performExport,
-    performImport,
-  ]);
+    const result = {} as BDUActionApi;
+    Object.entries(actionConfigs).forEach(([key, config]) => {
+      result[key] = createBduAction(api, config);
+    });
+    result.export = performExport;
+    result.import = performImport;
+    return result;
+  }, [api, performExport, performImport]);
 }
-
-export default useActionApi;

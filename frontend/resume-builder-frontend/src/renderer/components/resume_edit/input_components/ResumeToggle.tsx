@@ -1,10 +1,10 @@
-import { TextField } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FieldRendererProps, TextArea } from '../../utils/resumeBlockTypes';
+import { FormControlLabel, Switch } from '@mui/material';
+import { FieldRendererProps, Toggle } from '../../../utils/resumeBlockTypes';
 
-export default function ResumeTextArea(props: FieldRendererProps) {
+export default function ResumeToggle(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
-  const currentField = resumeField as TextArea;
+  const currentField = resumeField as Toggle;
 
   const { control } = useFormContext();
 
@@ -13,13 +13,11 @@ export default function ResumeTextArea(props: FieldRendererProps) {
       name={fieldNameOverride ?? currentField.resume_value}
       control={control}
       render={({ field: controllerField }) => (
-        <TextField
-          {...controllerField}
-          multiline
-          minRows={3}
+        <FormControlLabel
+          control={
+            <Switch {...controllerField} checked={controllerField.value} />
+          }
           label={translations[currentField.title]}
-          fullWidth
-          margin="normal"
         />
       )}
     />

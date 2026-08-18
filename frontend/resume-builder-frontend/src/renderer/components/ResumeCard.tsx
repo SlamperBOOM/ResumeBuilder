@@ -13,28 +13,20 @@ import {
 } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
 import { AppActions } from '../utils/appActions';
-import { MainScreenSchema } from '../utils/backendTypes';
+import { SimpleResume } from '../utils/backendTypes';
 import ResumePDFPreview, { ResumePreviewScaleEnum } from './ResumePDFPreview';
-
-export type SimpleResume = {
-  resume_id: string;
-  resume_name: string;
-  last_modification_date: string;
-  html_preview: string;
-  pdf_preview: string;
-};
+import MainScreenResponse from '../DTO/MainScreenResponse';
 
 export type ResumeCardProps = {
   resume: SimpleResume;
-  schema: SchemaResponseDTO;
+  schema: MainScreenResponse;
   appActions: AppActions;
 };
 
 export function ResumeCard(props: ResumeCardProps) {
   const { resume, schema, appActions } = props;
-  const screenSchema = schema.schema as MainScreenSchema;
+  const screenSchema = schema.schema;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

@@ -1,46 +1,62 @@
 import { useCallback, useMemo } from 'react';
+import type { ZodType } from 'zod';
 import useApi from './useApi';
-import SchemaResponseDTO from '../DTO/SchemaResponseDTO';
+import HeaderResponse from '../DTO/HeaderResponse';
+import LanguageDialogResponse from '../DTO/LanguageDialogResponse';
+import MainScreenResponse from '../DTO/MainScreenResponse';
+import EditScreenResponse from '../DTO/EditScreenResponse';
 import TemplatesDTO from '../DTO/TemplatesDTO';
+import {
+  schemaResponseSchema,
+  templatesResponseSchema,
+} from './apiSchemasValidation';
+
+const baseAddress = 'schema/';
 
 function useSchemaApi() {
-  const baseAddress = 'schema/';
   const api = useApi();
 
-  const getHeader = useCallback(async () => {
-    return (await api.performGetRequest(
-      `${baseAddress}header`,
-    )) as SchemaResponseDTO;
-  }, [api]);
-
-  const getLanguageDialog = useCallback(async () => {
-    return (await api.performGetRequest(
-      `${baseAddress}language_dialog`,
-    )) as SchemaResponseDTO;
-  }, [api]);
-
-  const getMainScreen = useCallback(async () => {
-    return (await api.performGetRequest(
-      `${baseAddress}main_screen`,
-    )) as SchemaResponseDTO;
-  }, [api]);
-
-  const getEditScreen = useCallback(
-    async (resumeId: string) => {
-      return (await api.performGetRequest(
-        `${baseAddress}edit_screen/${encodeURIComponent(resumeId)}`,
-      )) as SchemaResponseDTO;
-    },
+  const getSchema = useCallback(
+    <T>(path: string, schema: ZodType<unknown>): Promise<T> =>
+      api.performGetRequest<T>(`${baseAddress}${path}`, schema),
     [api],
   );
 
+  const getHeader = useCallback(
+    () => getSchema<HeaderResponse>('header', schemaResponseSchema),
+    [getSchema],
+  );
+
+  const getLanguageDialog = useCallback(
+    () =>
+      getSchema<LanguageDialogResponse>(
+        'language_dialog',
+        schemaResponseSchema,
+      ),
+    [getSchema],
+  );
+
+  const getMainScreen = useCallback(
+    () => getSchema<MainScreenResponse>('main_screen', schemaResponseSchema),
+    [getSchema],
+  );
+
+  const getEditScreen = useCallback(
+    (resumeId: string) =>
+      getSchema<EditScreenResponse>(
+        `edit_screen/${encodeURIComponent(resumeId)}`,
+        schemaResponseSchema,
+      ),
+    [getSchema],
+  );
+
   const getTemplates = useCallback(
-    async (resumeId: string) => {
-      return (await api.performGetRequest(
-        `${baseAddress}templates/${encodeURIComponent(resumeId)}`,
-      )) as TemplatesDTO;
-    },
-    [api],
+    (resumeId: string) =>
+      getSchema<TemplatesDTO>(
+        `templates/${encodeURIComponent(resumeId)}`,
+        templatesResponseSchema,
+      ),
+    [getSchema],
   );
 
   return useMemo(() => {

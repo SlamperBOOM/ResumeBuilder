@@ -47,6 +47,14 @@ export type MainScreenSchema = {
   import_button: BDUButtonSchema;
 };
 
+export type SimpleResume = {
+  resume_id: string;
+  resume_name: string;
+  last_modification_date: string;
+  html_preview: string;
+  pdf_preview: string;
+};
+
 export type HeaderSchema = {
   app_title: string;
   menu: BDUButtonSchema[];
@@ -78,6 +86,25 @@ export type EditScreenSchema = {
       custom_option_key: string;
     };
     resume_blocks: BlockSchema;
+  };
+};
+
+export type ResumeBlockFormat = {
+  '@type': string;
+  [field: string]: string | JSON | JSON[];
+};
+
+export type ResumePayload = {
+  preview: string;
+  resume: {
+    resume_id: string;
+    resume_locale: string;
+    resume_name: string;
+    template_name: string;
+    version_of_last_edit: string;
+    blocks: {
+      [block_name: string]: ResumeBlockFormat;
+    };
   };
 };
 

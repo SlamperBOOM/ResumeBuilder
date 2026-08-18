@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppDialogActions from '../dialogs/appDialogActions';
 import { UpdateScreenPayload } from '../utils/appActions';
+import FrontendActionEnum from './FrontendActionEnum';
 
 interface FrontendActionParams {
   payload?: JSON;
@@ -13,11 +14,14 @@ interface FrontendActionResult {
   payload?: JSON;
 }
 
-type FrontendActionApi = {
-  [action: string]: (
-    payload: FrontendActionParams,
-  ) => FrontendActionResult | null;
-};
+// Record<enum, ...> instead of a `[action: string]` index signature -
+// FrontendActionEnum is already kept in sync with the handlers below, so
+// this catches a missing/renamed handler at compile time instead of
+// silently returning `undefined` at runtime.
+type FrontendActionApi = Record<
+  FrontendActionEnum,
+  (payload: FrontendActionParams) => FrontendActionResult | null
+>;
 
 export const appRoutes = {
   mainScreen: '/',
@@ -123,18 +127,18 @@ function useFrontendAction(
     return null;
   }, []);
 
-  return useMemo(() => {
+  return useMemo<FrontendActionApi>(() => {
     return {
-      OPEN_MAIN_SCREEN: openMainScreen,
-      OPEN_EDIT_SCREEN: openEditScreen,
-      UPDATE_CURRENT_SCREEN: updateScreen,
-      SHOW_MESSAGE: performShowMessage,
-      SHOW_CONFIRMATION: performShowConfirmation,
-      SHOW_CUSTOM_DIALOG: performShowCustomDialog,
-      CLOSE: performClose,
-      OPEN_ABOUT: performOpenAbout,
-      LOCALE_DIALOG: performLocaleDialog,
-    } as FrontendActionApi;
+      [FrontendActionEnum.OPEN_MAIN_SCREEN]: openMainScreen,
+      [FrontendActionEnum.OPEN_EDIT_SCREEN]: openEditScreen,
+      [FrontendActionEnum.UPDATE_CURRENT_SCREEN]: updateScreen,
+      [FrontendActionEnum.SHOW_MESSAGE]: performShowMessage,
+      [FrontendActionEnum.SHOW_CONFIRMATION]: performShowConfirmation,
+      [FrontendActionEnum.SHOW_CUSTOM_DIALOG]: performShowCustomDialog,
+      [FrontendActionEnum.CLOSE]: performClose,
+      [FrontendActionEnum.OPEN_ABOUT]: performOpenAbout,
+      [FrontendActionEnum.LOCALE_DIALOG]: performLocaleDialog,
+    };
   }, [
     openEditScreen,
     openMainScreen,

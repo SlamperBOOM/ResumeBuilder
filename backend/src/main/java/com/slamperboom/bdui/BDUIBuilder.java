@@ -12,6 +12,7 @@ import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.htmlConverter.Template;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
+import com.slamperboom.settings.DynamicSettings;
 import com.slamperboom.translations.TranslationsManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -111,6 +112,7 @@ public class BDUIBuilder {
             );
         }
         payload.set("locales", locales);
+        payload.put("current_locale", DynamicSettings.getInstance().getLocale());
         result.set(BackendConstants.PAYLOAD_KEY, payload);
 
         return result;

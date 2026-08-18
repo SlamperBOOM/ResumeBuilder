@@ -1,6 +1,6 @@
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { DropDownList, FieldRendererProps } from '../../utils/resumeBlockTypes';
+import { DropDownList, FieldRendererProps } from '../../../utils/resumeBlockTypes';
 
 export default function ResumeDropDownList(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;

@@ -1,10 +1,10 @@
 import { TextField } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
-import { FieldRendererProps, TextInput } from '../../utils/resumeBlockTypes';
+import { FieldRendererProps, TextArea } from '../../../utils/resumeBlockTypes';
 
-export default function ResumeTextInput(props: FieldRendererProps) {
+export default function ResumeTextArea(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
-  const currentField = resumeField as TextInput;
+  const currentField = resumeField as TextArea;
 
   const { control } = useFormContext();
 
@@ -15,6 +15,8 @@ export default function ResumeTextInput(props: FieldRendererProps) {
       render={({ field: controllerField }) => (
         <TextField
           {...controllerField}
+          multiline
+          minRows={3}
           label={translations[currentField.title]}
           fullWidth
           margin="normal"

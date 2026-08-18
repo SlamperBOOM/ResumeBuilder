@@ -18,16 +18,11 @@ import {
 } from 'react';
 import { AppActions } from '../utils/appActions';
 import useSchemaApi from '../api/useSchemaApi';
-import { LanguageDialogSchema } from '../utils/backendTypes';
+import { LanguageVariant } from '../DTO/LanguageDialogResponse';
 
 type LanguageDialogProps = {
   showState: boolean;
   appActions: AppActions;
-};
-
-type LanguageVariant = {
-  locale: string;
-  key: string;
 };
 
 export default function LanguageDialog(props: LanguageDialogProps) {
@@ -47,7 +42,7 @@ export default function LanguageDialog(props: LanguageDialogProps) {
     schemaApi
       .getLanguageDialog()
       .then((schema) => {
-        const dialogSchema = schema.schema as LanguageDialogSchema;
+        const dialogSchema = schema.schema;
         setLocaleNodes(
           schema.payload.locales.map((locale: LanguageVariant) => {
             return (
@@ -60,6 +55,7 @@ export default function LanguageDialog(props: LanguageDialogProps) {
             );
           }),
         );
+        setCurrentLocale(schema.payload.current_locale);
         setDialogTitle(schema.translations[dialogSchema.title]);
         setCancelButtonText(schema.translations[dialogSchema.cancel_key]);
         setSaveButtonText(schema.translations[dialogSchema.save_key]);
