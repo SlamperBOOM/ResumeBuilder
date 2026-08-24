@@ -5,6 +5,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.utils.TempFilesManager;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.fontbox.ttf.NamingTable;
 import org.apache.fontbox.ttf.OS2WindowsMetricsTable;
 import org.apache.fontbox.ttf.TTFParser;
@@ -26,27 +27,14 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
+@ApplicationScoped
 public class FontsManager {
-    private static FontsManager fontsManagerInstance;
-
-    public static FontsManager getInstance() {
-        if (fontsManagerInstance == null) {
-            try {
-                fontsManagerInstance = new FontsManager();
-            } catch (IOException e) {
-                String message = "Error while reading fonts";
-                StartupExceptionHolder.addException(message);
-                throw new StartupException(message, e);
-            }
-        }
-        return fontsManagerInstance;
-    }
-
-    private static final String fontsPath = "templates/fonts/";
+    private static final String FONTS_PATH = "templates/fonts/";
     private static final String[] SUPPORTED_EXTENSIONS = {".ttf", ".otf"};
 
     private final Logger logger = Logger.getLogger(this.getClass());
     private final List<FontInfo> fonts;
+    private final TempFilesManager tempFilesManager;
 
     private String stripExtension(String name) {
         int dot = name.lastIndexOf('.');
@@ -107,9 +95,9 @@ public class FontsManager {
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             String name = entry.getName();
-            if (name.startsWith(fontsPath) && hasSupportedExtension(name)) {
+            if (name.startsWith(FONTS_PATH) && hasSupportedExtension(name)) {
                 try (InputStream is = jarFile.getInputStream(entry)) {
-                    File tempFile = TempFilesManager.getInstance().createNewTempFile();
+                    File tempFile = tempFilesManager.createNewTempFile();
                     try (OutputStream os = new FileOutputStream(tempFile)) {
                         is.transferTo(os);
                     }
@@ -126,7 +114,7 @@ public class FontsManager {
                 .filter(p -> hasSupportedExtension(p.toString()))
                 .forEach(p -> {
                     try {
-                        File tempFile = TempFilesManager.getInstance().createNewTempFile();
+                        File tempFile = tempFilesManager.createNewTempFile();
                         Files.copy(p, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         registerFontFile(tempFile, p.getFileName().toString());
                     } catch (IOException e) {
@@ -138,10 +126,11 @@ public class FontsManager {
         }
     }
 
-    private FontsManager() throws IOException {
+    FontsManager(TempFilesManager tempFilesManager) {
+        this.tempFilesManager = tempFilesManager;
         fonts = new ArrayList<>();
         try {
-            Enumeration<URL> resources = getClass().getClassLoader().getResources(fontsPath);
+            Enumeration<URL> resources = getClass().getClassLoader().getResources(FONTS_PATH);
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
                 if ("jar".equals(url.getProtocol())) {
@@ -152,10 +141,15 @@ public class FontsManager {
             }
         } catch (IOException | URISyntaxException | RuntimeException e) {
             logger.error("Unable to load fonts");
+            String message = "Error while reading fonts";
+            StartupExceptionHolder.addException(message);
+            throw new StartupException(message, e);
         }
 
         if (fonts.isEmpty()) {
             logger.error("No fonts were found. This should not happen");
+        } else {
+            logger.info("Fonts were loaded");
         }
     }
 

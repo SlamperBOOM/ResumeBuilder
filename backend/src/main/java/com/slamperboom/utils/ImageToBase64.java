@@ -10,6 +10,9 @@ public class ImageToBase64 {
 
     public static String imageToDataUri(String path) throws IOException {
         Path imagePath = Path.of(path);
+        if (!imagePath.toFile().exists()) {
+            throw new IOException("No image for this path");
+        }
 
         byte[] bytes = Files.readAllBytes(imagePath);
 

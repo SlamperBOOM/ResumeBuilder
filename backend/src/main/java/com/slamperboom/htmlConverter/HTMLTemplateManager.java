@@ -5,27 +5,21 @@ import com.slamperboom.exceptions.StartupExceptionHolder;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+@ApplicationScoped
 public class HTMLTemplateManager {
-    private static HTMLTemplateManager templateManagerInstance;
     private static final String TEMPLATES_PATH = "templates/";
     private static final String DEFAULT_TEMPLATE = "simple_template";
-
-    public static HTMLTemplateManager getInstance() {
-        if (templateManagerInstance == null) {
-            templateManagerInstance = new HTMLTemplateManager();
-        }
-        return templateManagerInstance;
-    }
 
     private final Properties templateMap;
     private final Configuration templateConfiguration;
 
-    private HTMLTemplateManager() {
+    HTMLTemplateManager() {
         templateConfiguration = new Configuration(Configuration.VERSION_2_3_31);
         templateConfiguration.setDefaultEncoding(StandardCharsets.UTF_8.name());
         templateConfiguration.setClassLoaderForTemplateLoading(Thread.currentThread().getContextClassLoader(), TEMPLATES_PATH);

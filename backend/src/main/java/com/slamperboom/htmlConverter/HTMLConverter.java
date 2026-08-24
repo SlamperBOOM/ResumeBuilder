@@ -10,6 +10,7 @@ import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.translations.TranslationsManager;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -17,8 +18,15 @@ import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
 
+@ApplicationScoped
 public class HTMLConverter {
-    private HTMLConverter(){}
+    private final FontsManager fontsManager;
+    private final HTMLTemplateManager htmlTemplateManager;
+
+    HTMLConverter(FontsManager fontsManager, HTMLTemplateManager htmlTemplateManager) {
+        this.fontsManager = fontsManager;
+        this.htmlTemplateManager = htmlTemplateManager;
+    }
 
     /**
      * Converts constructed resume to HTML document for showing to user
@@ -27,10 +35,10 @@ public class HTMLConverter {
      * @param templateName Name of template
      * @return HTML document as String
      */
-    private static String processResumeToHTML(IResume resume, String templateName) throws UserException {
+    private String processResumeToHTML(IResume resume, String templateName) throws UserException {
         Template template;
         try {
-            template = HTMLTemplateManager.getInstance().getTemplate(templateName);
+            template = htmlTemplateManager.getTemplate(templateName);
         } catch (IOException e) {
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
@@ -59,11 +67,11 @@ public class HTMLConverter {
         return writer.toString();
     }
 
-    public static String processResumeToHTML(IResume resume) throws UserException {
+    public String processResumeToHTML(IResume resume) throws UserException {
         return processResumeToHTML(resume, resume.getTemplateName());
     }
 
-    public static String processResumeToHTMLWithTemplate(
+    public String processResumeToHTMLWithTemplate(
             IResume resume,
             com.slamperboom.htmlConverter.Template template
     ) throws UserException {
@@ -75,7 +83,7 @@ public class HTMLConverter {
      * @param htmlString HTML representation of resume
      * @param savePath Where to store PDF document
      */
-    public static void saveHTMLtoPDF(String htmlString, String savePath) throws IOException {
+    public void saveHTMLtoPDF(String htmlString, String savePath) throws IOException {
         Document htmlDoc = Jsoup.parse(htmlString);
         htmlDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         htmlDoc.outputSettings().charset("UTF-16");
@@ -88,7 +96,7 @@ public class HTMLConverter {
             PdfRendererBuilder builder = new PdfRendererBuilder();
 
             builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
-            FontsManager.getInstance().registerFonts(builder);
+            fontsManager.registerFonts(builder);
             builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM); // A4
 
             builder.useFastMode();
@@ -97,7 +105,7 @@ public class HTMLConverter {
         }
     }
 
-    public static String saveHTMLtoPDFBase64(String htmlString) throws IOException {
+    public String saveHTMLtoPDFBase64(String htmlString) throws IOException {
         Document htmlDoc = Jsoup.parse(htmlString);
         htmlDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         htmlDoc.outputSettings().charset("UTF-16");
@@ -107,7 +115,7 @@ public class HTMLConverter {
             PdfRendererBuilder builder = new PdfRendererBuilder();
 
             builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
-            FontsManager.getInstance().registerFonts(builder);
+            fontsManager.registerFonts(builder);
             builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM); // A4
 
             builder.useFastMode();

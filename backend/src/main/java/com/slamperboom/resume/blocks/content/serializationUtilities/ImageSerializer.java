@@ -25,7 +25,11 @@ public class ImageSerializer extends StdSerializer<String> {
         if (serializerProvider.getConfig().isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)) {
             jsonGenerator.writeString(s);
         } else {
-            jsonGenerator.writeString(ImageToBase64.imageToDataUri(s));
+            try {
+                jsonGenerator.writeString(ImageToBase64.imageToDataUri(s));
+            } catch (IOException e) {
+                jsonGenerator.writeString(s);
+            }
         }
     }
 }

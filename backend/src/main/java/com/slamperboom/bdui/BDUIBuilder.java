@@ -31,13 +31,15 @@ public class BDUIBuilder {
     private final IResumeManager resumeManager;
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
+    private final HTMLConverter htmlConverter;
     private final ThreadPoolExecutor poolExecutor;
 
-    BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager) {
+    BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager, HTMLConverter htmlConverter) {
         this.resumeManager = resumeManager;
         this.dialogBuilders = dialogBuilders;
         this.schemaManager = schemaManager;
         this.objectMapper = new ObjectMapper();
+        this.htmlConverter = htmlConverter;
         objectMapper.registerModule(new JavaTimeModule());
 
         poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(TEMPLATE_COUNT);
@@ -78,7 +80,7 @@ public class BDUIBuilder {
                 throw new UserException(ErrorCode.RESUME_NOT_FOUND);
             }
             payload.set("resume", resume.getJson());
-            payload.put("preview", HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume)));
+            payload.put("preview", htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume)));
             result.set(BackendConstants.PAYLOAD_KEY, payload);
 
             logger.infof("Built edit screen for resume %s", resumeId);
@@ -138,8 +140,8 @@ public class BDUIBuilder {
 
                 String htmlTemplate;
                 try {
-                    htmlTemplate = HTMLConverter.processResumeToHTMLWithTemplate(resume, template);
-                    templateNode.put("preview", HTMLConverter.saveHTMLtoPDFBase64(htmlTemplate));
+                    htmlTemplate = htmlConverter.processResumeToHTMLWithTemplate(resume, template);
+                    templateNode.put("preview", htmlConverter.saveHTMLtoPDFBase64(htmlTemplate));
                 } catch (UserException | IOException e) {
                     logger.warnf("Unable to create preview for resume %s", resume.getId());
                     latch.countDown();

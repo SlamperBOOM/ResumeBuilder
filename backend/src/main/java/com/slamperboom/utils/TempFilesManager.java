@@ -1,5 +1,7 @@
 package com.slamperboom.utils;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
@@ -7,25 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@ApplicationScoped
 public class TempFilesManager {
-    private static TempFilesManager tempFilesManagerInstance;
-
-    public static TempFilesManager getInstance() throws IOException {
-        if (tempFilesManagerInstance == null) {
-            tempFilesManagerInstance = new TempFilesManager();
-        }
-        return tempFilesManagerInstance;
-    }
-
-    private static final String TMP_PATH = "temp/";
     private final Map<String, File> tempFileMap;
 
-    private TempFilesManager() throws IOException {
+    TempFilesManager() {
         tempFileMap = new HashMap<>(100);
-        File tempDir = new File(TMP_PATH);
-        if (!tempDir.exists() && !tempDir.isDirectory() && !tempDir.mkdir()) {
-            throw new IOException("Unable to create temp directory");
-        }
     }
 
     public File createNewTempFile() throws IOException {

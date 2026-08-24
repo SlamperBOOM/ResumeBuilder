@@ -37,9 +37,11 @@ public class ResumeManager implements IResumeManager{
     private final Map<String, Resume> resumes = new HashMap<>();
     private final Map<String, File> resumeFileMap = new HashMap<>();
     private final Map<String, Long> lastKnownModified = new HashMap<>();
+    private final HTMLConverter htmlConverter;
     private final ThreadPoolExecutor poolExecutor;
 
-    ResumeManager() {
+    ResumeManager(HTMLConverter htmlConverter) {
+        this.htmlConverter = htmlConverter;
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         readAllResumes();
@@ -62,7 +64,7 @@ public class ResumeManager implements IResumeManager{
                             LocalDateTime.ofInstant(
                                     Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
                             ),
-                            HTMLConverter.saveHTMLtoPDFBase64(HTMLConverter.processResumeToHTML(resume))
+                            htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume))
                     );
                 } catch (UserException | IOException e) {
                     logger.errorf("Unable to build simple resume object for %s", resume.getId());
@@ -152,7 +154,7 @@ public class ResumeManager implements IResumeManager{
             boolean changedOnDisk = knownModified != null && onDiskModified > knownModified;
 
             if (!isNewToUs && !changedOnDisk) {
-                continue; // already in sync with what's in memory - skip re-parsing it
+                continue; // already in sync with what's in memory - skip reparsing it
             }
 
             try {
@@ -260,9 +262,9 @@ public class ResumeManager implements IResumeManager{
     @Override
     public void exportResumeToPDF(String resumeID, String savePath) throws UserException {
         IResume resume = getResume(resumeID);
-        String htmlResume = HTMLConverter.processResumeToHTML(resume);
+        String htmlResume = htmlConverter.processResumeToHTML(resume);
         try {
-            HTMLConverter.saveHTMLtoPDF(htmlResume, savePath);
+            htmlConverter.saveHTMLtoPDF(htmlResume, savePath);
         } catch (IOException e) {
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
