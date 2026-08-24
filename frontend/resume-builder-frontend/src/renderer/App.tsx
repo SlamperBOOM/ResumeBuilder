@@ -16,7 +16,6 @@ import useActionApi, { BduActionName } from './api/useActionApi';
 import useFrontendAction, {
   appRoutes,
 } from './frontendAction/useFrontendAction';
-import ErrorScreen from './screens/ErrorScreen';
 import EditScreen from './screens/EditScreen';
 import useSchemaApi from './api/useSchemaApi';
 import InfoDialog from './dialogs/InfoDialog';
@@ -26,6 +25,7 @@ import {
   CustomDialogSchema,
 } from './utils/backendTypes';
 import CustomDialog from './dialogs/CustomDialog';
+import RouteNotFoundScreen from './screens/RouteNotFoundScreen';
 
 export default function App() {
   // language dialog
@@ -245,7 +245,7 @@ export default function App() {
             path={appRoutes.editScreen}
             element={<EditScreen appActions={appActions} />}
           />
-          <Route path="*" element={<ErrorScreen />} />
+          <Route path="*" element={<RouteNotFoundScreen />} />
         </Routes>
       </HeaderWrapper>
     </>

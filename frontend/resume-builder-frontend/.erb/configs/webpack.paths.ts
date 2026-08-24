@@ -21,7 +21,10 @@ const distPath = path.join(appPath, 'dist');
 const distMainPath = path.join(distPath, 'main');
 const distRendererPath = path.join(distPath, 'renderer');
 
-const buildPath = path.join(releasePath, 'build');
+const rootPackageJson = require(path.join(rootPath, 'package.json'));
+const outputDir =
+  rootPackageJson?.build?.directories?.output ?? 'release/build';
+const buildPath = path.resolve(rootPath, outputDir);
 
 export default {
   rootPath,

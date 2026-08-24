@@ -14,6 +14,11 @@ export const actionResponseSchema = z
   })
   .passthrough();
 
+export const optionalActionResponseSchema = z.preprocess(
+  (val) => (val === '' || val === undefined ? null : val),
+  actionResponseSchema.nullable(),
+);
+
 export const schemaResponseSchema = z
   .object({
     schema: z.record(z.string(), z.unknown()),

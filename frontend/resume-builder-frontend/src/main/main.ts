@@ -8,20 +8,17 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import path from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import axios from 'axios';
 import windowStateKeeper from 'electron-window-state';
 import { getFrontendPort, resolveHtmlPath } from './util';
+import { startBackend, stopBackend, isBackendRunning } from './backend-manager';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
-import { appTitle, backendPort } from '../renderer/utils/consts';
+import { appTitle, defaultBackendPort } from '../renderer/utils/consts';
 import ActionResponseDTO from '../renderer/DTO/ActionResponseDTO';
-
-const javaPath = path.join(process.resourcesPath, 'jre', 'bin', 'java.exe');
-const jarPath = path.join(process.resourcesPath, 'backend', 'quarkus-run.jar');
 
 class AppUpdater {
   constructor() {
@@ -32,26 +29,28 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-const backend: ChildProcessWithoutNullStreams | null = null;
 
-function startBackend(): ChildProcessWithoutNullStreams | null {
+let activeBackendPort: number | null = null;
+
+async function launchBackend(): Promise<void> {
   try {
-    return spawn(
-      javaPath,
-      [
+    activeBackendPort = await startBackend({
+      preferredPort: Number(defaultBackendPort),
+      extraJvmArgs: [
         '-Xms128m',
         '-Xmx512m',
-        `-Dquarkus.http.port=${backendPort}`,
         `-Dquarkus.http.cors.origins=http://localhost:${getFrontendPort()}`,
-        '-jar',
-        jarPath,
       ],
-      {
-        stdio: 'pipe',
-      },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    log.error('Failed to start backend', error);
+    dialog.showErrorBox(
+      appTitle,
+      `Unable to start backend part of the app.\n\n${message}\n\nApplication will be closed.`,
     );
-  } catch {
-    return null;
+    app.quit();
+    throw error;
   }
 }
 
@@ -92,8 +91,6 @@ const createWindow = async () => {
   const getAssetPath = (...paths: string[]): string => {
     return path.join(RESOURCES_PATH, ...paths);
   };
-
-  // backend = startBackend();
 
   const windowState = windowStateKeeper({
     defaultWidth: 1200,
@@ -197,11 +194,19 @@ ipcMain.handle('open-image-dialog', async () => {
   return result;
 });
 
+ipcMain.handle('get-backend-port', () => activeBackendPort);
+
 app.on('before-quit', async (event) => {
-  if (backend) {
+  if (!isBackendRunning()) {
+    return;
+  }
+
+  event.preventDefault();
+
+  try {
     const result = (
       await axios
-        .post(`http://localhost:${backendPort}/action/exit`)
+        .post(`http://localhost:${activeBackendPort}/action/exit`)
         .catch((error) => {
           const message = axios.isAxiosError(error)
             ? (error.response?.data ?? error.message)
@@ -209,12 +214,17 @@ app.on('before-quit', async (event) => {
           throw new Error(message);
         })
     ).data as ActionResponseDTO;
+
     if (result?.frontend_action === FrontendActionEnum.CLOSE) {
-      backend?.kill();
+      await stopBackend();
+      app.exit();
     } else {
-      event.preventDefault();
       console.log('Not able to close backend');
     }
+  } catch (error) {
+    log.error('Failed to gracefully stop backend, killing it', error);
+    await stopBackend();
+    app.exit();
   }
 });
 
@@ -228,7 +238,8 @@ app.on('window-all-closed', () => {
 
 app
   .whenReady()
-  .then(() => {
+  .then(async () => {
+    await launchBackend();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

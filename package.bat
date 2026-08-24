@@ -2,11 +2,11 @@
 setlocal enabledelayedexpansion
 
 set JAVA_VERSION=17
-set TARGET_DIR=jre
+set TARGET_DIR=jre\win-x64
 
 echo Detecting platform...
 
-set OS=windows
+set ADOPTIUM_OS=windows
 set ARCH=%PROCESSOR_ARCHITECTURE%
 
 if "%ARCH%"=="AMD64" (
@@ -16,7 +16,7 @@ if "%ARCH%"=="AMD64" (
     exit /b 1
 )
 
-set URL=https://api.adoptium.net/v3/binary/latest/%JAVA_VERSION%/ga/%OS%/%ARCH_NAME%/jre/hotspot/normal/eclipse
+set URL=https://api.adoptium.net/v3/binary/latest/%JAVA_VERSION%/ga/%ADOPTIUM_OS%/%ARCH_NAME%/jre/hotspot/normal/eclipse
 
 echo Downloading JRE from:
 echo   %URL%
@@ -29,7 +29,7 @@ if exist %TARGET_DIR% (
 )
 mkdir %TARGET_DIR%
 
-set ARCHIVE=jre.zip
+set ARCHIVE=jre-win-x64.zip
 
 REM -----------------------------
 REM Download jre
@@ -57,14 +57,17 @@ echo JRE successfully installed to .\%TARGET_DIR%
 echo Building backend
 
 cd backend
-set JAVA_HOME=%~dp0jre\
-call ./gradlew.bat :quarkusBuild
+set JAVA_HOME=%~dp0jre\win-x64\
+call ./gradlew.bat :quarkusBuild --no-daemon
+cd ..
 
 echo Backend built
-echo ""
+
+ren "%TARGET_DIR%\bin\java.exe" "ResumeBuilderBackend.exe"
+
 echo Building frontend
 
-cd ../frontend/resume-builder-frontend/
+cd frontend/resume-builder-frontend/
 call npm install && npm run package
 
 echo Frontend built

@@ -1,9 +1,16 @@
 import axios from 'axios';
 import { useCallback, useMemo } from 'react';
 import type { ZodError, ZodType } from 'zod';
-import { backendPort } from '../utils/consts';
 
 const REQUEST_TIMEOUT_MS = 15000;
+
+let baseAddressPromise: Promise<string> | null = null;
+function getBaseAddress(): Promise<string> {
+  baseAddressPromise ??= window.electron
+    .getBackendPort()
+    .then((port) => `http://localhost:${port}/`);
+  return baseAddressPromise;
+}
 
 export class ApiValidationError extends Error {
   readonly received: unknown;
@@ -34,11 +41,10 @@ function describeZodError(
 }
 
 export default function useApi() {
-  const baseAddress = `http://localhost:${backendPort}/`;
-
   const performGetRequest = useCallback(
     async <T = unknown>(url: string, schema?: ZodType<unknown>): Promise<T> => {
       try {
+        const baseAddress = await getBaseAddress();
         const { data } = await axios.get(baseAddress + url, {
           timeout: REQUEST_TIMEOUT_MS,
         });
@@ -60,7 +66,7 @@ export default function useApi() {
         throw new Error(extractErrorMessage(error));
       }
     },
-    [baseAddress],
+    [],
   );
 
   const performPostRequest = useCallback(
@@ -70,6 +76,7 @@ export default function useApi() {
       schema?: ZodType<unknown>,
     ): Promise<T> => {
       try {
+        const baseAddress = await getBaseAddress();
         const { data } = await axios.post(baseAddress + url, body, {
           timeout: REQUEST_TIMEOUT_MS,
         });
@@ -91,12 +98,13 @@ export default function useApi() {
         throw new Error(extractErrorMessage(error));
       }
     },
-    [baseAddress],
+    [],
   );
 
   const performDeleteRequest = useCallback(
     async <T = unknown>(url: string, schema?: ZodType<unknown>): Promise<T> => {
       try {
+        const baseAddress = await getBaseAddress();
         const { data } = await axios.delete(baseAddress + url, {
           timeout: REQUEST_TIMEOUT_MS,
         });
@@ -118,7 +126,7 @@ export default function useApi() {
         throw new Error(extractErrorMessage(error));
       }
     },
-    [baseAddress],
+    [],
   );
 
   return useMemo(() => {

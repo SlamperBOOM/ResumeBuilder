@@ -1,4 +1,4 @@
-import { Alert, Box, Button, colors, Skeleton, Stack } from '@mui/material';
+import { Box, Button, colors, Skeleton, Stack } from '@mui/material';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
@@ -82,7 +82,6 @@ export default function EditScreen(props: EditScreenProps) {
   }, []);
 
   useEffect(() => {
-    setLoadError(false);
     appActions
       .updateCurrentScreen({
         source: ScreenSource.EDIT,
@@ -91,9 +90,9 @@ export default function EditScreen(props: EditScreenProps) {
       })
       .catch((error) => {
         console.error('Failed to load edit screen', error);
-        setLoadError(true);
+        window.location.reload();
       });
-  }, [appActions, resumeId, retryCount]);
+  }, [appActions, resumeId]);
 
   return (
     <Box

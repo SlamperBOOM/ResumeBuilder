@@ -24,9 +24,18 @@ const electronHandler = {
   },
 };
 
-contextBridge.exposeInMainWorld('electron', {
+const exposedApi = {
   openSaveFileDialog: (resumeName: string) =>
-    ipcRenderer.invoke('open-save-file-dialog', resumeName),
-  openFileDialog: () => ipcRenderer.invoke('open-file-dialog'),
+    ipcRenderer.invoke('open-save-file-dialog', resumeName) as Promise<
+      string | undefined
+    >,
+  openFileDialog: () =>
+    ipcRenderer.invoke('open-file-dialog') as Promise<string | undefined>,
   openImageDialog: () => ipcRenderer.invoke('open-image-dialog'),
-});
+  getBackendPort: () =>
+    ipcRenderer.invoke('get-backend-port') as Promise<number>,
+};
+
+export type ElectronHandler = typeof exposedApi;
+
+contextBridge.exposeInMainWorld('electron', exposedApi);

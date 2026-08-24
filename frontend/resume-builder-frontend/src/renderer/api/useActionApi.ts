@@ -2,7 +2,10 @@ import { useCallback, useMemo } from 'react';
 import useApi from './useApi';
 import ActionResponseDTO from '../DTO/ActionResponseDTO';
 import { BDUActionPayload } from '../utils/backendTypes';
-import { actionResponseSchema } from './apiSchemasValidation';
+import {
+  actionResponseSchema,
+  optionalActionResponseSchema,
+} from './apiSchemasValidation';
 import { validatePickedPath } from './validatePickedPath';
 
 const baseAddress = 'action/';
@@ -19,7 +22,7 @@ type ActionRequestConfig = {
   buildBody?: (payload?: BDUActionPayload) => unknown;
   isValid?: (payload?: BDUActionPayload) => boolean;
   invalidMessage?: string;
-  returnsResponse?: boolean;
+  optionalResponse?: boolean;
 };
 
 const actionConfigs = {
@@ -30,7 +33,7 @@ const actionConfigs = {
   open_save_dir: {
     method: 'get',
     buildUrl: () => 'open_save_dir',
-    returnsResponse: false,
+    optionalResponse: true,
   },
   open_local_dir: {
     method: 'post',
@@ -38,7 +41,7 @@ const actionConfigs = {
     buildBody: (payload) => ({ dir_path: payload?.local_dir_path }),
     isValid: (payload) => validatePickedPath(payload?.local_dir_path),
     invalidMessage: 'Invalid or missing local directory path',
-    returnsResponse: false,
+    optionalResponse: true,
   },
   about: {
     method: 'get',
@@ -119,32 +122,35 @@ function createBduAction(
     }
 
     const url = `${baseAddress}${config.buildUrl(payload)}`;
-    let data: ActionResponseDTO;
+    const schema = config.optionalResponse
+      ? optionalActionResponseSchema
+      : actionResponseSchema;
+    let data: ActionResponseDTO | null;
 
     switch (config.method) {
       case 'get':
-        data = await api.performGetRequest<ActionResponseDTO>(
+        data = await api.performGetRequest<ActionResponseDTO | null>(
           url,
-          actionResponseSchema,
+          schema,
         );
         break;
       case 'delete':
-        data = await api.performDeleteRequest<ActionResponseDTO>(
+        data = await api.performDeleteRequest<ActionResponseDTO | null>(
           url,
-          actionResponseSchema,
+          schema,
         );
         break;
       case 'post':
       default:
-        data = await api.performPostRequest<ActionResponseDTO>(
+        data = await api.performPostRequest<ActionResponseDTO | null>(
           url,
           config.buildBody ? config.buildBody(payload) : null,
-          actionResponseSchema,
+          schema,
         );
         break;
     }
 
-    return config.returnsResponse === false ? null : data;
+    return data;
   };
 }
 
