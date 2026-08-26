@@ -1,3 +1,4 @@
 # ignore downloaded jre
 /jre
 /release
+/.tmp-node

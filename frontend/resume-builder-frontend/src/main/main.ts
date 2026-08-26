@@ -10,7 +10,6 @@
  */
 import path from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import axios from 'axios';
 import windowStateKeeper from 'electron-window-state';
@@ -19,14 +18,6 @@ import { startBackend, stopBackend, isBackendRunning } from './backend-manager';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
 import { appTitle, defaultBackendPort } from '../renderer/utils/consts';
 import ActionResponseDTO from '../renderer/DTO/ActionResponseDTO';
-
-class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -149,10 +140,6 @@ const createWindow = async () => {
     }
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
 };
 
 ipcMain.handle('open-save-file-dialog', async (event, resumeName: string) => {

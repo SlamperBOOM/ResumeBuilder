@@ -1,22 +1,27 @@
 #!/bin/bash
 set -euo pipefail
 
+PROJECT_ROOT="$(pwd)"
+
 JAVA_VERSION=17
+NODE_MAJOR=24
 
 OS="$(uname -s)"
 echo "Detected OS=$OS"
 
+HOST_ARCH_RAW="$(uname -m)"
+if [[ "$HOST_ARCH_RAW" == "x86_64" ]]; then
+  HOST_EB_ARCH="x64"
+elif [[ "$HOST_ARCH_RAW" == "arm64" || "$HOST_ARCH_RAW" == "aarch64" ]]; then
+  HOST_EB_ARCH="arm64"
+else
+  echo "Unsupported ARCH: $HOST_ARCH_RAW"
+  exit 1
+fi
+
 if [[ "$OS" == "Linux" ]]; then
   PLATFORM="linux"
-  HOST_ARCH="$(uname -m)"
-  if [[ "$HOST_ARCH" == "x86_64" ]]; then
-    ARCHS_TO_FETCH=("x64")
-  elif [[ "$HOST_ARCH" == "arm64" || "$HOST_ARCH" == "aarch64" ]]; then
-    ARCHS_TO_FETCH=("arm64")
-  else
-    echo "Unsupported ARCH: $HOST_ARCH"
-    exit 1
-  fi
+  ARCHS_TO_FETCH=("$HOST_EB_ARCH")
 elif [[ "$OS" == "Darwin" ]]; then
   PLATFORM="mac"
   ARCHS_TO_FETCH=("x64" "arm64")
@@ -35,6 +40,22 @@ download_file() {
     curl -fL "$url" -o "$output"
   elif command -v python3 >/dev/null 2>&1; then
     python3 -c "import urllib.request, sys; urllib.request.urlretrieve(sys.argv[1], sys.argv[2])" "$url" "$output"
+  else
+    echo "Not found wget/curl/python3 - cannot download jre." >&2
+    echo "Please install one of these" >&2
+    exit 1
+  fi
+}
+
+fetch_text() {
+  local url="$1"
+
+  if command -v wget >/dev/null 2>&1; then
+    wget -qO- "$url"
+  elif command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$url"
+  elif command -v python3 >/dev/null 2>&1; then
+    python3 -c "import urllib.request, sys; sys.stdout.write(urllib.request.urlopen(sys.argv[1]).read().decode())" "$url"
   else
     echo "Not found wget/curl/python3 - cannot download jre." >&2
     echo "Please install one of these" >&2
@@ -76,6 +97,42 @@ rename_jre_binary() {
   chmod +x "$target_dir/bin/resume-builder-backend"
 }
 
+# Node.js/npm are only needed to build the frontend - they are not
+# bundled into the final app (Electron ships its own JS runtime), so we
+# download a portable copy into a temp folder and remove it right after
+# the build (see the call below), instead of relying on a suitable
+# Node.js already being installed on the machine.
+download_node() {
+  local node_os="$PLATFORM"
+  if [[ "$PLATFORM" == "mac" ]]; then
+    node_os="darwin" # у Node.js macOS называется "darwin", не "mac"
+  fi
+
+  local dist_url="https://nodejs.org/dist/latest-v${NODE_MAJOR}.x"
+  local shasums
+  shasums="$(fetch_text "${dist_url}/SHASUMS256.txt")"
+
+  local filename
+  filename="$(echo "$shasums" | grep -oE "node-v[0-9]+\.[0-9]+\.[0-9]+-${node_os}-${HOST_EB_ARCH}\.tar\.gz" | head -n1)"
+
+  if [[ -z "$filename" ]]; then
+    echo "Could not determine the latest Node.js version for ${node_os}-${HOST_EB_ARCH}" >&2
+    exit 1
+  fi
+
+  echo "Downloading Node.js (${filename}) from:"
+  echo "  ${dist_url}/${filename}"
+
+  rm -rf "$PROJECT_ROOT/.tmp-node"
+  mkdir -p "$PROJECT_ROOT/.tmp-node"
+
+  download_file "${dist_url}/${filename}" "$filename"
+  tar -xzf "$filename" --strip-components=1 -C "$PROJECT_ROOT/.tmp-node"
+  rm "$filename"
+
+  echo "Node.js installed to $PROJECT_ROOT/.tmp-node"
+}
+
 for arch in "${ARCHS_TO_FETCH[@]}"; do
   download_jre "$arch"
 done
@@ -95,7 +152,14 @@ done
 
 echo "Building frontend"
 
+download_node
+export PATH="$PROJECT_ROOT/.tmp-node/bin:$PATH"
+
 cd frontend/resume-builder-frontend/
 npm install && npm run package
+cd "$PROJECT_ROOT"
 
 echo "Frontend built"
+
+echo "Removing portable Node.js"
+rm -rf "$PROJECT_ROOT/.tmp-node"
