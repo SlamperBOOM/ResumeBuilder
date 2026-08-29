@@ -1,4 +1,4 @@
-package com.slamperboom.translations;
+package com.slamperboom.managers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

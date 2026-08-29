@@ -25,5 +25,9 @@
     "import_button": {
         "key": "import_title",
         "action": "import"
+    },
+    "empty_state": {
+        "title": "empty_state.title",
+        "subtitle": "empty_state.subtitle"
     }
 }

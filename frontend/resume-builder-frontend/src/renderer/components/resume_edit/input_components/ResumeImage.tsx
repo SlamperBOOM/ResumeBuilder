@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Box, Button, Card, CardActions, Typography } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { FieldRendererProps, ImageInput } from '../../../utils/resumeBlockTypes';
+import {
+  FieldRendererProps,
+  ImageInput,
+} from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 import { validatePickedPath } from '../../../api/validatePickedPath';
 
 // Converts an absolute filesystem path (Windows `C:\...` or POSIX `/...`)
@@ -18,6 +22,7 @@ function toFileUrl(path: string): string {
 export default function ResumeImage(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
   const currentField = resumeField as ImageInput;
+  const translateKey = useTranslate(translations);
 
   const { control } = useFormContext();
 
@@ -37,7 +42,7 @@ export default function ResumeImage(props: FieldRendererProps) {
           }}
         >
           <Typography variant="h6" sx={{ textAlign: 'center', padding: 1 }}>
-            {translations[currentField.title]}
+            {translateKey(currentField.title)}
           </Typography>
           {controllerField.value ? (
             erroredValue === controllerField.value ? (
@@ -56,7 +61,7 @@ export default function ResumeImage(props: FieldRendererProps) {
               <Box
                 component="img"
                 src={toFileUrl(controllerField.value)}
-                alt={translations[currentField.title]}
+                alt={translateKey(currentField.title)}
                 onError={() => setErroredValue(controllerField.value)}
                 sx={{
                   display: 'block',
@@ -76,7 +81,7 @@ export default function ResumeImage(props: FieldRendererProps) {
                 opacity: '50%',
               }}
             >
-              {translations[currentField.empty_text_key]}
+              {translateKey(currentField.empty_text_key)}
             </Typography>
           )}
 

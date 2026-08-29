@@ -1,23 +1,24 @@
 import {
   ConfirmationDialogSchema,
   CustomDialogSchema,
+  InfoModalSchema,
 } from '../utils/backendTypes';
 
 type AppDialogActions = {
   languageDialog: {
-    show: () => void;
+    open: () => void;
     close: () => void;
   };
   infoModal: {
-    show: (title: string | undefined, text: string) => void;
+    open: (schema: InfoModalSchema) => void;
     close: () => void;
   };
   confirmationModal: {
-    show: (schema: ConfirmationDialogSchema) => void;
+    open: (schema: ConfirmationDialogSchema) => void;
     close: () => void;
   };
   customModal: {
-    show: (schema: CustomDialogSchema) => void;
+    open: (schema: CustomDialogSchema) => void;
     close: () => void;
   };
 };

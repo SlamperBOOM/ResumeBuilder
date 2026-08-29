@@ -1,5 +1,5 @@
 import { LanguageDialogSchema } from '../utils/backendTypes';
-import { Translations } from '../utils/resumeBlockTypes';
+import { Translations } from '../utils/translations';
 
 export type LanguageVariant = {
   locale: string;

@@ -7,32 +7,37 @@ import {
   DialogTitle,
 } from '@mui/material';
 import AppDialogActions from './appDialogActions';
+import { InfoModalSchema } from '../utils/backendTypes';
 
 type InfoDialogProps = {
   showState: boolean;
-  title: string | undefined;
-  text: string;
+  schema: InfoModalSchema | undefined;
   dialogActions: AppDialogActions;
 };
 
 export default function InfoDialog(props: InfoDialogProps) {
-  const { showState, title, text, dialogActions } = props;
+  const { showState, schema, dialogActions } = props;
 
   return (
-    <Dialog open={showState}>
-      {title && <DialogTitle>{title}</DialogTitle>}
-      <DialogContent dividers>
-        <DialogContentText>{text}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          autoFocus
-          variant="contained"
-          onClick={dialogActions.infoModal.close}
-        >
-          OK
-        </Button>
-      </DialogActions>
-    </Dialog>
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    <>
+      {schema && (
+        <Dialog open={showState}>
+          {schema.title && <DialogTitle>{schema.title}</DialogTitle>}
+          <DialogContent dividers>
+            <DialogContentText>{schema.text}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              autoFocus
+              variant="contained"
+              onClick={dialogActions.infoModal.close}
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </>
   );
 }

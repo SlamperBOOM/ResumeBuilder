@@ -1,5 +1,5 @@
 import { FieldRendererProps } from '../../utils/resumeBlockTypes';
-import baseFieldRegistry from '../../utils/fieldRegistry';
+import baseFieldRegistry from './fieldRegistry';
 import ResumeDynamicBlock from './input_components/ResumeDynamicBlock';
 import ResumeTemplateField from './input_components/ResumeTemplateField';
 

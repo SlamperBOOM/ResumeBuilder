@@ -72,7 +72,7 @@ function useFrontendAction(
         console.log('No data for confirmation dialog');
         return null;
       }
-      dialogActions.confirmationModal.show(params.payload);
+      dialogActions.confirmationModal.open(params.payload);
       return null;
     },
     [dialogActions.confirmationModal],
@@ -84,7 +84,7 @@ function useFrontendAction(
         console.log('No data for message dialog');
         return null;
       }
-      dialogActions.infoModal.show(params.payload.title, params.payload.text);
+      dialogActions.infoModal.open(params.payload);
       return null;
     },
     [dialogActions.infoModal],
@@ -96,7 +96,7 @@ function useFrontendAction(
         console.log('No data for custom dialog');
         return null;
       }
-      dialogActions.customModal.show(params.payload);
+      dialogActions.customModal.open(params.payload);
       return null;
     },
     [dialogActions.customModal],
@@ -107,8 +107,11 @@ function useFrontendAction(
       // Render through InfoDialog (React text rendering, escaped by
       // default) instead of window.open + document.writeln, which
       // inserted backend-supplied content as raw, unescaped HTML.
-      const text = typeof params.payload === 'string' ? params.payload : 'Halo';
-      dialogActions.infoModal.show(undefined, text);
+      const text = params.payload.text ? params.payload.text : 'Halo';
+      dialogActions.infoModal.open({
+        title: undefined,
+        text,
+      });
       return null;
     },
     [dialogActions.infoModal],
@@ -116,7 +119,7 @@ function useFrontendAction(
 
   const performLocaleDialog = useCallback(
     (_params: FrontendActionParams) => {
-      dialogActions.languageDialog.show();
+      dialogActions.languageDialog.open();
       return null;
     },
     [dialogActions.languageDialog],

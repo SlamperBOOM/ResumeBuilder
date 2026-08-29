@@ -1,6 +1,7 @@
 import { Card, Typography } from '@mui/material';
 import { BlockSchema } from '../../../utils/backendTypes';
 import { Translations } from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 import FieldRenderer from '../FieldRenderer';
 
 type ResumeBlockProps = {
@@ -13,6 +14,7 @@ const NON_FIELD_KEYS: Set<string> = new Set(['block_title']);
 
 export default function ResumeBlock(props: ResumeBlockProps) {
   const { schema, translations, resumeId } = props;
+  const translateKey = useTranslate(translations);
 
   return (
     <Card
@@ -26,7 +28,7 @@ export default function ResumeBlock(props: ResumeBlockProps) {
       elevation={4}
     >
       <Typography variant="h5" color="primary" sx={{ marginBottom: 1 }}>
-        {translations[schema.block_title]}
+        {translateKey(schema.block_title)}
       </Typography>
       {Object.keys(schema).map((fieldKey: string) => {
         if (NON_FIELD_KEYS.has(fieldKey)) {

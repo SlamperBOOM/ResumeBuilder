@@ -10,17 +10,18 @@ import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.htmlConverter.HTMLConverter;
 import com.slamperboom.htmlConverter.Template;
+import com.slamperboom.managers.SchemaManager;
+import com.slamperboom.managers.SchemaType;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
+import com.slamperboom.utils.ThreadPoolReducer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 @ApplicationScoped
@@ -32,7 +33,7 @@ public class BDUIBuilder {
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
     private final HTMLConverter htmlConverter;
-    private final ThreadPoolExecutor poolExecutor;
+    private final ThreadPoolReducer<Template, JsonNode> templatesReducer;
 
     BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager, HTMLConverter htmlConverter) {
         this.resumeManager = resumeManager;
@@ -42,7 +43,7 @@ public class BDUIBuilder {
         this.htmlConverter = htmlConverter;
         objectMapper.registerModule(new JavaTimeModule());
 
-        poolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(TEMPLATE_COUNT);
+        templatesReducer = new ThreadPoolReducer<>();
     }
 
     public JsonNode buildMainScreen() {
@@ -131,10 +132,9 @@ public class BDUIBuilder {
             return dialogBuilders.buildMessageDialogWithoutTitle(new UserException(ErrorCode.RESUME_NOT_FOUND).getMessage());
         }
 
-        List<JsonNode> nodes = new ArrayList<>(TEMPLATE_COUNT);
-        CountDownLatch latch = new CountDownLatch(TEMPLATE_COUNT);
-        for (var template : Template.values()) {
-            poolExecutor.execute(() -> {
+        List<JsonNode> nodes;
+        try {
+            nodes = templatesReducer.reduceTasks(Arrays.stream(Template.values()).toList(), template -> {
                 ObjectNode templateNode = objectMapper.createObjectNode();
                 templateNode.put("name", template.toString());
 
@@ -143,21 +143,12 @@ public class BDUIBuilder {
                     htmlTemplate = htmlConverter.processResumeToHTMLWithTemplate(resume, template);
                     templateNode.put("preview", htmlConverter.saveHTMLtoPDFBase64(htmlTemplate));
                 } catch (UserException | IOException e) {
-                    logger.warnf("Unable to create preview for resume %s", resume.getId());
-                    latch.countDown();
-                    return;
+                    logger.warnf("Unable to create preview for resume %s and template %s", resume.getId(), template.toString());
+                    return Optional.empty();
                 }
-                synchronized (nodes) {
-                    nodes.add(templateNode);
-                }
-                latch.countDown();
+                return Optional.of(templateNode);
             });
-        }
-
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
         nodes.sort(Comparator.comparing(o -> o.get("name").asText()));

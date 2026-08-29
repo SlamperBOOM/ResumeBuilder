@@ -3,8 +3,8 @@ import { useCallback, useMemo } from 'react';
 import type { ZodError, ZodType } from 'zod';
 
 const REQUEST_TIMEOUT_MS = 15000;
-
 let baseAddressPromise: Promise<string> | null = null;
+
 function getBaseAddress(): Promise<string> {
   baseAddressPromise ??= window.electron
     .getBackendPort()
@@ -40,31 +40,41 @@ function describeZodError(
   return `Unexpected response shape from ${method} ${url}: ${details}`;
 }
 
+async function performRequest<T = unknown>(
+  method: 'get' | 'post' | 'delete',
+  url: string,
+  body: unknown,
+  schema?: ZodType<unknown>,
+): Promise<T> {
+  try {
+    const baseAddress = await getBaseAddress();
+    const { data } = await axios.request({
+      method,
+      url: baseAddress + url,
+      data: body,
+      timeout: REQUEST_TIMEOUT_MS,
+    });
+    if (schema) {
+      const result = schema.safeParse(data);
+      if (!result.success) {
+        throw new ApiValidationError(
+          describeZodError(url, method, result.error),
+          data,
+        );
+      }
+      return result.data as T;
+    }
+    return data as T;
+  } catch (error) {
+    if (error instanceof ApiValidationError) throw error;
+    throw new Error(extractErrorMessage(error));
+  }
+}
+
 export default function useApi() {
   const performGetRequest = useCallback(
     async <T = unknown>(url: string, schema?: ZodType<unknown>): Promise<T> => {
-      try {
-        const baseAddress = await getBaseAddress();
-        const { data } = await axios.get(baseAddress + url, {
-          timeout: REQUEST_TIMEOUT_MS,
-        });
-        if (schema) {
-          const result = schema.safeParse(data);
-          if (!result.success) {
-            throw new ApiValidationError(
-              describeZodError(url, 'GET', result.error),
-              data,
-            );
-          }
-          return result.data as T;
-        }
-        return data as T;
-      } catch (error) {
-        if (error instanceof ApiValidationError) {
-          throw error;
-        }
-        throw new Error(extractErrorMessage(error));
-      }
+      return performRequest('get', url, null, schema);
     },
     [],
   );
@@ -75,56 +85,14 @@ export default function useApi() {
       body: unknown,
       schema?: ZodType<unknown>,
     ): Promise<T> => {
-      try {
-        const baseAddress = await getBaseAddress();
-        const { data } = await axios.post(baseAddress + url, body, {
-          timeout: REQUEST_TIMEOUT_MS,
-        });
-        if (schema) {
-          const result = schema.safeParse(data);
-          if (!result.success) {
-            throw new ApiValidationError(
-              describeZodError(url, 'POST', result.error),
-              data,
-            );
-          }
-          return result.data as T;
-        }
-        return data as T;
-      } catch (error) {
-        if (error instanceof ApiValidationError) {
-          throw error;
-        }
-        throw new Error(extractErrorMessage(error));
-      }
+      return performRequest('post', url, body, schema);
     },
     [],
   );
 
   const performDeleteRequest = useCallback(
     async <T = unknown>(url: string, schema?: ZodType<unknown>): Promise<T> => {
-      try {
-        const baseAddress = await getBaseAddress();
-        const { data } = await axios.delete(baseAddress + url, {
-          timeout: REQUEST_TIMEOUT_MS,
-        });
-        if (schema) {
-          const result = schema.safeParse(data);
-          if (!result.success) {
-            throw new ApiValidationError(
-              describeZodError(url, 'DELETE', result.error),
-              data,
-            );
-          }
-          return result.data as T;
-        }
-        return data as T;
-      } catch (error) {
-        if (error instanceof ApiValidationError) {
-          throw error;
-        }
-        throw new Error(extractErrorMessage(error));
-      }
+      return performRequest('delete', url, schema);
     },
     [],
   );

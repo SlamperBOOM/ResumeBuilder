@@ -1,10 +1,12 @@
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControlLabel, Switch } from '@mui/material';
 import { FieldRendererProps, Toggle } from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 
 export default function ResumeToggle(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
   const currentField = resumeField as Toggle;
+  const translateKey = useTranslate(translations);
 
   const { control } = useFormContext();
 
@@ -17,7 +19,7 @@ export default function ResumeToggle(props: FieldRendererProps) {
           control={
             <Switch {...controllerField} checked={controllerField.value} />
           }
-          label={translations[currentField.title]}
+          label={translateKey(currentField.title)}
         />
       )}
     />

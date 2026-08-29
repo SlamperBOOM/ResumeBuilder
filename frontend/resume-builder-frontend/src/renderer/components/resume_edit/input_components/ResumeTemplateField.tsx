@@ -16,7 +16,10 @@ import {
 } from '../../../utils/resumeBlockTypes';
 import useSchemaApi from '../../../api/useSchemaApi';
 import { TemplateInfo, TemplateSchema } from '../../../DTO/TemplatesDTO';
-import ResumePDFPreview, { ResumePreviewScaleEnum } from '../../ResumePDFPreview';
+import { useTranslate } from '../../../utils/translations';
+import ResumePDFPreview, {
+  ResumePreviewScaleEnum,
+} from '../../ResumePDFPreview';
 
 const CARD_ASPECT_RATIO = 210 / 297;
 
@@ -25,6 +28,7 @@ const GRID_GAP = 16;
 export default function ResumeTemplateField(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride, resumeId } = props;
   const currentField = resumeField as TemplateChooser;
+  const translateKey = useTranslate(translations);
 
   const { control } = useFormContext();
 
@@ -91,7 +95,7 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
       render={({ field: controllerField }) => (
         <>
           <TextField
-            label={translations[currentField.title]}
+            label={translateKey(currentField.title)}
             value={controllerField.value}
             onClick={() => setInitDialogOpen(true)}
             fullWidth
@@ -119,7 +123,7 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
             }}
           >
             <DialogTitle>
-              {translations[currentField.template_choose_title]}
+              {translateKey(currentField.template_choose_title)}
             </DialogTitle>
 
             <DialogContent ref={contentRef} dividers>
@@ -175,7 +179,9 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
 
                         <CardContent sx={{ flex: '0 0 auto' }}>
                           <Typography textAlign="center">
-                            {translations[schema[template.name]?.display_name]}
+                            {translateKey(
+                              schema[template.name]?.display_name ?? '',
+                            )}
                           </Typography>
                         </CardContent>
                       </Card>

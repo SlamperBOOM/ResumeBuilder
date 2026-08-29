@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
-import com.slamperboom.resume.blocks.content.serializationUtilities.PublicationDateSerializer;
+import com.slamperboom.resume.blocks.content.serializationUtilities.MonthYearDateSerializer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +22,7 @@ public class PublicationsContent implements IContent {
         @JsonProperty("publication")
         private String publicationNameOrLink;
 
-        @JsonSerialize(using = PublicationDateSerializer.class)
+        @JsonSerialize(using = MonthYearDateSerializer.class)
         @JsonProperty("date")
         private LocalDate date;
     }

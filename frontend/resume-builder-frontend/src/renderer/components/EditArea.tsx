@@ -2,10 +2,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useCallback, useEffect, useRef } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import {
-  ResumeFormValues,
-  UpdatePayload,
-} from '../utils/backendTypes';
+import { ResumeFormValues, UpdatePayload } from '../utils/backendTypes';
 import EditScreenResponse from '../DTO/EditScreenResponse';
 import FieldRenderer from './resume_edit/FieldRenderer';
 import ResumeBlock from './resume_edit/input_components/ResumeBlock';

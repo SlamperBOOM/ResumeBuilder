@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
 
 import java.io.IOException;
 import java.time.LocalDate;

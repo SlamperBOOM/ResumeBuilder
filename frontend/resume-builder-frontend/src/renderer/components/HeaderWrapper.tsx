@@ -2,6 +2,8 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import useSchemaApi from '../api/useSchemaApi';
 import { AppActions } from '../utils/appActions';
+import { translate } from '../utils/translations';
+import appIcon from '../../../assets/icon.svg';
 
 type HeaderWrapperProps = {
   children: ReactNode;
@@ -30,7 +32,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
                 }}
                 color="inherit"
               >
-                {schema.translations[element.key]}
+                {translate(schema.translations, element.key)}
               </Button>,
             );
           },
@@ -55,6 +57,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
     >
       <AppBar position="static">
         <Toolbar>
+          <img src={appIcon} alt="" height="64px" />
           <Typography variant="h4" marginRight={2}>
             {title}
           </Typography>

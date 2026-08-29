@@ -4,7 +4,7 @@ import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
-import com.slamperboom.utils.TempFilesManager;
+import com.slamperboom.managers.TempFilesManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.fontbox.ttf.NamingTable;
 import org.apache.fontbox.ttf.OS2WindowsMetricsTable;

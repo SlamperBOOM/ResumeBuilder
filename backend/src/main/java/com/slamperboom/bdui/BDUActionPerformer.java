@@ -2,6 +2,7 @@ package com.slamperboom.bdui;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
 import com.slamperboom.backend.DTO.ExportPayload;
@@ -13,7 +14,7 @@ import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
 import com.slamperboom.settings.Settings;
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
 
@@ -30,13 +31,25 @@ public class BDUActionPerformer {
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
 
+    private ObjectNode getResumeIdPayload(String resumeId) {
+        return objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId);
+    }
+
+    private JsonNode makeActionNode(FrontendAction action) {
+        return objectMapper.createObjectNode().put(BackendConstants.FRONTEND_ACTION_KEY, action.toString());
+    }
+
+    private JsonNode makeActionNode(FrontendAction action, JsonNode payload) {
+        return objectMapper.createObjectNode()
+                .put(BackendConstants.FRONTEND_ACTION_KEY, action.toString())
+                .set(BackendConstants.PAYLOAD_KEY, payload);
+    }
+
     public JsonNode performCreateNew() {
         try {
             String resumeName = Settings.getInstance().getDefaultNewResumeName();
             String resumeId = resumeManager.createResume(resumeName);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_EDIT_SCREEN.toString())
-                    .set(BackendConstants.PAYLOAD_KEY, objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId));
+            return makeActionNode(FrontendAction.OPEN_EDIT_SCREEN, getResumeIdPayload(resumeId));
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -44,16 +57,13 @@ public class BDUActionPerformer {
 
     public JsonNode performLoad(String resumeId) {
         logger.infof("Loading resume with id %s", resumeId);
-        return objectMapper.createObjectNode()
-                .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_EDIT_SCREEN.toString())
-                .set(BackendConstants.PAYLOAD_KEY, objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId));
+        return makeActionNode(FrontendAction.OPEN_EDIT_SCREEN, getResumeIdPayload(resumeId));
     }
 
     public JsonNode performOpenMainScreen(String resumeId) {
         try {
             resumeManager.saveResume(resumeId);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_MAIN_SCREEN.toString());
+            return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -75,8 +85,7 @@ public class BDUActionPerformer {
             resumeManager.saveResume(resumeId);
             logger.infof("Updated resume with id %s", resumeId);
             logger.debugf("Update payload: %s", payload);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.UPDATE_CURRENT_SCREEN.toString());
+            return makeActionNode(FrontendAction.UPDATE_CURRENT_SCREEN);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -100,7 +109,7 @@ public class BDUActionPerformer {
         payload.setConfirmButtonText(translations.get("delete_confirmation.confirm_button_text").asText());
         payload.setDeclineButtonText(translations.get("delete_confirmation.decline_button_text").asText());
         payload.setConfirmAction("confirm_delete");
-        payload.setConfirmActionPayload(objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId));
+        payload.setConfirmActionPayload(getResumeIdPayload(resumeId));
 
         return dialogBuilders.buildConfirmationDialog(payload);
     }
@@ -109,8 +118,7 @@ public class BDUActionPerformer {
         try {
             resumeManager.deleteResume(resumeId);
             logger.infof("Deleting resume with id %s", resumeId);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_MAIN_SCREEN.toString());
+            return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -120,8 +128,7 @@ public class BDUActionPerformer {
         try {
             String newResumeId = resumeManager.duplicateResume(resumeId);
             logger.infof("Duplicating resume with id %s. New resume id: %s", resumeId, newResumeId);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_MAIN_SCREEN.toString());
+            return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -158,9 +165,7 @@ public class BDUActionPerformer {
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
-        return objectMapper.createObjectNode()
-                .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_EDIT_SCREEN.toString())
-                .set(BackendConstants.PAYLOAD_KEY, objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId));
+        return makeActionNode(FrontendAction.OPEN_EDIT_SCREEN, getResumeIdPayload(resumeId));
     }
 
     public void performOpenSaveDir() {
@@ -185,8 +190,7 @@ public class BDUActionPerformer {
             DynamicSettings.getInstance().setLocale(locale);
             DynamicSettings.getInstance().saveSettings();
             logger.debugf("Locale changed to %s", locale);
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.UPDATE_CURRENT_SCREEN.toString());
+            return makeActionNode(FrontendAction.UPDATE_CURRENT_SCREEN);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }
@@ -194,15 +198,12 @@ public class BDUActionPerformer {
 
     public JsonNode performGetLocales() {
         logger.debug("Get available locales");
-        return objectMapper.createObjectNode()
-                .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.LOCALE_DIALOG.toString());
+        return makeActionNode(FrontendAction.LOCALE_DIALOG);
     }
 
     public JsonNode performOpenAbout() {
         logger.info("Show about");
-        return objectMapper.createObjectNode()
-                .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.OPEN_ABOUT.toString())
-                .put(BackendConstants.PAYLOAD_KEY, "Hello about");
+        return makeActionNode(FrontendAction.OPEN_ABOUT, objectMapper.createObjectNode().put("text", "Hello about"));
     }
 
     public JsonNode performExit() {
@@ -210,8 +211,7 @@ public class BDUActionPerformer {
             resumeManager.saveAll();
             DynamicSettings.getInstance().saveSettings();
             logger.info("Perform exit, save all resumes and settings");
-            return objectMapper.createObjectNode()
-                    .put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.CLOSE.toString());
+            return makeActionNode(FrontendAction.CLOSE);
         } catch (UserException e) {
             return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
         }

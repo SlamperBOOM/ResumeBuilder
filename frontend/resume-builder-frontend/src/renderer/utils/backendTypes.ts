@@ -45,6 +45,7 @@ export type MainScreenSchema = {
   resume_menu_tooltip_title: string;
   create_new: BDUButtonSchema;
   import_button: BDUButtonSchema;
+  empty_state: { title: string; subtitle: string };
 };
 
 export type SimpleResume = {
@@ -122,6 +123,11 @@ export type ConfirmationDialogSchema = {
   decline_button_text: string;
   confirm_action: string;
   confirm_action_payload: BDUActionPayload;
+};
+
+export type InfoModalSchema = {
+  title: string | undefined;
+  text: string;
 };
 
 export type CustomActionButton = {

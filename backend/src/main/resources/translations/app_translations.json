@@ -33,7 +33,11 @@
             },
             "create_resume_title": "Create resume",
             "export_title": "Export to PDF",
-            "import_title": "Import resume"
+            "import_title": "Import resume",
+            "empty_state": {
+                "title": "You don't have any resumes yet",
+                "subtitle": "Click \"Create resume\" above to get started"
+            }
         },
         "header": {
             "exit": "Exit",
@@ -255,7 +259,11 @@
             },
             "create_resume_title": "Создать резюме",
             "export_title": "Экспортировать в PDF",
-            "import_title": "Импортировать резюме"
+            "import_title": "Импортировать резюме",
+            "empty_state": {
+                "title": "У вас пока нет резюме",
+                "subtitle": "Нажмите «Создать резюме», чтобы начать"
+            }
         },
         "edit_screen": {
             "resume_name_title": "Название резюме",

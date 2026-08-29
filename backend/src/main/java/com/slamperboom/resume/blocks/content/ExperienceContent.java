@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
-import com.slamperboom.resume.blocks.content.serializationUtilities.ExperienceDateSerializer;
 import com.slamperboom.resume.blocks.content.serializationUtilities.MarkdownSerializer;
+import com.slamperboom.resume.blocks.content.serializationUtilities.MonthYearDateSerializer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,11 +26,11 @@ public class ExperienceContent implements IContent {
         @JsonProperty("company")
         private String company;
 
-        @JsonSerialize(using = ExperienceDateSerializer.class)
+        @JsonSerialize(using = MonthYearDateSerializer.class)
         @JsonProperty("start_date")
         private LocalDate startDate;
 
-        @JsonSerialize(using = ExperienceDateSerializer.class)
+        @JsonSerialize(using = MonthYearDateSerializer.class)
         @JsonProperty("end_date")
         private LocalDate endDate;
 

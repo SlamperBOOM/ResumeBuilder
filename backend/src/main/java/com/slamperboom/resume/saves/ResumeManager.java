@@ -12,7 +12,8 @@ import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.settings.Settings;
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
+import com.slamperboom.utils.ThreadPoolReducer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
@@ -26,9 +27,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @ApplicationScoped
 public class ResumeManager implements IResumeManager{
@@ -38,51 +36,38 @@ public class ResumeManager implements IResumeManager{
     private final Map<String, File> resumeFileMap = new HashMap<>();
     private final Map<String, Long> lastKnownModified = new HashMap<>();
     private final HTMLConverter htmlConverter;
-    private final ThreadPoolExecutor poolExecutor;
+    private final ThreadPoolReducer<Resume, SimpleResume> resumeReducer;
+
+    private Optional<SimpleResume> convertToSimpleResume(Resume resume) {
+        var file = resumeFileMap.get(resume.getId());
+        try {
+            return Optional.of(new SimpleResume(
+                    resume.getId(),
+                    resume.getName(),
+                    LocalDateTime.ofInstant(
+                            Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
+                    ),
+                    htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume))
+            ));
+        } catch (UserException | IOException e) {
+            logger.errorf("Unable to build simple resume object for %s", resume.getId());
+            return Optional.empty();
+        }
+    }
 
     ResumeManager(HTMLConverter htmlConverter) {
         this.htmlConverter = htmlConverter;
+
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         readAllResumes();
 
-        poolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        resumeReducer = new ThreadPoolReducer<>();
     }
 
     @Override
     public List<SimpleResume> getListOfResumes() throws UserException {
-        List<SimpleResume> nodes = new ArrayList<>(resumes.size());
-        CountDownLatch latch = new CountDownLatch(resumes.size());
-        for (var resume : resumes.values()) {
-            poolExecutor.execute(() -> {
-                var file = resumeFileMap.get(resume.getId());
-                SimpleResume simpleResume;
-                try {
-                    simpleResume = new SimpleResume(
-                            resume.getId(),
-                            resume.getName(),
-                            LocalDateTime.ofInstant(
-                                    Instant.ofEpochMilli(file.lastModified()), ZoneId.systemDefault()
-                            ),
-                            htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume))
-                    );
-                } catch (UserException | IOException e) {
-                    logger.errorf("Unable to build simple resume object for %s", resume.getId());
-                    latch.countDown();
-                    return;
-                }
-                synchronized (nodes) {
-                    nodes.add(simpleResume);
-                }
-                latch.countDown();
-            });
-        }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
-        }
+        List<SimpleResume> nodes = resumeReducer.reduceTasks(resumes.values(), this::convertToSimpleResume);
 
         nodes.sort((o1, o2) -> o2.lastModificationDate().compareTo(o1.lastModificationDate()));
         return nodes;

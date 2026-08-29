@@ -1,5 +1,5 @@
 import { FieldRendererProps } from '../../utils/resumeBlockTypes';
-import baseFieldRegistry from '../../utils/fieldRegistry';
+import baseFieldRegistry from './fieldRegistry';
 
 export default function DynamicBlockFieldRenderer(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride, resumeId } = props;

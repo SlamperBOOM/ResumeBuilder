@@ -14,31 +14,28 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class DialogBuilders {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    private JsonNode makeDialogNode(FrontendAction action, JsonNode payload) {
+        return objectMapper.createObjectNode()
+                .put(BackendConstants.FRONTEND_ACTION_KEY, action.toString())
+                .set(BackendConstants.PAYLOAD_KEY, payload);
+    }
+
     public JsonNode buildMessageDialogWithoutTitle(String text) {
         return buildMessageDialogWithTitle(null, text);
     }
 
     public JsonNode buildMessageDialogWithTitle(String title, String text) {
-        ObjectNode messageNode = objectMapper.createObjectNode();
-        messageNode.put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.SHOW_MESSAGE.toString());
         MessageDialogPayload payload = new MessageDialogPayload();
         payload.setTitle(title);
         payload.setText(text);
-        messageNode.set(BackendConstants.PAYLOAD_KEY, objectMapper.valueToTree(payload));
-        return messageNode;
+        return makeDialogNode(FrontendAction.SHOW_MESSAGE, objectMapper.valueToTree(payload));
     }
 
     public JsonNode buildConfirmationDialog(ConfirmationDialogPayload payload) {
-        ObjectNode confirmationNode = objectMapper.createObjectNode();
-        confirmationNode.put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.SHOW_CONFIRMATION.toString());
-        confirmationNode.set(BackendConstants.PAYLOAD_KEY, objectMapper.valueToTree(payload));
-        return confirmationNode;
+        return makeDialogNode(FrontendAction.SHOW_CONFIRMATION, objectMapper.valueToTree(payload));
     }
 
     public JsonNode buildCustomDialog(CustomDialogPayload payload) {
-        ObjectNode customDialogNode = objectMapper.createObjectNode();
-        customDialogNode.put(BackendConstants.FRONTEND_ACTION_KEY, FrontendAction.SHOW_CUSTOM_DIALOG.toString());
-        customDialogNode.set(BackendConstants.PAYLOAD_KEY, objectMapper.valueToTree(payload));
-        return customDialogNode;
+        return makeDialogNode(FrontendAction.SHOW_CUSTOM_DIALOG, objectMapper.valueToTree(payload));
     }
 }

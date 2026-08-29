@@ -19,6 +19,7 @@ import {
 import { AppActions } from '../utils/appActions';
 import useSchemaApi from '../api/useSchemaApi';
 import { LanguageVariant } from '../DTO/LanguageDialogResponse';
+import { translate } from '../utils/translations';
 
 type LanguageDialogProps = {
   showState: boolean;
@@ -50,15 +51,19 @@ export default function LanguageDialog(props: LanguageDialogProps) {
                 value={locale.locale}
                 key={locale.locale}
                 control={<Radio />}
-                label={schema.translations[locale.key]}
+                label={translate(schema.translations, locale.key)}
               />
             );
           }),
         );
         setCurrentLocale(schema.payload.current_locale);
-        setDialogTitle(schema.translations[dialogSchema.title]);
-        setCancelButtonText(schema.translations[dialogSchema.cancel_key]);
-        setSaveButtonText(schema.translations[dialogSchema.save_key]);
+        setDialogTitle(translate(schema.translations, dialogSchema.title));
+        setCancelButtonText(
+          translate(schema.translations, dialogSchema.cancel_key),
+        );
+        setSaveButtonText(
+          translate(schema.translations, dialogSchema.save_key),
+        );
         setActionOnConfirm(dialogSchema.save_action);
         return null;
       })

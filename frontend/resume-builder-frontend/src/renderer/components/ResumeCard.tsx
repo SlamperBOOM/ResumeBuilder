@@ -17,6 +17,7 @@ import { AppActions } from '../utils/appActions';
 import { SimpleResume } from '../utils/backendTypes';
 import ResumePDFPreview, { ResumePreviewScaleEnum } from './ResumePDFPreview';
 import MainScreenResponse from '../DTO/MainScreenResponse';
+import { useTranslate } from '../utils/translations';
 
 export type ResumeCardProps = {
   resume: SimpleResume;
@@ -27,6 +28,7 @@ export type ResumeCardProps = {
 export function ResumeCard(props: ResumeCardProps) {
   const { resume, schema, appActions } = props;
   const screenSchema = schema.schema;
+  const translateKey = useTranslate(schema.translations);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -55,7 +57,7 @@ export function ResumeCard(props: ResumeCardProps) {
           });
         }}
       >
-        {schema.translations[menuButton.key]}
+        {translateKey(menuButton.key)}
       </MenuItem>,
     );
   });
@@ -120,9 +122,7 @@ export function ResumeCard(props: ResumeCardProps) {
 
           <Grid>
             <Tooltip
-              title={
-                schema.translations[screenSchema.resume_menu_tooltip_title]
-              }
+              title={translateKey(screenSchema.resume_menu_tooltip_title)}
             >
               <IconButton onClick={handleMenuOpen}>
                 <MoreVertIcon />
@@ -160,7 +160,7 @@ export function ResumeCard(props: ResumeCardProps) {
               });
             }}
           >
-            {schema.translations[screenSchema.export_button.key]}
+            {translateKey(screenSchema.export_button.key)}
           </Button>
         </Box>
       </CardContent>

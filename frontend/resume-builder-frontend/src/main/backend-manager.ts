@@ -96,6 +96,11 @@ async function waitForHealth(port: number, timeoutMs = 30000): Promise<void> {
 }
 
 export async function startBackend(options: BackendOptions): Promise<number> {
+  if (!app.isPackaged) {
+    log.info("dev mode, don't launch backend");
+    return options.preferredPort;
+  }
+
   const { javaPath, jarPath } = getBackendPaths();
 
   const port = await getPort(options.preferredPort);

@@ -1,6 +1,6 @@
 package com.slamperboom.exceptions;
 
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
 
 public class UserException extends Exception{
     public UserException(ErrorCode errorCode, Throwable err) {

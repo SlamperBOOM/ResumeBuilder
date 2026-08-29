@@ -7,7 +7,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.resume.saves.IResume;
-import com.slamperboom.translations.TranslationsManager;
+import com.slamperboom.managers.TranslationsManager;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -78,50 +78,42 @@ public class HTMLConverter {
         return processResumeToHTML(resume, template.toString());
     }
 
+    private void renderToStream(String htmlString, OutputStream outputStream) throws IOException {
+        Document htmlDoc = Jsoup.parse(htmlString);
+        htmlDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        htmlDoc.outputSettings().charset("UTF-16");
+
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+        builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
+        fontsManager.registerFonts(builder);
+        builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM);
+        builder.useFastMode();
+        builder.toStream(outputStream);
+        builder.run();
+    }
+
     /**
      * Converts HTML representation of constructed resume to PDF document
      * @param htmlString HTML representation of resume
      * @param savePath Where to store PDF document
      */
     public void saveHTMLtoPDF(String htmlString, String savePath) throws IOException {
-        Document htmlDoc = Jsoup.parse(htmlString);
-        htmlDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        htmlDoc.outputSettings().charset("UTF-16");
-
         File pdfFile = new File(savePath);
         if (!pdfFile.exists() && !pdfFile.createNewFile()) {
             throw new IOException("Unable to create file to store PDF");
         }
         try (OutputStream outputStream = new FileOutputStream(pdfFile)) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-
-            builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
-            fontsManager.registerFonts(builder);
-            builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM); // A4
-
-            builder.useFastMode();
-            builder.toStream(outputStream);
-            builder.run();
+            renderToStream(htmlString, outputStream);
         }
     }
 
+    /**
+     * Converts HTML representation of constructed resume to PDF document and returns it in Base64
+     * @param htmlString HTML representation of resume
+     */
     public String saveHTMLtoPDFBase64(String htmlString) throws IOException {
-        Document htmlDoc = Jsoup.parse(htmlString);
-        htmlDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        htmlDoc.outputSettings().charset("UTF-16");
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream(512*1024); // 512 Kb
-        try (OutputStream outputStream = stream) {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-
-            builder.withHtmlContent(htmlDoc.html(), new File(".").toURI().toString());
-            fontsManager.registerFonts(builder);
-            builder.useDefaultPageSize(210, 297, BaseRendererBuilder.PageSizeUnits.MM); // A4
-
-            builder.useFastMode();
-            builder.toStream(outputStream);
-            builder.run();
-        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream(512 * 1024);
+        renderToStream(htmlString, stream);
         return "data:application/pdf;base64," + Base64.getEncoder().encodeToString(stream.toByteArray());
     }
 }

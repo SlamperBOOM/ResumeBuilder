@@ -1,10 +1,12 @@
 import { TextField } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FieldRendererProps, TextInput } from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 
 export default function ResumeTextInput(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
   const currentField = resumeField as TextInput;
+  const translateKey = useTranslate(translations);
 
   const { control } = useFormContext();
 
@@ -15,7 +17,7 @@ export default function ResumeTextInput(props: FieldRendererProps) {
       render={({ field: controllerField }) => (
         <TextField
           {...controllerField}
-          label={translations[currentField.title]}
+          label={translateKey(currentField.title)}
           fullWidth
           margin="normal"
         />

@@ -7,10 +7,12 @@ import {
   DateVariant,
   FieldRendererProps,
 } from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 
 export default function ResumeDate(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
   const currentField = resumeField as DateInput;
+  const translateKey = useTranslate(translations);
 
   const { control } = useFormContext();
 
@@ -22,7 +24,7 @@ export default function ResumeDate(props: FieldRendererProps) {
         <FormControl fullWidth margin="normal">
           <DatePicker
             {...controllerField}
-            label={translations[currentField.title]}
+            label={translateKey(currentField.title)}
             sx={{ margin: 'normal' }}
             value={controllerField.value ? dayjs(controllerField.value) : null}
             views={

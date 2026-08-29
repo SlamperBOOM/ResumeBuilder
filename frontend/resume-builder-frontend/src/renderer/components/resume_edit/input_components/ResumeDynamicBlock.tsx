@@ -1,12 +1,17 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Box, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { DynamicBlock, FieldRendererProps } from '../../../utils/resumeBlockTypes';
+import {
+  DynamicBlock,
+  FieldRendererProps,
+} from '../../../utils/resumeBlockTypes';
+import { useTranslate } from '../../../utils/translations';
 import DynamicBlockFieldRenderer from '../DynamicBlockFieldRenderer';
 
 export default function ResumeDynamicBlock(props: FieldRendererProps) {
   const { resumeField, translations, resumeId } = props;
   const currentField = resumeField as DynamicBlock;
+  const translateKey = useTranslate(translations);
 
   const arrayPath = currentField.blocks_list;
 
@@ -64,7 +69,7 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
         fullWidth
         variant="contained"
       >
-        {translations[currentField.add_button_title]}
+        {translateKey(currentField.add_button_title)}
       </Button>
     </>
   );

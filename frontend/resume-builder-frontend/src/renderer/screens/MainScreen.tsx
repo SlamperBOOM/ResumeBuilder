@@ -1,8 +1,10 @@
-import { Alert, Box, Button, Skeleton } from '@mui/material';
+import { Alert, Box, Button, Skeleton, Typography } from '@mui/material';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import { useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import MainScreenResponse from '../DTO/MainScreenResponse';
+import { useTranslate } from '../utils/translations';
 
 type MainScreenProps = {
   appActions: AppActions;
@@ -26,6 +28,34 @@ function MainScreenSkeleton() {
           animation={animation}
         />
       ))}
+    </Box>
+  );
+}
+
+function MainScreenEmptyState(props: { schema: MainScreenResponse }) {
+  const { schema } = props;
+  const { empty_state: emptyState } = schema.schema;
+  const translateKey = useTranslate(schema.translations);
+
+  return (
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+        color: 'text.secondary',
+      }}
+    >
+      <ArticleOutlinedIcon sx={{ fontSize: 96, opacity: 0.4 }} />
+      <Typography variant="h6" color="text.primary">
+        {translateKey(emptyState.title)}
+      </Typography>
+      <Typography variant="body2">
+        {translateKey(emptyState.subtitle)}
+      </Typography>
     </Box>
   );
 }
@@ -57,6 +87,7 @@ export default function MainScreen(props: MainScreenProps) {
   const [mainSchema, setMainSchema] = useState<MainScreenResponse | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const translateKey = useTranslate(mainSchema?.translations);
 
   useEffect(() => {
     setLoadError(false);
@@ -95,6 +126,7 @@ export default function MainScreen(props: MainScreenProps) {
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        flex: 1,
         minHeight: 0,
       }}
     >
@@ -115,7 +147,7 @@ export default function MainScreen(props: MainScreenProps) {
                 margin: 2,
               }}
             >
-              {mainSchema.translations[newButton.key]}
+              {translateKey(newButton.key)}
             </Button>
             <Button
               variant="contained"
@@ -126,25 +158,31 @@ export default function MainScreen(props: MainScreenProps) {
                 margin: 2,
               }}
             >
-              {mainSchema.translations[importButton.key]}
+              {translateKey(importButton.key)}
             </Button>
           </Box>
           <Box
             sx={{
+              flex: 1,
+              minHeight: 0,
               overflowY: 'auto',
               padding: 2,
               paddingRight: 1,
             }}
           >
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                gap: 3,
-              }}
-            >
-              {resumeCards}
-            </Box>
+            {resumeCards.length === 0 ? (
+              <MainScreenEmptyState schema={mainSchema} />
+            ) : (
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                  gap: 3,
+                }}
+              >
+                {resumeCards}
+              </Box>
+            )}
           </Box>
         </>
       ) : loadError ? (
