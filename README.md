@@ -1,7 +1,3 @@
-<!-- README variation #2 — minimalist style inspired by amitmerchant1990/electron-markdownify -->
-
-<div align="center">
-
 # 📄 Resume Builder
 
 #### A local-first, block-based resume builder for Windows, macOS, and Linux — built with Electron and Quarkus.
@@ -10,8 +6,6 @@
 ![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
 [Key Features](#key-features) • [How to Use](#how-to-use) • [Development](#development) • [Tech Stack](#tech-stack) • [License](#license)
-
-</div>
 
 <!-- TODO: add a GIF of the app in action -->
 <!-- ![demo](docs/demo.gif) -->
@@ -64,6 +58,22 @@ $ cd frontend/resume-builder-frontend
 $ npm install
 $ npm start
 ```
+
+To run tests use
+
+```bash
+# backend tests
+$ gradlew test
+
+# frontend tests
+$
+```
+
+Some tests check correct HTML and PDF generation. If you add new template or change existing one, run
+```bash
+$ gradlew test -Dgolden.update=true
+```
+This command will update reference HTML and PDF files for test.
 
 ## Tech Stack
 

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Software Engineer</title>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+        body {
+          font-family: 'Noto Serif', sans-serif;
+          font-size: 0.92rem;
+          line-height: 1.4;
+          background: #ffffff;
+        }
+        .resume {
+          width: 100%;
+          overflow: hidden;
+        }
+        .left, .right {
+          padding: 1.5rem 1.2rem;
+          float: left;
+        }
+        .left {
+          width: 35%;
+          background: #ffffff;
+        }
+        .right {
+          width: 65%;
+          background: #ffffff;
+          border-left: 1px solid #ddd;
+        }
+        h1 {
+          margin-top: 0;
+          font-size: 1.4rem;
+        }
+        h2 {
+          color: #3a7bd5;
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 4px;
+          margin-top: 1.5rem;
+          font-size: 1.05rem;
+        }
+        p {
+          margin: 0.5rem 0;
+        }
+        .tags {
+          margin-top: 0.5rem;
+        }
+        .tags span {
+          display: inline-block;
+          background: #3a7bd5;
+          color: #fff;
+          border-radius: 12px;
+          padding: 0.2rem 0.6rem;
+          margin: 0.2rem 0.2rem 0.2rem 0;
+          font-size: 0.8rem;
+        }
+        ul {
+          padding-left: 0;
+          margin-top: 0.5rem;
+          list-style: none;
+        }
+        a {
+          color: #2a4d69;
+          text-decoration: none;
+        }
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+        .photo {
+            width: 120px;
+        }
+
+        .right ul.boxed-list li {
+          background: #f3f7ff;
+          border-left: 4px solid #3a7bd5;
+          border-radius: 4px;
+          padding: 0.6rem 0.8rem;
+          margin-bottom: 0.6rem;
+        }
+        .right ul.boxed-list li:last-child {
+          margin-bottom: 0;
+        }
+        .rich-text ul {
+          list-style: disc;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .rich-text ol {
+          list-style: decimal;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .rich-text ul li,
+        .rich-text ol li {
+          background: none;
+          border: none;
+          border-radius: 0;
+          padding: 0;
+          margin: 0.2rem 0;
+        }
+
+        .contact-list {
+          list-style: disc;
+          padding-left: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .contact-list li {
+          margin: 0.2rem 0;
+        }
+
+        .job, .edu-block {
+          margin-bottom: 1rem;
+          padding: 0.8rem 1rem;
+          background: #f3f7ff;
+          border-left: 4px solid #3a7bd5;
+          border-radius: 4px;
+        }
+        .job:last-child, .edu-block:last-child {
+          margin-bottom: 0;
+        }
+        .job p, .edu-block p {
+          margin: 0.3rem 0;
+        }
+        .job-dates {
+          font-size: 0.85rem;
+          color: #666;
+        }
+        .edu-date {
+          font-size: 0.85rem;
+          color: #666;
+        }
+        .course-name {
+          color: #3a7bd5;
+          font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="resume">
+    <div class="left">
+            <h1>Bennett Michael</h1>
+            <p>Senior Software Engineer</p>
+            <p><strong>Date of birth:</strong> 14.06.1990 (36) • <strong>City:</strong> Austin, TX</p>
+            <p><strong>Desired salary:</strong> 140000 USD</p>
+            <p><strong>Occupation:</strong> Backend Development</p>
+
+            <p style="margin-bottom: 0rem"><strong>Employment:</strong></p>
+            <p style="margin-top: 0.25rem">
+                Full time
+                , 
+                Remote work
+            </p>
+            <p style="margin-top: 0.25rem">
+                        Relocation not possible
+                    , 
+                    Ready for business trips
+            </p>
+
+            <p><strong>Driving license:</strong> Class C</p>
+            <p><strong>Family status:</strong>
+                Married
+                , 
+                Have children
+            </p>
+
+        <h2>Contacts</h2>
+        <ul class="contact-list">
+            <li>Phone number: +1-512-555-0148</li>
+            <li>E-mail: michael.bennett@example.com</li>
+            <li><a href="https://linkedin.com/in/michaelbennett" target="_blank">LinkedIn</a></li>
+            <li><a href="https://github.com/mbennett-dev" target="_blank">GitHub</a></li>
+        </ul>
+
+            <h2>Skills</h2>
+            <div class="tags">
+                    <span>Java — PROFESSIONAL</span>
+                    <span>Spring Boot — PROFESSIONAL</span>
+                    <span>Kubernetes — EXPERIENCED</span>
+                    <span>PostgreSQL — EXPERIENCED</span>
+                    <span>System Design — PROFESSIONAL</span>
+            </div>
+
+            <h2>Languages</h2>
+            <div class="tags">
+                    <span>English — C2</span>
+                    <span>Spanish — B1</span>
+            </div>
+    </div>
+
+    <div class="right">
+            <h2>Work experience</h2>
+                <div class="job">
+                    <p>
+                        <strong>
+                            Northwind Technologies
+                             — 
+                            Senior Software Engineer
+                        </strong>
+                        <span class="job-dates">(March 2021 – present)</span>
+                    </p>
+                    <p><ul>
+ <li>Led backend architecture for a microservices platform serving 2M+ users</li>
+ <li>Mentored a team of 4 junior engineers</li>
+</ul>
+<p><strong>Key achievements:</strong></p>
+<ul>
+ <li>Reduced API latency by 35%</li>
+ <li>Migrated legacy monolith to Kubernetes</li>
+</ul></p>
+                </div>
+                <div class="job">
+                    <p>
+                        <strong>
+                            BlueOak Solutions
+                             — 
+                            Software Engineer
+                        </strong>
+                        <span class="job-dates">(July 2016 – February 2021)</span>
+                    </p>
+                    <p><p>Developed and maintained RESTful APIs using Java and Spring Boot. Collaborated with the product team on feature design.</p></p>
+                </div>
+
+            <h2>Education</h2>
+                <div class="edu-block">
+                    <p>
+                        <strong>
+                            University of Texas at Austin
+                             — Bachelor's degree
+                        </strong>
+                        <span class="edu-date">2016</span>
+                    </p>
+                    <p>College of Natural Sciences, Computer Science</p>
+                </div>
+
+            <h2>Courses</h2>
+            <ul class="boxed-list">
+                <li>
+                    Amazon Web Services
+                     — 
+                    <span class="course-name">AWS Certified Solutions Architect</span>
+                    , 2022
+                </li>
+                <li>
+                    Coursera
+                     — 
+                    <span class="course-name">Advanced Kubernetes</span>
+                    , 2023
+                </li>
+            </ul>
+
+            <h2>About me</h2>
+            <div class="rich-text"><p>Backend engineer with 8+ years of experience building scalable distributed systems. Passionate about clean architecture, mentoring, and open-source contributions.</p></div>
+
+            <h2>Hobbies</h2>
+            <div class="rich-text"><p>Rock climbing, home coffee roasting, contributing to open-source projects</p></div>
+
+            <h2>Recommendations</h2>
+            <ul class="boxed-list">
+                <li>
+                    Laura Chen
+                     (Northwind Technologies)<br>
+                    laura.chen@northwind.example
+                     | +1-512-555-0199
+                </li>
+            </ul>
+
+            <h2>Publications</h2>
+            <ul class="boxed-list">
+                <li>
+                    Designing Resilient Microservices at Scale
+                     — May 2023
+                </li>
+            </ul>
+
+            <h2>Additional info</h2>
+            <div class="rich-text"><p>Open to relocation within the US for the right opportunity. Available to start within 4 weeks.</p></div>
+    </div>
+</div>
+</body>
+</html>

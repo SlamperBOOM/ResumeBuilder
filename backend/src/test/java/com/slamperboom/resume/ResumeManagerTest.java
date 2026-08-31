@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *     otherwise only ever constructed by the CDI container.</li>
  * </ul>
  */
+@ExtendWith(MockitoExtension.class)
 @ExtendWith(FileSystemIsolationExtension.class)
 class ResumeManagerTest {
 

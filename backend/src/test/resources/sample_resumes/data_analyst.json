@@ -1,0 +1,139 @@
+{
+  "resume_id" : "a96b316d-31dd-4bab-8e7a-f1927fd681df",
+  "version_of_last_edit" : "1.0",
+  "resume_name" : "Data Analyst - Full Profile",
+  "resume_locale" : "en",
+  "template_name" : "timeline_template",
+  "blocks" : {
+    "MAIN_BLOCK" : {
+      "@type" : "MainBlockContent",
+      "desired_position" : "Data Analyst",
+      "person_photo_name" : null,
+      "last_name" : "Okafor",
+      "first_name" : "Daniel",
+      "date_of_birth" : "1995-09-09",
+      "city" : "Toronto, Canada",
+      "desired_salary" : "85000 CAD",
+      "occupation" : "Data Analytics",
+      "employment" : "FULL_TIME",
+      "schedule" : "REMOTE",
+      "is_moving_acceptable" : true,
+      "is_ready_for_business_trips" : false,
+      "driver_license" : "G Class",
+      "marital_status" : "Married",
+      "have_children" : false
+    },
+    "CONTACTS" : {
+      "@type" : "ContactsContent",
+      "email" : "daniel.okafor@example.com",
+      "phone_number" : "+1-416-555-0173",
+      "social_nets" : [ {
+        "social_net_name" : "LinkedIn",
+        "social_net_profile_link" : "https://linkedin.com/in/danielokafor"
+      }, {
+        "social_net_name" : "GitHub",
+        "social_net_profile_link" : "https://github.com/dokafor"
+      } ]
+    },
+    "EXPERIENCE" : {
+      "@type" : "ExperienceContent",
+      "experiences" : [ {
+        "position" : "Data Analyst",
+        "company" : "Maple Insights Inc.",
+        "start_date" : "2019-04-01",
+        "end_date" : null,
+        "is_still_working" : true,
+        "work_description" : "**Core responsibilities:**\n\n- Built and maintained dashboards in Power BI for executive reporting\n- Automated ETL pipelines using Python and SQL\n- Partnered with product teams to define KPIs\n\n*Notable project:* redesigned the churn-prediction model, improving accuracy by 18%\n\n| Metric | Before | After |\n|---|---|---|\n| Accuracy | 71% | 89% |\n| Runtime | 4h | 45m |"
+      }, {
+        "position" : "Junior Data Analyst",
+        "company" : "Maple Insights Inc.",
+        "start_date" : "2017-08-01",
+        "end_date" : "2019-03-01",
+        "is_still_working" : false,
+        "work_description" : "Supported senior analysts with data cleaning and report generation."
+      } ]
+    },
+    "EDUCATION" : {
+      "@type" : "EducationContent",
+      "educations" : [ {
+        "institution" : "University of Toronto",
+        "education_level" : "BACHELOR",
+        "faculty" : "Faculty of Arts and Science",
+        "speciality" : "Statistics",
+        "year_of_graduate" : "2017"
+      } ]
+    },
+    "ADVANCED_TRAINING" : {
+      "@type" : "AdvancedTrainingContent",
+      "trainings" : [ {
+        "course_name" : "Data Analysis with Python",
+        "organization" : "IBM (Coursera)",
+        "year_of_graduate" : "2020"
+      }, {
+        "course_name" : "Power BI Data Analyst Associate",
+        "organization" : "Microsoft",
+        "year_of_graduate" : "2022"
+      } ]
+    },
+    "LANGUAGES" : {
+      "@type" : "LanguagesContent",
+      "languages" : [ {
+        "language" : "English",
+        "language_level" : "C2"
+      }, {
+        "language" : "French",
+        "language_level" : "A2"
+      } ]
+    },
+    "SKILLS" : {
+      "@type" : "SkillsContent",
+      "skills" : [ {
+        "skill_name" : "SQL",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Python",
+        "skill_level" : "EXPERIENCED"
+      }, {
+        "skill_name" : "Power BI",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Excel",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Tableau",
+        "skill_level" : "BASE"
+      } ]
+    },
+    "ABOUT" : {
+      "@type" : "AboutContent",
+      "about_text" : "I'm a data analyst who enjoys turning messy datasets into clear stories.\n\n**What I bring:**\n- 6+ years of analytics experience\n- Strong SQL and Python skills\n- A habit of asking *why* before building any dashboard\n\n~~Perfectionist~~ Detail-oriented, with a bias toward shipping.\n\n1. Discover\n2. Analyze\n3. Visualize\n4. Iterate"
+    },
+    "HOBBIES" : {
+      "@type" : "HobbiesContent",
+      "hobbies" : "1. Chess\n2. **Cycling**\n3. Board game design"
+    },
+    "RECOMMENDATIONS" : {
+      "@type" : "RecommendationsContent",
+      "recommendations" : [ {
+        "recommending" : "Priya Sharma",
+        "company" : "Maple Insights Inc.",
+        "email" : "priya.sharma@mapleinsights.example",
+        "phone_number" : "+1-416-555-0122"
+      } ]
+    },
+    "ADDITIONAL" : {
+      "@type" : "AdditionalContent",
+      "additional_info" : "Comfortable working across time zones with distributed teams.\n\n~~Night owl~~ - early riser."
+    },
+    "PUBLICATIONS" : {
+      "@type" : "PublicationsContent",
+      "publications" : [ {
+        "publication" : "Improving Churn Prediction with Gradient Boosting",
+        "date" : "2021-11-03"
+      }, {
+        "publication" : "A Practical Guide to Power BI Dashboards",
+        "date" : "2022-06-20"
+      } ]
+    }
+  }
+}

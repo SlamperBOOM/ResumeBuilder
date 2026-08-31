@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Manager CV</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          margin: 0;
+          color: #2b2b2b;
+          background: #fbfaf7;
+        }
+
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+
+        .page {
+          width: 210mm;
+          overflow: hidden;
+          background: #fff;
+        }
+
+        /* ---------- SIDEBAR ---------- */
+        .sidebar {
+          float: left;
+          width: 32%;
+          background: #23272f;
+          color: #dfe3e8;
+          padding: 1.8rem 1.3rem;
+          /* faux equal-height column: overshoot then clip via .page overflow:hidden */
+          padding-bottom: 3000px;
+          margin-bottom: -3000px;
+        }
+
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            border: 2px solid #4d7c6f;
+        }
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sidebar h1 {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.35rem;
+          line-height: 1.25;
+          margin: 0 0 0.2rem 0;
+          color: #ffffff;
+          word-break: break-word;
+        }
+        .sidebar .position {
+          font-size: 0.9rem;
+          color: #a6c9bf;
+          margin: 0 0 1.4rem 0;
+          font-style: italic;
+        }
+
+        .side-label {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.7rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #4d7c6f;
+          margin: 1.6rem 0 0.5rem 0;
+          border-bottom: 1px solid #383e49;
+          padding-bottom: 0.35rem;
+        }
+        .side-label:first-of-type { margin-top: 0; }
+
+        .side-line {
+          font-size: 0.86rem;
+          line-height: 1.5;
+          margin: 0.25rem 0;
+          color: #c7ccd3;
+        }
+        .side-line strong { color: #eef1f4; font-weight: 500; }
+        .side-line a { color: #a6c9bf; text-decoration: none; }
+        .side-line a:hover { text-decoration: underline; }
+
+        .tag {
+          display: inline-block;
+          background: #2f3542;
+          border: 1px solid #4d7c6f;
+          color: #cfe7df;
+          border-radius: 3px;
+          padding: 0.18rem 0.55rem;
+          margin: 0.18rem 0.3rem 0.18rem 0;
+          font-size: 0.78rem;
+        }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .main {
+          float: left;
+          width: 68%;
+          padding: 1.8rem 1.6rem;
+        }
+
+        .main h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: #23272f;
+          margin: 0 0 1.1rem 0;
+          padding-left: 0.9rem;
+          padding-bottom: 0.6rem;
+          position: relative;
+          border-bottom: 2px solid #e4eeec;
+        }
+        .main h2::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0.1em;
+          bottom: 0.7em;
+          width: 4px;
+          background: #4d7c6f;
+          border-radius: 2px;
+        }
+        .main .section:first-child h2 { margin-top: 0; }
+
+        .section { margin-bottom: 2.3rem; }
+        .section:last-child { margin-bottom: 0; }
+
+        p { line-height: 1.5; }
+
+        /* Timeline for experience & education */
+        .timeline {
+          position: relative;
+          margin-left: 0.4rem;
+          padding-left: 1.4rem;
+          border-left: 2px solid #e4eeec;
+        }
+        .timeline-item {
+          position: relative;
+          margin-bottom: 1.5rem;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-item::before {
+          content: "";
+          position: absolute;
+          left: -1.86rem;
+          top: 0.3rem;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #fff;
+          border: 2px solid #4d7c6f;
+        }
+
+        .item-title {
+          margin: 0;
+          font-weight: 600;
+          font-size: 0.98rem;
+          color: #23272f;
+        }
+        .item-dates {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.78rem;
+          font-weight: 400;
+          color: #7a8b85;
+        }
+        .item-sub {
+          margin: 0.2rem 0 0.4rem 0;
+          font-size: 0.85rem;
+          color: #4d7c6f;
+        }
+        .item-description {
+          margin: 0.4rem 0 0 0;
+          font-size: 0.92rem;
+          line-height: 1.5;
+          color: #444;
+        }
+
+        ul.plain-list {
+          margin: 0;
+          padding-left: 1.1rem;
+        }
+        ul.plain-list li {
+          font-size: 0.92rem;
+          line-height: 1.5;
+          margin-bottom: 0.35rem;
+        }
+
+        .skills-wrap {
+          line-height: 1.8;
+        }
+
+        hr.side-rule {
+          border: none;
+          border-top: 1px solid #383e49;
+          margin: 1.4rem 0;
+        }
+
+        @media screen and (max-width: 480px) {
+          html, body { width: 100%; }
+          .page { width: 100%; }
+          .sidebar, .main { float: none; width: 100%; padding-bottom: 1.8rem; margin-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- ============ SIDEBAR ============ -->
+    <div class="sidebar">
+            <h1>Ferreira<br>Sofia</h1>
+            <p class="position">Marketing Manager</p>
+
+        <div class="side-label">Contacts</div>
+                <p class="side-line">Phone number: <strong>+351 912 345 678</strong></p>
+                <p class="side-line">E-mail: <strong>sofia.ferreira@example.com</strong></p>
+                        <p class="side-line"><a href=https://linkedin.com/in/sofiaferreira target="_blank">LinkedIn</a></p>
+                        <p class="side-line"><a href=https://sofiaferreira.example.com target="_blank">Portfolio</a></p>
+
+        <div class="side-label">City</div>
+            <p class="side-line"><strong>Date of birth:</strong> 02.11.1993 (32)</p>
+            <p class="side-line">Lisbon, Portugal</p>
+            <p class="side-line"><strong>Desired salary:</strong> 3500 EUR</p>
+            <p class="side-line"><strong>Occupation:</strong> Digital Marketing</p>
+
+        <div class="side-label">Employment</div>
+                <p class="side-line">
+                    Full time
+                    , 
+                    Full day
+                </p>
+                <p class="side-line">
+                            Relocation possible
+                        , 
+                        Ready for business trips
+                </p>
+
+        <div class="side-label">Family status</div>
+                <p class="side-line"><strong>Driving license:</strong> Category B</p>
+                <p class="side-line">
+                    Single
+                    
+                    
+                </p>
+
+        <div class="side-label">Skills</div>
+        <div class="skills-wrap">
+                <span class="tag">Content Strategy · PROFESSIONAL</span>
+                <span class="tag">SEO/SEM · EXPERIENCED</span>
+                <span class="tag">Team Leadership · PROFESSIONAL</span>
+                <span class="tag">Google Ads · EXPERIENCED</span>
+                <span class="tag">Adobe Creative Suite · BASE</span>
+        </div>
+
+        <div class="side-label">Languages</div>
+            <p class="side-line">
+                Portuguese
+                 — C2
+            </p>
+            <p class="side-line">
+                English
+                 — C1
+            </p>
+            <p class="side-line">
+                French
+                 — B2
+            </p>
+    </div>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="main">
+
+        <div class="section">
+            <h2>Work experience</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <p class="item-title">
+                        Marketing Manager
+                        <span class="item-dates"> — January 2020 – present</span>
+                    </p>
+                    <p class="item-sub">Aurora Retail Group</p>
+                    <p class="item-description"><p>Oversee a team of 6 marketing specialists across paid media, content, and social channels.</p>
+<ul>
+ <li>Grew organic traffic by 60% year-over-year</li>
+ <li>Managed an annual budget of €800,000</li>
+ <li>Launched a loyalty program that increased repeat purchases by 22%</li>
+</ul></p>
+                </div>
+                <div class="timeline-item">
+                    <p class="item-title">
+                        Marketing Specialist
+                        <span class="item-dates"> — June 2017 – December 2019</span>
+                    </p>
+                    <p class="item-sub">Vento Digital Agency</p>
+                    <p class="item-description"><p>Planned and executed multi-channel campaigns for retail and hospitality clients.</p></p>
+                </div>
+                <div class="timeline-item">
+                    <p class="item-title">
+                        Marketing Intern
+                        <span class="item-dates"> — September 2016 – May 2017</span>
+                    </p>
+                    <p class="item-sub">Vento Digital Agency</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Education</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <p class="item-title">
+                        Nova School of Business and Economics
+                         — Master's degree
+                        <span class="item-dates"> — 2016</span>
+                    </p>
+                    <p class="item-sub">Management, Marketing</p>
+                </div>
+                <div class="timeline-item">
+                    <p class="item-title">
+                        University of Lisbon
+                         — Bachelor's degree
+                        <span class="item-dates"> — 2014</span>
+                    </p>
+                    <p class="item-sub">Social Sciences, Communication Studies</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Courses</h2>
+            <ul class="plain-list">
+                <li>
+                    Google Analytics Certification
+                     — Google
+                    , 2021
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>About me</h2>
+            <p><p>Results-driven marketing professional with a track record of building brand awareness and driving revenue growth across e-commerce and retail sectors.</p></p>
+        </div>
+
+        <div class="section">
+            <h2>Hobbies</h2>
+            <p><p>Photography, yoga, traveling</p></p>
+        </div>
+
+        <div class="section">
+            <h2>Recommendations</h2>
+            <ul class="plain-list">
+                <li>
+                    Diego Alves
+                     (Aurora Retail Group)<br>
+                    diego.alves@aurora.example
+                     | +351 913 000 111
+                </li>
+                <li>
+                    Beatriz Santos
+                     (Vento Digital Agency)<br>
+                    beatriz.santos@vento.example
+                     | +351 914 222 333
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Publications</h2>
+            <ul class="plain-list">
+                <li>
+                    The Future of Retail Loyalty Programs
+                     — September 2022
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Additional info</h2>
+            <p><p>EU citizen, valid work permit. Portfolio available upon request.</p></p>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

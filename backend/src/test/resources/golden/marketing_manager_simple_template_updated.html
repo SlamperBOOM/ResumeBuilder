@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Manager CV</title>
+    <style>
+        body {
+          font-family: 'Helvetica Neue', Arial, 'Roboto', sans-serif;
+          margin: 0;
+          color: #111827;
+          background: #ffffff;
+        }
+
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+          background: #ffffff;
+          padding: 0 0 3rem 0;
+        }
+
+        .content-pad {
+          padding: 0 2.75rem;
+        }
+
+        h1 {
+          margin: 0 0 0.2rem 0;
+          font-size: 2rem;
+          font-weight: bold;
+          color: #111827;
+        }
+
+        h2 {
+          color: #2563eb;
+          font-size: 0.85rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          border-bottom: 2px solid #2563eb;
+          padding-bottom: 6px;
+          margin: 1.8rem 0 0.9rem 0;
+        }
+
+        .h2-icon {
+          display: inline-block;
+          width: 9px;
+          height: 9px;
+          background: #2563eb;
+          margin-right: 8px;
+        }
+
+        p {
+          color: #4b5563;
+        }
+
+        .header-block {
+          background: #eef4fc;
+          border-bottom: 3px solid #2563eb;
+          padding: 2.2rem 2.75rem 1.6rem 2.75rem;
+          margin-bottom: 1.6rem;
+        }
+
+        .top-row-table {
+          border-collapse: collapse;
+          margin-bottom: 0.4rem;
+        }
+        .top-row-table td {
+          vertical-align: top;
+          padding: 0;
+        }
+        .photo-cell {
+          width: 128px;
+          padding-right: 1.4rem !important;
+        }
+
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+            border: 1px solid #c7d7ee;
+        }
+        .photo {
+            width: 120px;
+            display: block;
+        }
+
+        .headline {
+          font-size: 1.05rem;
+          font-weight: bold;
+          color: #2563eb;
+          margin: 0.2rem 0 0 0;
+        }
+
+        .meta-line {
+          font-size: 0.92rem;
+          color: #374151;
+          margin: 0.3rem 0;
+        }
+        .meta-line strong {
+          color: #111827;
+        }
+
+        .work-conditions {
+          background: #ffffff;
+          border: 1px solid #c7d7ee;
+          padding: 0.9rem 1.1rem;
+          margin-top: 0.6rem;
+        }
+        .work-conditions p {
+          margin: 0.15rem 0;
+        }
+        .work-conditions .label {
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 0.72rem;
+          font-weight: bold;
+          color: #6b7280;
+          margin-bottom: 0.35rem;
+        }
+
+        .section {
+          margin-top: 1rem;
+        }
+
+        .contact-item {
+          display: inline-block;
+          width: 46%;
+          vertical-align: top;
+          font-size: 0.92rem;
+          color: #4b5563;
+          margin-bottom: 0.5rem;
+          margin-right: 2%;
+        }
+        .contact a {
+          color: #2563eb;
+          text-decoration: none;
+        }
+
+        .lang-item {
+          display: inline-block;
+          width: 46%;
+          vertical-align: top;
+          font-size: 0.92rem;
+          color: #4b5563;
+          margin-bottom: 0.5rem;
+          margin-right: 2%;
+        }
+
+        ul {
+          margin-top: 0.5rem;
+          padding-left: 1.2rem;
+          color: #4b5563;
+        }
+        ul li {
+          margin-bottom: 0.4rem;
+        }
+
+        ol {
+          margin-top: 0.3rem;
+          padding-left: 1.2rem;
+          color: #4b5563;
+        }
+        ol li {
+          margin-bottom: 0.3rem;
+        }
+
+        .job {
+          margin-bottom: 1.1rem;
+          padding: 1.1rem 1.3rem;
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-left: 4px solid #2563eb;
+        }
+        .job-header:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .job-header .job-title {
+          margin: 0;
+          font-weight: bold;
+          font-size: 1rem;
+          color: #111827;
+          float: left;
+        }
+        .job-dates {
+          font-size: 0.82rem;
+          font-weight: bold;
+          color: #2563eb;
+          background: #eff6ff;
+          border: 1px solid #dbeafe;
+          padding: 0.15rem 0.6rem;
+          white-space: nowrap;
+          float: right;
+        }
+        .job-description {
+          clear: both;
+          margin-top: 0.7rem;
+          margin-bottom: 0;
+          font-size: 0.93rem;
+          line-height: 1.5;
+          color: #4b5563;
+        }
+
+        .edu-block {
+          margin-bottom: 1.1rem;
+          padding: 1.1rem 1.3rem;
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-left: 4px solid #2563eb;
+        }
+        .edu-header:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .edu-header .edu-title {
+          margin: 0;
+          font-weight: bold;
+          font-size: 1rem;
+          color: #111827;
+          float: left;
+        }
+        .edu-date {
+          font-size: 0.82rem;
+          font-weight: bold;
+          color: #2563eb;
+          background: #eff6ff;
+          border: 1px solid #dbeafe;
+          padding: 0.15rem 0.6rem;
+          white-space: nowrap;
+          float: right;
+        }
+        .edu-spec {
+          clear: both;
+          margin-bottom: 0;
+          margin-top: 0.6rem;
+          font-size: 0.93rem;
+          color: #4b5563;
+        }
+
+        .tag {
+          display: inline-block;
+          background: #eff6ff;
+          color: #2563eb;
+          border: 1px solid #dbeafe;
+          padding: 0.3rem 0.85rem;
+          margin: 0.2rem 0.4rem 0.2rem 0;
+          font-size: 0.85rem;
+        }
+
+        .about-text, .hobbies-text, .additional-text {
+          font-size: 0.95rem;
+          line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-block">
+        <table class="top-row-table">
+            <tr>
+                <td>
+                        <h1>Ferreira Sofia</h1>
+                        <p class="headline">Marketing Manager</p>
+                </td>
+            </tr>
+        </table>
+
+            <p class="meta-line"><strong>Date of birth:</strong> 02.11.1993 (32) &bull; <strong>City:</strong> Lisbon, Portugal</p>
+            <p class="meta-line"><strong>Desired salary:</strong> 3500 EUR</p>
+            <p class="meta-line"><strong>Occupation:</strong> Digital Marketing</p>
+        <div class="work-conditions">
+            <p class="label">Employment</p>
+                <p>
+                    Full time
+                    , 
+                    Full day
+                </p>
+                <p>
+                            Relocation possible
+                        , 
+                        Ready for business trips
+                </p>
+        </div>
+
+            <p class="meta-line"><strong>Driving license:</strong> Category B</p>
+            <p class="meta-line"><strong>Family status:</strong>
+                Single
+                
+                
+            </p>
+    </div>
+
+    <div class="content-pad">
+    <h2><span class="h2-icon"></span>Contacts</h2>
+    <div class="contact">
+            <div class="contact-item">Phone number: +351 912 345 678</div>
+            <div class="contact-item">E-mail: sofia.ferreira@example.com</div>
+                    <div class="contact-item"><a href=https://linkedin.com/in/sofiaferreira target="_blank">LinkedIn</a></div>
+                    <div class="contact-item"><a href=https://sofiaferreira.example.com target="_blank">Portfolio</a></div>
+    </div>
+
+        <h2><span class="h2-icon"></span>Work experience</h2>
+            <div class="job">
+                <div class="job-header">
+                    <p class="job-title">
+                        Aurora Retail Group
+                         &mdash; 
+                        Marketing Manager
+                    </p>
+                    <span class="job-dates">January 2020 &ndash; present</span>
+                </div>
+                <p class="job-description"><p>Oversee a team of 6 marketing specialists across paid media, content, and social channels.</p>
+<ul>
+ <li>Grew organic traffic by 60% year-over-year</li>
+ <li>Managed an annual budget of €800,000</li>
+ <li>Launched a loyalty program that increased repeat purchases by 22%</li>
+</ul></p>
+            </div>
+            <div class="job">
+                <div class="job-header">
+                    <p class="job-title">
+                        Vento Digital Agency
+                         &mdash; 
+                        Marketing Specialist
+                    </p>
+                    <span class="job-dates">June 2017 &ndash; December 2019</span>
+                </div>
+                <p class="job-description"><p>Planned and executed multi-channel campaigns for retail and hospitality clients.</p></p>
+            </div>
+            <div class="job">
+                <div class="job-header">
+                    <p class="job-title">
+                        Vento Digital Agency
+                         &mdash; 
+                        Marketing Intern
+                    </p>
+                    <span class="job-dates">September 2016 &ndash; May 2017</span>
+                </div>
+            </div>
+
+        <h2><span class="h2-icon"></span>Education</h2>
+            <div class="edu-block">
+                <div class="edu-header">
+                    <p class="edu-title">
+                        Nova School of Business and Economics
+                         &mdash; Master's degree
+                    </p>
+                    <span class="edu-date">2016</span>
+                </div>
+            <p class="edu-spec">Management, Marketing</p>
+            </div>
+            <div class="edu-block">
+                <div class="edu-header">
+                    <p class="edu-title">
+                        University of Lisbon
+                         &mdash; Bachelor's degree
+                    </p>
+                    <span class="edu-date">2014</span>
+                </div>
+            <p class="edu-spec">Social Sciences, Communication Studies</p>
+            </div>
+
+        <h2><span class="h2-icon"></span>Courses</h2>
+        <ul>
+            <li>
+                Google Analytics Certification
+                 &mdash; Google
+                , 2021
+            </li>
+        </ul>
+
+        <h2><span class="h2-icon"></span>Skills</h2>
+        <div class="skills">
+                <span class="tag">Content Strategy &mdash; PROFESSIONAL</span>
+                <span class="tag">SEO/SEM &mdash; EXPERIENCED</span>
+                <span class="tag">Team Leadership &mdash; PROFESSIONAL</span>
+                <span class="tag">Google Ads &mdash; EXPERIENCED</span>
+                <span class="tag">Adobe Creative Suite &mdash; BASE</span>
+        </div>
+
+        <h2><span class="h2-icon"></span>Languages</h2>
+        <div class="languages">
+            <div class="lang-item">
+                Portuguese
+                 &mdash; C2
+            </div>
+            <div class="lang-item">
+                English
+                 &mdash; C1
+            </div>
+            <div class="lang-item">
+                French
+                 &mdash; B2
+            </div>
+        </div>
+
+        <h2><span class="h2-icon"></span>About me</h2>
+        <p class="about-text"><p>Results-driven marketing professional with a track record of building brand awareness and driving revenue growth across e-commerce and retail sectors.</p></p>
+
+        <h2><span class="h2-icon"></span>Hobbies</h2>
+        <p class="hobbies-text"><p>Photography, yoga, traveling</p></p>
+
+        <h2><span class="h2-icon"></span>Recommendations</h2>
+        <ul>
+            <li>
+                Diego Alves
+                 (Aurora Retail Group)<br>
+                diego.alves@aurora.example
+                 | +351 913 000 111
+            </li>
+            <li>
+                Beatriz Santos
+                 (Vento Digital Agency)<br>
+                beatriz.santos@vento.example
+                 | +351 914 222 333
+            </li>
+        </ul>
+
+        <h2><span class="h2-icon"></span>Publications</h2>
+        <ul>
+            <li>
+                The Future of Retail Loyalty Programs
+                 &mdash; September 2022
+            </li>
+        </ul>
+
+        <h2><span class="h2-icon"></span>Additional info</h2>
+        <p class="additional-text"><p>EU citizen, valid work permit. Portfolio available upon request.</p></p>
+    </div>
+</div>
+</body>
+</html>

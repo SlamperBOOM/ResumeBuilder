@@ -22,11 +22,9 @@ import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
 
 @ApplicationScoped
 public class BDUIBuilder {
-    private static final int TEMPLATE_COUNT = Template.values().length;
     private final Logger logger = Logger.getLogger(this.getClass());
     private final SchemaManager schemaManager;
     private final IResumeManager resumeManager;

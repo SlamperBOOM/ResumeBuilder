@@ -1,0 +1,104 @@
+{
+  "resume_id" : "933b5c55-592b-4f8c-9128-be3fbb417947",
+  "version_of_last_edit" : "1.0",
+  "resume_name" : "Graphic Designer",
+  "resume_locale" : "en",
+  "template_name" : "simple_divided_template",
+  "blocks" : {
+    "MAIN_BLOCK" : {
+      "@type" : "MainBlockContent",
+      "desired_position" : "Graphic Designer",
+      "person_photo_name" : null,
+      "last_name" : "Kowalski",
+      "first_name" : "Anna",
+      "date_of_birth" : "1998-02-28",
+      "city" : "Krakow, Poland",
+      "desired_salary" : null,
+      "occupation" : null,
+      "employment" : "PART_TIME",
+      "schedule" : "FLEXIBLE",
+      "is_moving_acceptable" : false,
+      "is_ready_for_business_trips" : false,
+      "driver_license" : null,
+      "marital_status" : null,
+      "have_children" : false
+    },
+    "CONTACTS" : {
+      "@type" : "ContactsContent",
+      "email" : "anna.kowalski@example.com",
+      "phone_number" : null,
+      "social_nets" : [ {
+        "social_net_name" : "Behance",
+        "social_net_profile_link" : "https://behance.net/annakowalski"
+      } ]
+    },
+    "EXPERIENCE" : {
+      "@type" : "ExperienceContent",
+      "experiences" : [ {
+        "position" : "Freelance Graphic Designer",
+        "company" : null,
+        "start_date" : "2022-01-01",
+        "end_date" : null,
+        "is_still_working" : true,
+        "work_description" : "Design branding materials, social media graphics, and print collateral for small businesses."
+      } ]
+    },
+    "EDUCATION" : {
+      "@type" : "EducationContent",
+      "educations" : [ {
+        "institution" : "Academy of Fine Arts in Krakow",
+        "education_level" : "BACHELOR",
+        "faculty" : "Graphic Design",
+        "speciality" : "Visual Communication",
+        "year_of_graduate" : "2021"
+      } ]
+    },
+    "ADVANCED_TRAINING" : {
+      "@type" : "AdvancedTrainingContent",
+      "trainings" : [ ]
+    },
+    "LANGUAGES" : {
+      "@type" : "LanguagesContent",
+      "languages" : [ {
+        "language" : "Polish",
+        "language_level" : "C2"
+      }, {
+        "language" : "English",
+        "language_level" : "B2"
+      } ]
+    },
+    "SKILLS" : {
+      "@type" : "SkillsContent",
+      "skills" : [ {
+        "skill_name" : "Adobe Photoshop",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Adobe Illustrator",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Figma",
+        "skill_level" : "EXPERIENCED"
+      } ]
+    },
+    "ABOUT" : {
+      "@type" : "AboutContent",
+      "about_text" : "Creative designer with a passion for minimalist branding and typography."
+    },
+    "HOBBIES" : {
+      "@type" : "HobbiesContent",
+      "hobbies" : "Sketching, ceramics, indie films"
+    },
+    "RECOMMENDATIONS" : {
+      "@type" : "RecommendationsContent",
+      "recommendations" : [ ]
+    },
+    "ADDITIONAL" : {
+      "@type" : "AdditionalContent",
+      "additional_info" : null
+    },
+    "PUBLICATIONS" : {
+      "@type" : "PublicationsContent",
+      "publications" : [ ]
+    }
+  }
+}

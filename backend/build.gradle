@@ -56,6 +56,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    // Gradle forks a separate test JVM and does not auto-forward -D flags from the
+    // gradlew command line, so golden.update must be explicitly piped through.
+    systemProperty 'golden.update', System.getProperty('golden.update', 'false')
 }
 
 jar {

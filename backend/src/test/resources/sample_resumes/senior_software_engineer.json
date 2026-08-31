@@ -1,0 +1,136 @@
+{
+  "resume_id" : "f301c1e2-a9ca-4d78-8280-98f7e88d7c1e",
+  "version_of_last_edit" : "1.0",
+  "resume_name" : "Senior Software Engineer",
+  "resume_locale" : "en",
+  "template_name" : "simple_template_updated",
+  "blocks" : {
+    "MAIN_BLOCK" : {
+      "@type" : "MainBlockContent",
+      "desired_position" : "Senior Software Engineer",
+      "person_photo_name" : null,
+      "last_name" : "Bennett",
+      "first_name" : "Michael",
+      "date_of_birth" : "1990-06-14",
+      "city" : "Austin, TX",
+      "desired_salary" : "140000 USD",
+      "occupation" : "Backend Development",
+      "employment" : "FULL_TIME",
+      "schedule" : "REMOTE",
+      "is_moving_acceptable" : false,
+      "is_ready_for_business_trips" : true,
+      "driver_license" : "Class C",
+      "marital_status" : "Married",
+      "have_children" : true
+    },
+    "CONTACTS" : {
+      "@type" : "ContactsContent",
+      "email" : "michael.bennett@example.com",
+      "phone_number" : "+1-512-555-0148",
+      "social_nets" : [ {
+        "social_net_name" : "LinkedIn",
+        "social_net_profile_link" : "https://linkedin.com/in/michaelbennett"
+      }, {
+        "social_net_name" : "GitHub",
+        "social_net_profile_link" : "https://github.com/mbennett-dev"
+      } ]
+    },
+    "EXPERIENCE" : {
+      "@type" : "ExperienceContent",
+      "experiences" : [ {
+        "position" : "Senior Software Engineer",
+        "company" : "Northwind Technologies",
+        "start_date" : "2021-03-01",
+        "end_date" : null,
+        "is_still_working" : true,
+        "work_description" : "- Led backend architecture for a microservices platform serving 2M+ users\n- Mentored a team of 4 junior engineers\n\n**Key achievements:**\n- Reduced API latency by 35%\n- Migrated legacy monolith to Kubernetes"
+      }, {
+        "position" : "Software Engineer",
+        "company" : "BlueOak Solutions",
+        "start_date" : "2016-07-01",
+        "end_date" : "2021-02-01",
+        "is_still_working" : false,
+        "work_description" : "Developed and maintained RESTful APIs using Java and Spring Boot. Collaborated with the product team on feature design."
+      } ]
+    },
+    "EDUCATION" : {
+      "@type" : "EducationContent",
+      "educations" : [ {
+        "institution" : "University of Texas at Austin",
+        "education_level" : "BACHELOR",
+        "faculty" : "College of Natural Sciences",
+        "speciality" : "Computer Science",
+        "year_of_graduate" : "2016"
+      } ]
+    },
+    "ADVANCED_TRAINING" : {
+      "@type" : "AdvancedTrainingContent",
+      "trainings" : [ {
+        "course_name" : "AWS Certified Solutions Architect",
+        "organization" : "Amazon Web Services",
+        "year_of_graduate" : "2022"
+      }, {
+        "course_name" : "Advanced Kubernetes",
+        "organization" : "Coursera",
+        "year_of_graduate" : "2023"
+      } ]
+    },
+    "LANGUAGES" : {
+      "@type" : "LanguagesContent",
+      "languages" : [ {
+        "language" : "English",
+        "language_level" : "C2"
+      }, {
+        "language" : "Spanish",
+        "language_level" : "B1"
+      } ]
+    },
+    "SKILLS" : {
+      "@type" : "SkillsContent",
+      "skills" : [ {
+        "skill_name" : "Java",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Spring Boot",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Kubernetes",
+        "skill_level" : "EXPERIENCED"
+      }, {
+        "skill_name" : "PostgreSQL",
+        "skill_level" : "EXPERIENCED"
+      }, {
+        "skill_name" : "System Design",
+        "skill_level" : "PROFESSIONAL"
+      } ]
+    },
+    "ABOUT" : {
+      "@type" : "AboutContent",
+      "about_text" : "Backend engineer with 8+ years of experience building scalable distributed systems. Passionate about clean architecture, mentoring, and open-source contributions."
+    },
+    "HOBBIES" : {
+      "@type" : "HobbiesContent",
+      "hobbies" : "Rock climbing, home coffee roasting, contributing to open-source projects"
+    },
+    "RECOMMENDATIONS" : {
+      "@type" : "RecommendationsContent",
+      "recommendations" : [ {
+        "recommending" : "Laura Chen",
+        "company" : "Northwind Technologies",
+        "email" : "laura.chen@northwind.example",
+        "phone_number" : "+1-512-555-0199"
+      } ]
+    },
+    "ADDITIONAL" : {
+      "@type" : "AdditionalContent",
+      "additional_info" : "Open to relocation within the US for the right opportunity. Available to start within 4 weeks."
+    },
+    "PUBLICATIONS" : {
+      "@type" : "PublicationsContent",
+      "publications" : [ {
+        "publication" : "Designing Resilient Microservices at Scale",
+        "date" : "2023-05-10"
+      } ]
+    }
+  }
+}

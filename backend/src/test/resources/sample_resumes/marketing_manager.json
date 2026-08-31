@@ -1,0 +1,153 @@
+{
+  "resume_id" : "5e7b9f44-e8dc-4d18-9128-5add9154224f",
+  "version_of_last_edit" : "1.0",
+  "resume_name" : "Marketing Manager CV",
+  "resume_locale" : "en",
+  "template_name" : "simple_template",
+  "blocks" : {
+    "MAIN_BLOCK" : {
+      "@type" : "MainBlockContent",
+      "desired_position" : "Marketing Manager",
+      "person_photo_name" : null,
+      "last_name" : "Ferreira",
+      "first_name" : "Sofia",
+      "date_of_birth" : "1993-11-02",
+      "city" : "Lisbon, Portugal",
+      "desired_salary" : "3500 EUR",
+      "occupation" : "Digital Marketing",
+      "employment" : "FULL_TIME",
+      "schedule" : "FULL_TIME",
+      "is_moving_acceptable" : true,
+      "is_ready_for_business_trips" : true,
+      "driver_license" : "Category B",
+      "marital_status" : "Single",
+      "have_children" : false
+    },
+    "CONTACTS" : {
+      "@type" : "ContactsContent",
+      "email" : "sofia.ferreira@example.com",
+      "phone_number" : "+351 912 345 678",
+      "social_nets" : [ {
+        "social_net_name" : "LinkedIn",
+        "social_net_profile_link" : "https://linkedin.com/in/sofiaferreira"
+      }, {
+        "social_net_name" : "Portfolio",
+        "social_net_profile_link" : "https://sofiaferreira.example.com"
+      } ]
+    },
+    "EXPERIENCE" : {
+      "@type" : "ExperienceContent",
+      "experiences" : [ {
+        "position" : "Marketing Manager",
+        "company" : "Aurora Retail Group",
+        "start_date" : "2020-01-01",
+        "end_date" : null,
+        "is_still_working" : true,
+        "work_description" : "Oversee a team of 6 marketing specialists across paid media, content, and social channels.\n\n- Grew organic traffic by 60% year-over-year\n- Managed an annual budget of \u20ac800,000\n- Launched a loyalty program that increased repeat purchases by 22%"
+      }, {
+        "position" : "Marketing Specialist",
+        "company" : "Vento Digital Agency",
+        "start_date" : "2017-06-01",
+        "end_date" : "2019-12-01",
+        "is_still_working" : false,
+        "work_description" : "Planned and executed multi-channel campaigns for retail and hospitality clients."
+      }, {
+        "position" : "Marketing Intern",
+        "company" : "Vento Digital Agency",
+        "start_date" : "2016-09-01",
+        "end_date" : "2017-05-01",
+        "is_still_working" : false,
+        "work_description" : null
+      } ]
+    },
+    "EDUCATION" : {
+      "@type" : "EducationContent",
+      "educations" : [ {
+        "institution" : "Nova School of Business and Economics",
+        "education_level" : "MASTER",
+        "faculty" : "Management",
+        "speciality" : "Marketing",
+        "year_of_graduate" : "2016"
+      }, {
+        "institution" : "University of Lisbon",
+        "education_level" : "BACHELOR",
+        "faculty" : "Social Sciences",
+        "speciality" : "Communication Studies",
+        "year_of_graduate" : "2014"
+      } ]
+    },
+    "ADVANCED_TRAINING" : {
+      "@type" : "AdvancedTrainingContent",
+      "trainings" : [ {
+        "course_name" : "Google Analytics Certification",
+        "organization" : "Google",
+        "year_of_graduate" : "2021"
+      } ]
+    },
+    "LANGUAGES" : {
+      "@type" : "LanguagesContent",
+      "languages" : [ {
+        "language" : "Portuguese",
+        "language_level" : "C2"
+      }, {
+        "language" : "English",
+        "language_level" : "C1"
+      }, {
+        "language" : "French",
+        "language_level" : "B2"
+      } ]
+    },
+    "SKILLS" : {
+      "@type" : "SkillsContent",
+      "skills" : [ {
+        "skill_name" : "Content Strategy",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "SEO/SEM",
+        "skill_level" : "EXPERIENCED"
+      }, {
+        "skill_name" : "Team Leadership",
+        "skill_level" : "PROFESSIONAL"
+      }, {
+        "skill_name" : "Google Ads",
+        "skill_level" : "EXPERIENCED"
+      }, {
+        "skill_name" : "Adobe Creative Suite",
+        "skill_level" : "BASE"
+      } ]
+    },
+    "ABOUT" : {
+      "@type" : "AboutContent",
+      "about_text" : "Results-driven marketing professional with a track record of building brand awareness and driving revenue growth across e-commerce and retail sectors."
+    },
+    "HOBBIES" : {
+      "@type" : "HobbiesContent",
+      "hobbies" : "Photography, yoga, traveling"
+    },
+    "RECOMMENDATIONS" : {
+      "@type" : "RecommendationsContent",
+      "recommendations" : [ {
+        "recommending" : "Diego Alves",
+        "company" : "Aurora Retail Group",
+        "email" : "diego.alves@aurora.example",
+        "phone_number" : "+351 913 000 111"
+      }, {
+        "recommending" : "Beatriz Santos",
+        "company" : "Vento Digital Agency",
+        "email" : "beatriz.santos@vento.example",
+        "phone_number" : "+351 914 222 333"
+      } ]
+    },
+    "ADDITIONAL" : {
+      "@type" : "AdditionalContent",
+      "additional_info" : "EU citizen, valid work permit. Portfolio available upon request."
+    },
+    "PUBLICATIONS" : {
+      "@type" : "PublicationsContent",
+      "publications" : [ {
+        "publication" : "The Future of Retail Loyalty Programs",
+        "date" : "2022-09-15"
+      } ]
+    }
+  }
+}
