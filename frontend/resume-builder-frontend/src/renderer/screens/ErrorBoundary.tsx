@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
+import logger from '../utils/logger';
 
 type ErrorBoundaryProps = {
   children: ReactNode;
@@ -23,7 +24,7 @@ export default class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Unhandled render error:', error, errorInfo);
+    logger.error('Unhandled render error:', error, errorInfo.componentStack);
   }
 
   render() {

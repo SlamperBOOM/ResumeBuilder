@@ -27,6 +27,7 @@ import {
 } from './utils/backendTypes';
 import CustomDialog from './dialogs/CustomDialog';
 import RouteNotFoundScreen from './screens/RouteNotFoundScreen';
+import logger from './utils/logger';
 
 function useDialog<T = void>() {
   const [showState, setShowState] = useState(false);
@@ -89,7 +90,7 @@ export default function App() {
         }
         case ScreenSource.EDIT: {
           if (!updateScreenPayload.resumeId) {
-            console.log('No resume_id for edit screen update');
+            logger.warn('No resume_id for edit screen update');
             return;
           }
           const schema = await schemaApi.getEditScreen(
@@ -99,7 +100,7 @@ export default function App() {
           break;
         }
         default: {
-          console.log('unexpected enum');
+          logger.warn('Unexpected screen source in updateCurrentScreen');
         }
       }
     },
@@ -117,7 +118,7 @@ export default function App() {
     (bduAction: BduActionName | (string & {}), payload?: BDUActionParams) => {
       const action = actionApi[bduAction];
       if (!action) {
-        console.error(`Unknown BDU action received: "${bduAction}"`);
+        logger.error(`Unknown BDU action received: "${bduAction}"`);
         dialogActions.infoModal.open({
           title: undefined,
           text: `Unknown action received from the backend: "${bduAction}"`,
@@ -129,7 +130,7 @@ export default function App() {
           if (result) {
             const frontendAction = frontendActions[result.frontend_action];
             if (!frontendAction) {
-              console.error(
+              logger.error(
                 `Unknown frontend action received: "${result.frontend_action}"`,
               );
               dialogActions.infoModal.open({
@@ -152,7 +153,7 @@ export default function App() {
           return null;
         })
         .catch((error: unknown) => {
-          console.error(error);
+          logger.error('BDU action failed:', error);
           const message =
             error instanceof Error ? error.message : String(error);
           dialogActions.infoModal.open({ title: undefined, text: message });

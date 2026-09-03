@@ -8,6 +8,7 @@ import {
 } from '../../../utils/resumeBlockTypes';
 import { useTranslate } from '../../../utils/translations';
 import { validatePickedPath } from '../../../api/validatePickedPath';
+import logger from '../../../utils/logger';
 
 // Converts an absolute filesystem path (Windows `C:\...` or POSIX `/...`)
 // into a `file://` URL usable as an <img> src.
@@ -62,7 +63,13 @@ export default function ResumeImage(props: FieldRendererProps) {
                 component="img"
                 src={toFileUrl(controllerField.value)}
                 alt={translateKey(currentField.title)}
-                onError={() => setErroredValue(controllerField.value)}
+                onError={() => {
+                  logger.warn(
+                    'Failed to load image thumbnail:',
+                    controllerField.value,
+                  );
+                  setErroredValue(controllerField.value);
+                }}
                 sx={{
                   display: 'block',
                   width: '100%',
@@ -101,7 +108,7 @@ export default function ResumeImage(props: FieldRendererProps) {
                     allowedExtensions: ['.png', '.jpg', '.jpeg'],
                   })
                 ) {
-                  console.error('Rejected image path from dialog:', fileName);
+                  logger.warn('Rejected image path from dialog:', fileName);
                   return;
                 }
 

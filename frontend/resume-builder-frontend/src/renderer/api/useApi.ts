@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useCallback, useMemo } from 'react';
 import type { ZodError, ZodType } from 'zod';
+import logger from '../utils/logger';
 
 const REQUEST_TIMEOUT_MS = 15000;
 let baseAddressPromise: Promise<string> | null = null;
@@ -57,17 +58,18 @@ async function performRequest<T = unknown>(
     if (schema) {
       const result = schema.safeParse(data);
       if (!result.success) {
-        throw new ApiValidationError(
-          describeZodError(url, method, result.error),
-          data,
-        );
+        const validationMessage = describeZodError(url, method, result.error);
+        logger.error(validationMessage);
+        throw new ApiValidationError(validationMessage, data);
       }
       return result.data as T;
     }
     return data as T;
   } catch (error) {
     if (error instanceof ApiValidationError) throw error;
-    throw new Error(extractErrorMessage(error));
+    const message = extractErrorMessage(error);
+    logger.error(`${method.toUpperCase()} ${url} failed: ${message}`);
+    throw new Error(message);
   }
 }
 

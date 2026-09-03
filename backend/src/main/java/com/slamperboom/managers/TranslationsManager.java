@@ -130,27 +130,35 @@ public class TranslationsManager {
         return appTranslations.get(DEFAULT_LOCALE);
     }
 
+    private JsonNode getSection(String key) {
+        JsonNode section = getAppTranslations().get(key);
+        if (section == null) {
+            logger.warnf("Missing translation section \"%s\" for locale \"%s\"", key, getCurrentLocaleString());
+        }
+        return section;
+    }
+
     public JsonNode getMainScreenTranslations() {
-        return getAppTranslations().get(MAIN_SCREEN_KEY);
+        return getSection(MAIN_SCREEN_KEY);
     }
 
     public JsonNode getEditScreenTranslations() {
-        return getAppTranslations().get(EDIT_SCREEN_KEY);
+        return getSection(EDIT_SCREEN_KEY);
     }
 
     public JsonNode getHeaderTranslations() {
-        return getAppTranslations().get(HEADER_KEY);
+        return getSection(HEADER_KEY);
     }
 
     public JsonNode getLanguageDialogTranslations() {
-        return getAppTranslations().get(LANGUAGE_DIALOG_KEY);
+        return getSection(LANGUAGE_DIALOG_KEY);
     }
 
     public JsonNode getConfirmationDialogTranslations() {
-        return getAppTranslations().get(CONFIRMATION_DIALOG_KEY);
+        return getSection(CONFIRMATION_DIALOG_KEY);
     }
 
     public JsonNode getErrorMessagesTranslations() {
-        return getAppTranslations().get(ERROR_MESSAGES_KEY);
+        return getSection(ERROR_MESSAGES_KEY);
     }
 }

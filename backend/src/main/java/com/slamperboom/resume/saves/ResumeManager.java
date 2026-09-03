@@ -50,7 +50,7 @@ public class ResumeManager implements IResumeManager{
                     htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume))
             ));
         } catch (UserException | IOException e) {
-            logger.errorf("Unable to build simple resume object for %s", resume.getId());
+            logger.errorf(e, "Unable to build simple resume object for %s", resume.getId());
             return Optional.empty();
         }
     }
@@ -99,7 +99,7 @@ public class ResumeManager implements IResumeManager{
             writer.close();
             lastKnownModified.put(resumeId, saveFile.lastModified());
         } catch (IOException e){
-            logger.errorf("Unable to save resume %s: %s", resume.getId(), e);
+            logger.errorf(e, "Unable to save resume %s", resume.getId());
             throw new UserException(ErrorCode.RESUME_SAVE_ERROR, e);
         }
     }
@@ -150,7 +150,7 @@ public class ResumeManager implements IResumeManager{
                 resumeFileMap.put(resume.getId(), saveFile);
                 lastKnownModified.put(resume.getId(), onDiskModified);
             } catch (IOException e) {
-                logger.errorf("Unable to read resume %s", e.toString());
+                logger.errorf(e, "Unable to read resume from file %s", saveFile.getName());
             }
         }
 
@@ -223,6 +223,7 @@ public class ResumeManager implements IResumeManager{
             resumes.put(resumeId, newResume);
             saveResume(resumeId);
         } catch (IOException e) {
+            logger.errorf(e, "Unable to duplicate resume %s", duplicateResumeId);
             throw new UserException(ErrorCode.UNABLE_TO_DUPLICATE_RESUME, e);
         }
 
@@ -239,7 +240,7 @@ public class ResumeManager implements IResumeManager{
             saveResume(resume.getId());
             return resume.getId();
         } catch (IOException e) {
-            logger.errorf("Unable to read resume %s", e.toString());
+            logger.errorf(e, "Unable to import resume from file %s", fileName);
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
     }
@@ -251,6 +252,7 @@ public class ResumeManager implements IResumeManager{
         try {
             htmlConverter.saveHTMLtoPDF(htmlResume, savePath);
         } catch (IOException e) {
+            logger.errorf(e, "Unable to export resume %s to PDF at %s", resumeID, savePath);
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
     }
@@ -268,6 +270,7 @@ public class ResumeManager implements IResumeManager{
             resumeFileMap.remove(resumeId);
             lastKnownModified.remove(resumeId);
         } catch (IOException e) {
+            logger.errorf(e, "Unable to delete resume %s", resumeId);
             throw new UserException(ErrorCode.UNABLE_TO_DELETE_RESUME, e);
         }
     }

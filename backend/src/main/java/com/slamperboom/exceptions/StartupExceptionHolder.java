@@ -1,11 +1,14 @@
 package com.slamperboom.exceptions;
 
 import lombok.Getter;
+import org.jboss.logging.Logger;
 
 /**
  * This class is used to contain exceptions that occurring on startup of the application
  */
 public class StartupExceptionHolder {
+    private static final Logger logger = Logger.getLogger(StartupExceptionHolder.class);
+
     @Getter
     private static String errorMessage = null;
 
@@ -16,6 +19,7 @@ public class StartupExceptionHolder {
      * @param message
      */
     public static void addException(String message) {
+        logger.error(message);
         errorMessage = message;
     }
 

@@ -23,6 +23,9 @@ let mainWindow: BrowserWindow | null = null;
 
 let activeBackendPort: number | null = null;
 
+log.initialize();
+log.errorHandler.startCatching({ showDialog: false });
+
 async function launchBackend(): Promise<void> {
   try {
     activeBackendPort = await startBackend({
@@ -67,7 +70,7 @@ const installExtensions = async () => {
       extensions.map((name) => installer[name]),
       forceDownload,
     )
-    .catch(console.log);
+    .catch((error: unknown) => log.error('Failed to install devtools extensions', error));
 };
 
 const createWindow = async () => {
@@ -206,7 +209,7 @@ app.on('before-quit', async (event) => {
       await stopBackend();
       app.exit();
     } else {
-      console.log('Not able to close backend');
+      log.warn('Not able to close backend gracefully');
     }
   } catch (error) {
     log.error('Failed to gracefully stop backend, killing it', error);
@@ -234,4 +237,4 @@ app
       if (mainWindow === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch((error: unknown) => log.error('Failed during app startup', error));

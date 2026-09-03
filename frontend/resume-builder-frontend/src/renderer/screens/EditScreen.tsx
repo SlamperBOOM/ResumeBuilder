@@ -11,6 +11,7 @@ import ResumePDFPreview, {
 } from '../components/ResumePDFPreview';
 import PreviewControls from '../components/PreviewControls';
 import EditScreenResponse from '../DTO/EditScreenResponse';
+import logger from '../utils/logger';
 
 type EditScreenProps = {
   appActions: AppActions;
@@ -89,7 +90,7 @@ export default function EditScreen(props: EditScreenProps) {
         resumeId,
       })
       .catch((error) => {
-        console.error('Failed to load edit screen', error);
+        logger.error('Failed to load edit screen', error);
         window.location.reload();
       });
   }, [appActions, resumeId]);

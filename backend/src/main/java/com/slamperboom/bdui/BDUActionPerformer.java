@@ -35,6 +35,11 @@ public class BDUActionPerformer {
         return objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId);
     }
 
+    private JsonNode handleFailure(String message, Throwable cause) {
+        logger.error(message, cause);
+        return dialogBuilders.buildMessageDialogWithoutTitle(message);
+    }
+
     private JsonNode makeActionNode(FrontendAction action) {
         return objectMapper.createObjectNode().put(BackendConstants.FRONTEND_ACTION_KEY, action.toString());
     }
@@ -51,7 +56,7 @@ public class BDUActionPerformer {
             String resumeId = resumeManager.createResume(resumeName);
             return makeActionNode(FrontendAction.OPEN_EDIT_SCREEN, getResumeIdPayload(resumeId));
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -65,7 +70,7 @@ public class BDUActionPerformer {
             resumeManager.saveResume(resumeId);
             return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -87,7 +92,7 @@ public class BDUActionPerformer {
             logger.debugf("Update payload: %s", payload);
             return makeActionNode(FrontendAction.UPDATE_CURRENT_SCREEN);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -101,7 +106,7 @@ public class BDUActionPerformer {
                 throw new UserException(ErrorCode.RESUME_NOT_FOUND);
             }
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
 
         payload.setTitle(translations.get("delete_confirmation.title").asText() + resume.getName());
@@ -120,7 +125,7 @@ public class BDUActionPerformer {
             logger.infof("Deleting resume with id %s", resumeId);
             return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -130,7 +135,7 @@ public class BDUActionPerformer {
             logger.infof("Duplicating resume with id %s. New resume id: %s", resumeId, newResumeId);
             return makeActionNode(FrontendAction.OPEN_MAIN_SCREEN);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -139,7 +144,7 @@ public class BDUActionPerformer {
             resumeManager.exportResumeToPDF(payload.getResumeId(), payload.getSavePath());
             logger.infof("Exporting resume with id %s to PDF. PDF file located at %s", payload.getResumeId(), payload.getSavePath());
         } catch (UserException e) {
-            return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage()));
+            return Optional.of(handleFailure(e.getMessage(), e));
         }
         ConfirmationDialogPayload confirmPayload = new ConfirmationDialogPayload();
         JsonNode translations = TranslationsManager.getInstance().getConfirmationDialogTranslations();
@@ -163,7 +168,7 @@ public class BDUActionPerformer {
         try {
             resumeId = resumeManager.importResumeFromFile(fileName);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
         return makeActionNode(FrontendAction.OPEN_EDIT_SCREEN, getResumeIdPayload(resumeId));
     }
@@ -181,6 +186,7 @@ public class BDUActionPerformer {
             logger.info("Open resume dir");
             return Optional.empty();
         } catch (UserException | IOException e) {
+            logger.error("Failed to open directory: " + dirPath, e);
             return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(""));
         }
     }
@@ -192,7 +198,7 @@ public class BDUActionPerformer {
             logger.debugf("Locale changed to %s", locale);
             return makeActionNode(FrontendAction.UPDATE_CURRENT_SCREEN);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -213,7 +219,7 @@ public class BDUActionPerformer {
             logger.info("Perform exit, save all resumes and settings");
             return makeActionNode(FrontendAction.CLOSE);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 }

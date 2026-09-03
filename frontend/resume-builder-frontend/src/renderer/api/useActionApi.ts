@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import useApi from './useApi';
+import logger from '../utils/logger';
 import ActionResponseDTO from '../DTO/ActionResponseDTO';
 import { BDUActionPayload } from '../utils/backendTypes';
 import {
@@ -117,7 +118,7 @@ function createBduAction(
 ): (payload?: BDUActionPayload) => Promise<ActionResponseDTO | null> {
   return async (payload) => {
     if (config.isValid && !config.isValid(payload)) {
-      console.log(config.invalidMessage ?? 'Invalid payload for BDU action');
+      logger.warn(config.invalidMessage ?? 'Invalid payload for BDU action');
       return null;
     }
 
@@ -161,7 +162,7 @@ export default function useActionApi() {
     async (payload?: BDUActionPayload) => {
       let resumeName = 'Resume';
       if (!payload) {
-        console.log('No payload provided');
+        logger.warn('No payload provided for export action');
         return null;
       }
       if (payload.resume_name) {
@@ -169,11 +170,11 @@ export default function useActionApi() {
       }
       const files = await window.electron.openSaveFileDialog(resumeName);
       if (!files) {
-        console.log('No file chosen');
+        logger.debug('No file chosen for export');
         return null;
       }
       if (!validatePickedPath(files, { allowedExtensions: ['.pdf'] })) {
-        console.error('Rejected export path from dialog:', files);
+        logger.warn('Rejected export path from dialog:', files);
         return null;
       }
       return api.performPostRequest<ActionResponseDTO>(
@@ -192,11 +193,11 @@ export default function useActionApi() {
     async (_payload?: BDUActionPayload) => {
       const files = await window.electron.openFileDialog();
       if (!files) {
-        console.log('No file chosen');
+        logger.debug('No file chosen for import');
         return null;
       }
       if (!validatePickedPath(files)) {
-        console.error('Rejected import path from dialog:', files);
+        logger.warn('Rejected import path from dialog:', files);
         return null;
       }
       return api.performPostRequest<ActionResponseDTO>(

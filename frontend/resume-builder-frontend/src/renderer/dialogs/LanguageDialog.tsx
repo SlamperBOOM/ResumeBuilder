@@ -20,6 +20,7 @@ import { AppActions } from '../utils/appActions';
 import useSchemaApi from '../api/useSchemaApi';
 import { LanguageVariant } from '../DTO/LanguageDialogResponse';
 import { translate } from '../utils/translations';
+import logger from '../utils/logger';
 
 type LanguageDialogProps = {
   showState: boolean;
@@ -68,7 +69,7 @@ export default function LanguageDialog(props: LanguageDialogProps) {
         return null;
       })
       .catch((error) => {
-        console.log(error);
+        logger.error('Failed to load language dialog', error);
       });
   }, [schemaApi, appActions.updateScreenMarker]);
 

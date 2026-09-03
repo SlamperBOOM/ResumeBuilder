@@ -5,6 +5,7 @@ import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import MainScreenResponse from '../DTO/MainScreenResponse';
 import { useTranslate } from '../utils/translations';
+import logger from '../utils/logger';
 
 type MainScreenProps = {
   appActions: AppActions;
@@ -97,7 +98,7 @@ export default function MainScreen(props: MainScreenProps) {
         screenUpdateFunction: setMainSchema,
       })
       .catch((error) => {
-        console.error('Failed to load main screen', error);
+        logger.error('Failed to load main screen', error);
         setLoadError(true);
       });
   }, [appActions, retryCount]);

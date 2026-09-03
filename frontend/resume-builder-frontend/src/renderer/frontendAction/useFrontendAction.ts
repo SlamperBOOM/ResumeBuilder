@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AppDialogActions from '../dialogs/appDialogActions';
 import { UpdateScreenPayload } from '../utils/appActions';
 import FrontendActionEnum from './FrontendActionEnum';
+import logger from '../utils/logger';
 
 interface FrontendActionParams {
   payload?: JSON;
@@ -46,7 +47,7 @@ function useFrontendAction(
   const openEditScreen = useCallback(
     (params: FrontendActionParams) => {
       if (!params.payload || !params.payload.resume_id) {
-        console.log('No resume id for edit screen');
+        logger.warn('No resume id for edit screen');
         return null;
       }
       navigate(
@@ -69,7 +70,7 @@ function useFrontendAction(
   const performShowConfirmation = useCallback(
     (params: FrontendActionParams) => {
       if (!params.payload) {
-        console.log('No data for confirmation dialog');
+        logger.warn('No data for confirmation dialog');
         return null;
       }
       dialogActions.confirmationModal.open(params.payload);
@@ -81,7 +82,7 @@ function useFrontendAction(
   const performShowMessage = useCallback(
     (params: FrontendActionParams) => {
       if (!params.payload || !params.payload.text) {
-        console.log('No data for message dialog');
+        logger.warn('No data for message dialog');
         return null;
       }
       dialogActions.infoModal.open(params.payload);
@@ -93,7 +94,7 @@ function useFrontendAction(
   const performShowCustomDialog = useCallback(
     (params: FrontendActionParams) => {
       if (!params.payload) {
-        console.log('No data for custom dialog');
+        logger.warn('No data for custom dialog');
         return null;
       }
       dialogActions.customModal.open(params.payload);

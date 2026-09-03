@@ -4,6 +4,7 @@ import useSchemaApi from '../api/useSchemaApi';
 import { AppActions } from '../utils/appActions';
 import { translate } from '../utils/translations';
 import appIcon from '../../../assets/icon.svg';
+import logger from '../utils/logger';
 
 type HeaderWrapperProps = {
   children: ReactNode;
@@ -42,7 +43,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
         return null;
       })
       .catch((error) => {
-        console.log(error);
+        logger.error('Failed to load header schema', error);
       });
   }, [schemaApi, appActions]);
 

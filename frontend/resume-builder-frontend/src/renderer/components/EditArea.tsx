@@ -8,6 +8,7 @@ import FieldRenderer from './resume_edit/FieldRenderer';
 import ResumeBlock from './resume_edit/input_components/ResumeBlock';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { BDU_ACTION_UPDATE } from '../api/useActionApi';
+import logger from '../utils/logger';
 
 // Add additional locales for date here
 import 'dayjs/locale/ru';
@@ -38,7 +39,7 @@ export function EditArea(props: EditAreaProps) {
         debounceRef.current = null;
       }
 
-      console.log('Saving resume: ', data);
+      logger.debug('Saving resume:', data);
       const updatePayload: UpdatePayload = {
         resume_id: data.resume_id,
         resume_info: {

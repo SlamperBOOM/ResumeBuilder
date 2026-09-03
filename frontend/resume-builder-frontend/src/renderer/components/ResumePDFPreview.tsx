@@ -6,6 +6,7 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import logger from '../utils/logger';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -79,6 +80,13 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
     [currentPage],
   );
 
+  const onDocumentLoadError = useCallback(
+    (error: Error) => {
+      logger.error('Failed to load PDF preview:', preview, error);
+    },
+    [preview],
+  );
+
   const calculatedScale = useMemo(() => {
     if (!pageSize.width || !containerSize.width) return 1;
 
@@ -124,7 +132,11 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
           p: 2,
         }}
       >
-        <Document file={preview} onLoadSuccess={onDocumentLoadSuccess}>
+        <Document
+          file={preview}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+        >
           <Page
             pageNumber={currentPage}
             scale={calculatedScale}

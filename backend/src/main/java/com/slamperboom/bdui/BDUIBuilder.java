@@ -44,6 +44,11 @@ public class BDUIBuilder {
         templatesReducer = new ThreadPoolReducer<>();
     }
 
+    private JsonNode handleFailure(String message, Throwable cause) {
+        logger.error(message, cause);
+        return dialogBuilders.buildMessageDialogWithoutTitle(message);
+    }
+
     public JsonNode buildMainScreen() {
         ObjectNode result = objectMapper.createObjectNode();
         resumeManager.readAllResumes();
@@ -58,7 +63,7 @@ public class BDUIBuilder {
             }
             result.set(BackendConstants.PAYLOAD_KEY, resumes);
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
 
         logger.info("Built main screen");
@@ -85,7 +90,7 @@ public class BDUIBuilder {
             logger.infof("Built edit screen for resume %s", resumeId);
             return result;
         } catch (UserException | IOException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
     }
 
@@ -127,6 +132,7 @@ public class BDUIBuilder {
         var resume = resumeManager.getResume(resumeId);
 
         if (resume == null) {
+            logger.warnf("Resume not found: %s", resumeId);
             return dialogBuilders.buildMessageDialogWithoutTitle(new UserException(ErrorCode.RESUME_NOT_FOUND).getMessage());
         }
 
@@ -141,13 +147,13 @@ public class BDUIBuilder {
                     htmlTemplate = htmlConverter.processResumeToHTMLWithTemplate(resume, template);
                     templateNode.put("preview", htmlConverter.saveHTMLtoPDFBase64(htmlTemplate));
                 } catch (UserException | IOException e) {
-                    logger.warnf("Unable to create preview for resume %s and template %s", resume.getId(), template.toString());
+                    logger.warnf(e, "Unable to create preview for resume %s and template %s", resume.getId(), template.toString());
                     return Optional.empty();
                 }
                 return Optional.of(templateNode);
             });
         } catch (UserException e) {
-            return dialogBuilders.buildMessageDialogWithoutTitle(e.getMessage());
+            return handleFailure(e.getMessage(), e);
         }
         nodes.sort(Comparator.comparing(o -> o.get("name").asText()));
         result.putArray(BackendConstants.PAYLOAD_KEY).addAll(nodes);

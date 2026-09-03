@@ -20,6 +20,7 @@ import { useTranslate } from '../../../utils/translations';
 import ResumePDFPreview, {
   ResumePreviewScaleEnum,
 } from '../../ResumePDFPreview';
+import logger from '../../../utils/logger';
 
 const CARD_ASPECT_RATIO = 210 / 297;
 
@@ -80,7 +81,8 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
           setDialogOpen(true);
           return null;
         })
-        .catch(() => {
+        .catch((error) => {
+          logger.error('Failed to load templates', error);
           setDialogOpen(false);
           setInitDialogOpen(false);
           setLoadError(true);

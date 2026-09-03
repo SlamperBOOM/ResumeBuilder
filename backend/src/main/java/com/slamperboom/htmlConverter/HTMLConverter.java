@@ -11,6 +11,7 @@ import com.slamperboom.managers.TranslationsManager;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -20,6 +21,8 @@ import java.util.HashMap;
 
 @ApplicationScoped
 public class HTMLConverter {
+    private final Logger logger = Logger.getLogger(this.getClass());
+
     private final FontsManager fontsManager;
     private final HTMLTemplateManager htmlTemplateManager;
 
@@ -40,6 +43,7 @@ public class HTMLConverter {
         try {
             template = htmlTemplateManager.getTemplate(templateName);
         } catch (IOException e) {
+            logger.errorf(e, "Unable to load template %s", templateName);
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
         HashMap jsonRepresentation;
@@ -54,6 +58,7 @@ public class HTMLConverter {
                     )
             );
         } catch (JsonProcessingException e) {
+            logger.errorf(e, "Unable to build JSON representation for resume %s", resume.getId());
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
 
@@ -62,6 +67,7 @@ public class HTMLConverter {
             template.process(jsonRepresentation, writer);
             writer.flush();
         } catch (TemplateException | IOException e) {
+            logger.errorf(e, "Unable to render template %s for resume %s", templateName, resume.getId());
             throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
         return writer.toString();
@@ -105,6 +111,7 @@ public class HTMLConverter {
         try (OutputStream outputStream = new FileOutputStream(pdfFile)) {
             renderToStream(htmlString, outputStream);
         }
+        logger.debugf("Rendered PDF to %s", savePath);
     }
 
     /**
@@ -114,6 +121,7 @@ public class HTMLConverter {
     public String saveHTMLtoPDFBase64(String htmlString) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream(512 * 1024);
         renderToStream(htmlString, stream);
+        logger.debug("Rendered PDF to base64");
         return "data:application/pdf;base64," + Base64.getEncoder().encodeToString(stream.toByteArray());
     }
 }

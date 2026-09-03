@@ -6,6 +6,7 @@ import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.exceptions.UserException;
+import org.jboss.logging.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 public class DynamicSettings {
+    private final Logger logger = Logger.getLogger(this.getClass());
+
     private static DynamicSettings settingsInstance;
 
     public static DynamicSettings getInstance() {
@@ -64,6 +67,7 @@ public class DynamicSettings {
             writer.close();
         } catch (IOException e){
             // TODO Подумать про graceful shutdown
+            logger.error("Unable to save settings", e);
             throw new UserException(ErrorCode.ERROR_WHILE_SAVING_CONFIG, e);
         }
     }

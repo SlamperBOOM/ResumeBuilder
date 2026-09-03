@@ -14,6 +14,7 @@ import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
 import com.slamperboom.settings.Settings;
 import lombok.Setter;
+import org.jboss.logging.Logger;
 
 import java.util.Map;
 
@@ -22,6 +23,9 @@ import java.util.Map;
  * This can be transformed into HTML or PDF doc
  */
 public class Resume implements IResume {
+    @JsonIgnore
+    private final Logger logger = Logger.getLogger(this.getClass());
+
     @JsonIgnore
     private final ObjectMapper defaultObjectMapper;
     @JsonIgnore
@@ -130,6 +134,7 @@ public class Resume implements IResume {
             versionOfLastEdit = Settings.getInstance().getVersion();
             isSaved = false;
         } catch (JsonProcessingException e) {
+            logger.errorf(e, "Unable to update content block %s for resume %s", contentType, id);
             throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK, e);
         }
     }
@@ -142,6 +147,7 @@ public class Resume implements IResume {
             this.resumeLocale = information.get("resume_locale").asText();
             isSaved = false;
         } catch (NullPointerException e) {
+            logger.errorf(e, "Unable to update resume information for resume %s", id);
             throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK);
         }
     }

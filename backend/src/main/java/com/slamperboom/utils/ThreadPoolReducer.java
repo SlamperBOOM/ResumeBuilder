@@ -30,7 +30,7 @@ public class ThreadPoolReducer<INPUT, OUTPUT> {
                 try {
                     result = converter.apply(value);
                 } catch (Exception e) {
-                    logger.error("Unable to collect data");
+                    logger.error("Unable to collect data", e);
                     latch.countDown();
                     return;
                 }
@@ -43,6 +43,7 @@ public class ThreadPoolReducer<INPUT, OUTPUT> {
         try {
             latch.await();
         } catch (InterruptedException e) {
+            logger.error("Interrupted while waiting for tasks to finish", e);
             Thread.currentThread().interrupt();
             throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
         }

@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 import ErrorBoundary from './screens/ErrorBoundary';
+import logger from './utils/logger';
+
+logger.errorHandler.startCatching();
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
