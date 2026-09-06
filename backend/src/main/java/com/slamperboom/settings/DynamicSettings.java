@@ -6,6 +6,7 @@ import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import org.jboss.logging.Logger;
 
 import java.io.File;
@@ -33,19 +34,26 @@ public class DynamicSettings {
 
     private final ObjectNode settings;
 
+    private void fillSettingsWithEmptyField() {
+        if (!settings.has(LOCALE_KEY)) {
+            settings.put(LOCALE_KEY, "en");
+        }
+        if (!settings.has(MAX_RESPONSE_BODY_LENGTH_KEY)) {
+            settings.put(MAX_RESPONSE_BODY_LENGTH_KEY, 10000);
+        }
+    }
+
     private DynamicSettings(){
         try {
             ObjectMapper mapper = new ObjectMapper();
             File settingsFile = new File(SAVE_FILE);
             if (!settingsFile.exists()) {
-                // fill with defaults
-                settings = mapper.createObjectNode()
-                        .put(LOCALE_KEY, "en");
-                settings.put(MAX_RESPONSE_BODY_LENGTH_KEY, 10000);
+                settings = mapper.createObjectNode();
             } else {
                 settings =
                         (ObjectNode) mapper.readTree(settingsFile);
             }
+            fillSettingsWithEmptyField();
         } catch (IOException e) {
             String message = "Error while creating dynamic settings instance";
             StartupExceptionHolder.addException(message);
@@ -70,7 +78,7 @@ public class DynamicSettings {
         } catch (IOException e){
             // TODO Подумать про graceful shutdown
             logger.error("Unable to save settings", e);
-            throw new UserException(ErrorCode.ERROR_WHILE_SAVING_CONFIG, e);
+            throw UserExceptionFactory.construct(ErrorCode.ERROR_WHILE_SAVING_CONFIG, e);
         }
     }
 

@@ -116,7 +116,6 @@ class ResumeTest {
         // checks whether a resume can actually be saved and reloaded (as ResumeManager does
         // on every startup) despite that mismatch. See review notes on AboutContent.
         resume.setResumeName("My resume");
-        resume.setVersionOfLastEdit("1.0");
         resume.setResumeLocale("en");
         resume.setTemplateName("simple_template");
         JsonNode json = resume.getJson();

@@ -11,6 +11,7 @@ import com.slamperboom.bdui.BDUActionPerformer;
 import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
@@ -75,7 +76,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performCreateNew_whenManagerThrows_returnsMessageDialog() throws UserException {
-        when(resumeManager.createResume(anyString())).thenThrow(new UserException(ErrorCode.RESUME_SAVE_ERROR));
+        when(resumeManager.createResume(anyString())).thenThrow(UserExceptionFactory.construct(ErrorCode.RESUME_SAVE_ERROR));
 
         JsonNode result = performer.performCreateNew();
 
@@ -101,7 +102,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performOpenMainScreen_whenSaveThrows_returnsMessageDialog() throws UserException {
-        doThrow(new UserException(ErrorCode.RESUME_SAVE_ERROR)).when(resumeManager).saveResume("id-1");
+        doThrow(UserExceptionFactory.construct(ErrorCode.RESUME_SAVE_ERROR)).when(resumeManager).saveResume("id-1");
 
         JsonNode result = performer.performOpenMainScreen("id-1");
 
@@ -142,7 +143,7 @@ class BDUActionPerformerTest {
     @Test
     void performUpdate_whenContentUpdateThrows_returnsMessageDialogAndSkipsSave() throws Exception {
         when(resumeManager.getResume("id-1")).thenReturn(resume);
-        doThrow(new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK)).when(resume).updateContent(any(), any());
+        doThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK)).when(resume).updateContent(any(), any());
         UpdatePayload payload = buildUpdatePayload();
 
         JsonNode result = performer.performUpdate(payload);
@@ -184,7 +185,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performConfirmDelete_whenManagerThrows_returnsMessageDialog() throws UserException {
-        doThrow(new UserException(ErrorCode.UNABLE_TO_DELETE_RESUME)).when(resumeManager).deleteResume("id-1");
+        doThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_DELETE_RESUME)).when(resumeManager).deleteResume("id-1");
 
         JsonNode result = performer.performConfirmDelete("id-1");
 
@@ -202,7 +203,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performDuplicate_whenManagerThrows_returnsMessageDialog() throws UserException {
-        when(resumeManager.duplicateResume("id-1")).thenThrow(new UserException(ErrorCode.RESUME_NOT_FOUND));
+        when(resumeManager.duplicateResume("id-1")).thenThrow(UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND));
 
         JsonNode result = performer.performDuplicate("id-1");
 
@@ -227,7 +228,7 @@ class BDUActionPerformerTest {
         ExportPayload payload = objectMapper.treeToValue(
                 objectMapper.readTree("{\"resume_id\":\"id-1\",\"save_path\":\"" + escapedTempPath() + "\"}"),
                 ExportPayload.class);
-        doThrow(new UserException(ErrorCode.UNABLE_TO_SAVE_PDF)).when(resumeManager).exportResumeToPDF(anyString(), anyString());
+        doThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF)).when(resumeManager).exportResumeToPDF(anyString(), anyString());
 
         Optional<JsonNode> result = performer.performExport(payload);
 
@@ -247,7 +248,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performImport_whenManagerThrows_returnsMessageDialog() throws UserException {
-        when(resumeManager.importResumeFromFile("bad.json")).thenThrow(new UserException(ErrorCode.UNABLE_TO_SAVE_PDF));
+        when(resumeManager.importResumeFromFile("bad.json")).thenThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF));
 
         JsonNode result = performer.performImport("bad.json");
 
@@ -286,7 +287,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performExit_whenSaveAllThrows_returnsMessageDialog() throws UserException {
-        doThrow(new UserException(ErrorCode.RESUME_SAVE_ERROR)).when(resumeManager).saveAll();
+        doThrow(UserExceptionFactory.construct(ErrorCode.RESUME_SAVE_ERROR)).when(resumeManager).saveAll();
 
         JsonNode result = performer.performExit();
 

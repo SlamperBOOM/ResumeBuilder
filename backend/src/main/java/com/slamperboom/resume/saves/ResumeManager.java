@@ -1,13 +1,13 @@
 package com.slamperboom.resume.saves;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
-import com.slamperboom.htmlConverter.HTMLConverter;
-import com.slamperboom.htmlConverter.HTMLTemplateManager;
+import com.slamperboom.exceptions.UserExceptionFactory;
+import com.slamperboom.htmlConvertion.HTMLConverter;
+import com.slamperboom.htmlConvertion.HTMLTemplateManager;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
@@ -36,6 +36,8 @@ public class ResumeManager implements IResumeManager{
     private final Map<String, File> resumeFileMap = new HashMap<>();
     private final Map<String, Long> lastKnownModified = new HashMap<>();
     private final HTMLConverter htmlConverter;
+    private final ResumeLoader resumeLoader;
+    private final TranslationsManager translationsManager;
     private final ThreadPoolReducer<Resume, SimpleResume> resumeReducer;
 
     private Optional<SimpleResume> convertToSimpleResume(Resume resume) {
@@ -55,8 +57,10 @@ public class ResumeManager implements IResumeManager{
         }
     }
 
-    ResumeManager(HTMLConverter htmlConverter) {
+    ResumeManager(HTMLConverter htmlConverter, ResumeLoader resumeLoader, TranslationsManager translationsManager) {
         this.htmlConverter = htmlConverter;
+        this.resumeLoader = resumeLoader;
+        this.translationsManager = translationsManager;
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -100,7 +104,7 @@ public class ResumeManager implements IResumeManager{
             lastKnownModified.put(resumeId, saveFile.lastModified());
         } catch (IOException e){
             logger.errorf(e, "Unable to save resume %s", resume.getId());
-            throw new UserException(ErrorCode.RESUME_SAVE_ERROR, e);
+            throw UserExceptionFactory.construct(ErrorCode.RESUME_SAVE_ERROR, e);
         }
     }
 
@@ -143,8 +147,7 @@ public class ResumeManager implements IResumeManager{
             }
 
             try {
-                JsonNode json = objectMapper.readTree(saveFile);
-                Resume resume = objectMapper.treeToValue(json, Resume.class);
+                Resume resume = resumeLoader.load(saveFile.toPath());
                 resume.save();
                 resumes.put(resume.getId(), resume);
                 resumeFileMap.put(resume.getId(), saveFile);
@@ -189,9 +192,8 @@ public class ResumeManager implements IResumeManager{
         String resumeId = UUID.randomUUID().toString();
         Resume resume = new Resume(resumeId);
         resume.setResumeName(resumeName);
-        resume.setVersionOfLastEdit(Settings.getInstance().getVersion());
         resume.setTemplateName(HTMLTemplateManager.getDefaultTemplateName());
-        resume.setResumeLocale(TranslationsManager.getInstance().getCurrentLocaleString());
+        resume.setResumeLocale(translationsManager.getCurrentLocaleString());
 
         Map<ContentType, IContent> blocks = new EnumMap<>(ContentType.class);
         for (ContentType contentType: ContentType.values()) {
@@ -210,7 +212,7 @@ public class ResumeManager implements IResumeManager{
     public String duplicateResume(String duplicateResumeId) throws UserException {
         Resume duplicateResume = resumes.get(duplicateResumeId);
         if (duplicateResume == null){
-            throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+            throw UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND);
         }
         String resumeId = UUID.randomUUID().toString();
 
@@ -224,7 +226,7 @@ public class ResumeManager implements IResumeManager{
             saveResume(resumeId);
         } catch (IOException e) {
             logger.errorf(e, "Unable to duplicate resume %s", duplicateResumeId);
-            throw new UserException(ErrorCode.UNABLE_TO_DUPLICATE_RESUME, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_DUPLICATE_RESUME, e);
         }
 
         return resumeId;
@@ -234,14 +236,13 @@ public class ResumeManager implements IResumeManager{
     public String importResumeFromFile(String fileName) throws UserException {
         File importedResumeFile = new File(fileName);
         try {
-            JsonNode json = objectMapper.readTree(importedResumeFile);
-            Resume resume = objectMapper.treeToValue(json, Resume.class);
+            Resume resume = resumeLoader.load(importedResumeFile.toPath());
             resumes.put(resume.getId(), resume);
             saveResume(resume.getId());
             return resume.getId();
         } catch (IOException e) {
             logger.errorf(e, "Unable to import resume from file %s", fileName);
-            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
     }
 
@@ -253,7 +254,7 @@ public class ResumeManager implements IResumeManager{
             htmlConverter.saveHTMLtoPDF(htmlResume, savePath);
         } catch (IOException e) {
             logger.errorf(e, "Unable to export resume %s to PDF at %s", resumeID, savePath);
-            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
     }
 
@@ -271,7 +272,7 @@ public class ResumeManager implements IResumeManager{
             lastKnownModified.remove(resumeId);
         } catch (IOException e) {
             logger.errorf(e, "Unable to delete resume %s", resumeId);
-            throw new UserException(ErrorCode.UNABLE_TO_DELETE_RESUME, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_DELETE_RESUME, e);
         }
     }
 }

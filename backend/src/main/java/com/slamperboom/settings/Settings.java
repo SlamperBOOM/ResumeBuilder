@@ -18,7 +18,6 @@ public class Settings {
         return settingsInstance;
     }
 
-    private static final String VERSION = "current_version";
     private static final String DEFAULT_RESUME_NAME = "default_resume_name";
     private static final String RESUME_SAVE_PATH = "save_path";
 
@@ -34,10 +33,6 @@ public class Settings {
             StartupExceptionHolder.addException(message);
             throw new StartupException(message, e);
         }
-    }
-
-    public String getVersion() {
-        return staticSettings.get(VERSION).asText();
     }
 
     public String getDefaultNewResumeName() {return staticSettings.get(DEFAULT_RESUME_NAME).asText();}

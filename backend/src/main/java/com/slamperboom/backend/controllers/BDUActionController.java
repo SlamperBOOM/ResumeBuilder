@@ -9,6 +9,7 @@ import com.slamperboom.backend.DTO.OpenLocalDirPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
 import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.bdui.BDUActionPerformer;
+import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,10 +21,10 @@ import java.util.Optional;
 public class BDUActionController {
     private final BDUActionPerformer bduActionPerformer;
 
-    public BDUActionController(IResumeManager resumeManager, DialogBuilders builders) {
+    public BDUActionController(IResumeManager resumeManager, DialogBuilders builders, TranslationsManager translationsManager) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper, builders);
+        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper, builders, translationsManager);
     }
 
     @POST

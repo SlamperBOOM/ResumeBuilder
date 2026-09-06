@@ -8,7 +8,11 @@ import com.slamperboom.resume.blocks.common.IContent;
 import java.util.Map;
 
 public interface IResume {
-    String getVersionOfLastEdit();
+    // SerializerProvider attribute key used to pass this resume's own locale (as opposed to
+    // the app-wide UI locale) into per-field date serializers during tree/JSON serialization.
+    String RESUME_LOCALE_ATTRIBUTE = "resumeLocale";
+
+    int getSchemaVersion();
     String getId();
     String getName();
     String getResumeLocale();

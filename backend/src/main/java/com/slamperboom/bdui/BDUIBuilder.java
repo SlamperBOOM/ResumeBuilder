@@ -8,8 +8,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
-import com.slamperboom.htmlConverter.HTMLConverter;
-import com.slamperboom.htmlConverter.Template;
+import com.slamperboom.exceptions.UserExceptionFactory;
+import com.slamperboom.htmlConvertion.HTMLConverter;
+import com.slamperboom.htmlConvertion.Template;
 import com.slamperboom.managers.SchemaManager;
 import com.slamperboom.managers.SchemaType;
 import com.slamperboom.resume.saves.IResume;
@@ -31,14 +32,20 @@ public class BDUIBuilder {
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
     private final HTMLConverter htmlConverter;
+    private final TranslationsManager translationsManager;
     private final ThreadPoolReducer<Template, JsonNode> templatesReducer;
 
-    BDUIBuilder(IResumeManager resumeManager, DialogBuilders dialogBuilders, SchemaManager schemaManager, HTMLConverter htmlConverter) {
+    BDUIBuilder(IResumeManager resumeManager,
+                DialogBuilders dialogBuilders,
+                SchemaManager schemaManager,
+                HTMLConverter htmlConverter,
+                TranslationsManager translationsManager) {
         this.resumeManager = resumeManager;
         this.dialogBuilders = dialogBuilders;
         this.schemaManager = schemaManager;
         this.objectMapper = new ObjectMapper();
         this.htmlConverter = htmlConverter;
+        this.translationsManager = translationsManager;
         objectMapper.registerModule(new JavaTimeModule());
 
         templatesReducer = new ThreadPoolReducer<>();
@@ -54,7 +61,7 @@ public class BDUIBuilder {
         resumeManager.readAllResumes();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.MAIN_SCREEN));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getMainScreenTranslations());
+        result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getMainScreenTranslations());
 
         try {
             ArrayNode resumes = objectMapper.createArrayNode();
@@ -75,13 +82,13 @@ public class BDUIBuilder {
         resumeManager.readAllResumes();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.EDIT_SCREEN));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getEditScreenTranslations());
+        result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getEditScreenTranslations());
 
         try {
             ObjectNode payload = objectMapper.createObjectNode();
             IResume resume = resumeManager.getResume(resumeId);
             if (resume == null) {
-                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+                throw UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND);
             }
             payload.set("resume", resume.getJson());
             payload.put("preview", htmlConverter.saveHTMLtoPDFBase64(htmlConverter.processResumeToHTML(resume)));
@@ -98,7 +105,7 @@ public class BDUIBuilder {
         ObjectNode result = objectMapper.createObjectNode();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.HEADER));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getHeaderTranslations());
+        result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getHeaderTranslations());
 
         return result;
     }
@@ -107,11 +114,11 @@ public class BDUIBuilder {
         ObjectNode result = objectMapper.createObjectNode();
 
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.LANGUAGE_DIALOG));
-        result.set(BackendConstants.TRANSLATIONS_KEY, TranslationsManager.getInstance().getLanguageDialogTranslations());
+        result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getLanguageDialogTranslations());
 
         ObjectNode payload = objectMapper.createObjectNode();
         ArrayNode locales = objectMapper.createArrayNode();
-        for (String locale: TranslationsManager.getInstance().getAvailableLocales()) {
+        for (String locale: translationsManager.getAvailableLocales()) {
             locales.add(objectMapper.createObjectNode()
                     .put("locale", locale)
                     .put("key", "locale_" + locale)
@@ -133,7 +140,7 @@ public class BDUIBuilder {
 
         if (resume == null) {
             logger.warnf("Resume not found: %s", resumeId);
-            return dialogBuilders.buildMessageDialogWithoutTitle(new UserException(ErrorCode.RESUME_NOT_FOUND).getMessage());
+            return dialogBuilders.buildMessageDialogWithoutTitle(UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND).getMessage());
         }
 
         List<JsonNode> nodes;

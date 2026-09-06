@@ -9,10 +9,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
-import com.slamperboom.settings.Settings;
 import lombok.Setter;
 import org.jboss.logging.Logger;
 
@@ -34,9 +34,9 @@ public class Resume implements IResume {
     @JsonProperty("resume_id")
     private final String id;
 
-    @JsonProperty("version_of_last_edit")
+    @JsonProperty("schema_version")
     @Setter
-    private String versionOfLastEdit;
+    private int schemaVersion;
 
     @JsonProperty("resume_name")
     @Setter
@@ -71,8 +71,8 @@ public class Resume implements IResume {
 
     @Override
     @JsonIgnore
-    public String getVersionOfLastEdit() {
-        return versionOfLastEdit;
+    public int getSchemaVersion() {
+        return schemaVersion;
     }
 
     @Override
@@ -102,13 +102,25 @@ public class Resume implements IResume {
     @Override
     @JsonIgnore
     public JsonNode getJson() {
-        return defaultObjectMapper.valueToTree(this);
+        return toTree(defaultObjectMapper);
     }
 
     @Override
     @JsonIgnore
     public JsonNode getTranslatedJson() {
-        return translatedObjectMapper.valueToTree(this);
+        return toTree(translatedObjectMapper);
+    }
+
+    @JsonIgnore
+    private JsonNode toTree(ObjectMapper mapper) {
+        try {
+            String json = mapper.writer()
+                    .withAttribute(RESUME_LOCALE_ATTRIBUTE, resumeLocale)
+                    .writeValueAsString(this);
+            return mapper.readTree(json);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Unable to convert resume to JSON tree", e);
+        }
     }
 
     @Override
@@ -131,11 +143,10 @@ public class Resume implements IResume {
     public void updateContent(ContentType contentType, JsonNode content) throws UserException {
         try {
             blocks.put(contentType, defaultObjectMapper.treeToValue(content, ContentMapper.mapContent(contentType).getClass()));
-            versionOfLastEdit = Settings.getInstance().getVersion();
             isSaved = false;
         } catch (JsonProcessingException e) {
             logger.errorf(e, "Unable to update content block %s for resume %s", contentType, id);
-            throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK, e);
         }
     }
 
@@ -148,7 +159,7 @@ public class Resume implements IResume {
             isSaved = false;
         } catch (NullPointerException e) {
             logger.errorf(e, "Unable to update resume information for resume %s", id);
-            throw new UserException(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_UPDATE_RESUME_BLOCK);
         }
     }
 }

@@ -1,11 +1,14 @@
-package com.slamperboom.htmlConverter;
+package com.slamperboom.htmlConvertion;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.managers.TranslationsManager;
 import freemarker.template.Template;
@@ -17,7 +20,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.Map;
 
 @ApplicationScoped
 public class HTMLConverter {
@@ -25,10 +28,12 @@ public class HTMLConverter {
 
     private final FontsManager fontsManager;
     private final HTMLTemplateManager htmlTemplateManager;
+    private final TranslationsManager translationsManager;
 
-    HTMLConverter(FontsManager fontsManager, HTMLTemplateManager htmlTemplateManager) {
+    HTMLConverter(FontsManager fontsManager, HTMLTemplateManager htmlTemplateManager, TranslationsManager translationsManager) {
         this.fontsManager = fontsManager;
         this.htmlTemplateManager = htmlTemplateManager;
+        this.translationsManager = translationsManager;
     }
 
     /**
@@ -44,22 +49,27 @@ public class HTMLConverter {
             template = htmlTemplateManager.getTemplate(templateName);
         } catch (IOException e) {
             logger.errorf(e, "Unable to load template %s", templateName);
-            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
-        HashMap jsonRepresentation;
+        Map<String, Object> jsonRepresentation;
         try {
             ObjectMapper mapper = new ObjectMapper();
-            jsonRepresentation = mapper.treeToValue(resume.getTranslatedJson(), HashMap.class);
+            // Class<T> erases generics, so treeToValue(node, HashMap.class) can only ever
+            // return a raw HashMap - every subsequent typed use of it is an unchecked
+            // operation. JavaType built from a TypeReference carries the full Map<String,
+            // Object> shape, so treeToValue() returns a properly parameterized map instead.
+            JavaType stringObjectMapType = mapper.constructType(new TypeReference<Map<String, Object>>() {});
+            jsonRepresentation = mapper.treeToValue(resume.getTranslatedJson(), stringObjectMapType);
             jsonRepresentation.put(
                     "translations",
                     mapper.treeToValue(
-                            TranslationsManager.getInstance().getResumeTranslations(resume),
-                            HashMap.class
+                            translationsManager.getResumeTranslations(resume),
+                            stringObjectMapType
                     )
             );
         } catch (JsonProcessingException e) {
             logger.errorf(e, "Unable to build JSON representation for resume %s", resume.getId());
-            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
 
         StringWriter writer = new StringWriter();
@@ -68,7 +78,7 @@ public class HTMLConverter {
             writer.flush();
         } catch (TemplateException | IOException e) {
             logger.errorf(e, "Unable to render template %s for resume %s", templateName, resume.getId());
-            throw new UserException(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
         return writer.toString();
     }
@@ -79,7 +89,7 @@ public class HTMLConverter {
 
     public String processResumeToHTMLWithTemplate(
             IResume resume,
-            com.slamperboom.htmlConverter.Template template
+            com.slamperboom.htmlConvertion.Template template
     ) throws UserException {
         return processResumeToHTML(resume, template.toString());
     }

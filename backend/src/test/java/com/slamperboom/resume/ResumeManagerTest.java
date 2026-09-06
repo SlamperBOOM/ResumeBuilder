@@ -1,13 +1,10 @@
 package com.slamperboom.resume;
 
 import com.slamperboom.exceptions.UserException;
-import com.slamperboom.htmlConverter.HTMLConverter;
+import com.slamperboom.htmlConvertion.HTMLConverter;
+import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.blocks.common.ContentType;
-import com.slamperboom.resume.saves.IResume;
-import com.slamperboom.resume.saves.IResumeManager;
-import com.slamperboom.resume.saves.Resume;
-import com.slamperboom.resume.saves.ResumeManager;
-import com.slamperboom.resume.saves.SimpleResume;
+import com.slamperboom.resume.saves.*;
 import com.slamperboom.settings.Settings;
 import com.slamperboom.testutil.FileSystemIsolationExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,13 +41,23 @@ class ResumeManagerTest {
     @Mock
     private HTMLConverter htmlConverter;
 
+    @Mock
+    private ResumeLoader resumeLoader;
+
+    @Mock
+    private TranslationsManager translationsManager;
+
     private IResumeManager manager;
 
     @BeforeEach
     void setUp() throws Exception {
-        Constructor<ResumeManager> constructor = ResumeManager.class.getDeclaredConstructor(HTMLConverter.class);
+        Constructor<ResumeManager> constructor = ResumeManager.class.getDeclaredConstructor(
+                HTMLConverter.class,
+                ResumeLoader.class,
+                TranslationsManager.class
+        );
         constructor.setAccessible(true);
-        manager = constructor.newInstance(htmlConverter);
+        manager = constructor.newInstance(htmlConverter, resumeLoader, translationsManager);
     }
 
     @Test

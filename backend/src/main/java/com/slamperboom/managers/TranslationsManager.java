@@ -7,21 +7,16 @@ import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.settings.DynamicSettings;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.util.*;
 
+@ApplicationScoped
 public class TranslationsManager {
     private final Logger logger = Logger.getLogger(this.getClass());
     private static TranslationsManager translationsManagerInstance;
-
-    public static TranslationsManager getInstance() {
-        if (translationsManagerInstance == null) {
-            translationsManagerInstance = new TranslationsManager();
-        }
-        return translationsManagerInstance;
-    }
 
     private static final String APP_TRANSLATIONS_PATH = "/translations/app_translations.json";
     private static final String RESUME_TRANSLATIONS_PATH = "/translations/resume_blocks_translations.json";
@@ -69,7 +64,7 @@ public class TranslationsManager {
         }
     }
 
-    private TranslationsManager(){
+    TranslationsManager(){
         appTranslations = new HashMap<>();
         resumeTranslations = new HashMap<>();
         try {

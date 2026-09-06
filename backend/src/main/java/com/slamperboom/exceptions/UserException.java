@@ -1,13 +1,23 @@
 package com.slamperboom.exceptions;
 
-import com.slamperboom.managers.TranslationsManager;
+import lombok.Getter;
 
-public class UserException extends Exception{
-    public UserException(ErrorCode errorCode, Throwable err) {
-        super(TranslationsManager.getInstance().getErrorMessagesTranslations().get(errorCode.toString()).asText(), err);
+/**
+ * Exception shown to the user as a dialog. Always carries an already-translated message -
+ * build instances via {@link UserExceptionFactory}, never directly, so translation lookup
+ * stays out of this class entirely.
+ */
+@Getter
+public class UserException extends Exception {
+    private final ErrorCode errorCode;
+
+    UserException(ErrorCode errorCode, String translatedMessage) {
+        super(translatedMessage);
+        this.errorCode = errorCode;
     }
 
-    public UserException(ErrorCode errorCode) {
-        super(TranslationsManager.getInstance().getErrorMessagesTranslations().get(errorCode.toString()).asText());
+    UserException(ErrorCode errorCode, String translatedMessage, Throwable cause) {
+        super(translatedMessage, cause);
+        this.errorCode = errorCode;
     }
 }

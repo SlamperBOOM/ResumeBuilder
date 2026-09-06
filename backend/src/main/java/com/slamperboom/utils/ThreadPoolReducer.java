@@ -2,6 +2,7 @@ package com.slamperboom.utils;
 
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ThreadPoolReducer<INPUT, OUTPUT> {
         } catch (InterruptedException e) {
             logger.error("Interrupted while waiting for tasks to finish", e);
             Thread.currentThread().interrupt();
-            throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
         }
 
         return nodes;

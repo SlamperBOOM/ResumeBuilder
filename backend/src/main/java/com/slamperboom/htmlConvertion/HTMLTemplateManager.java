@@ -1,4 +1,4 @@
-package com.slamperboom.htmlConverter;
+package com.slamperboom.htmlConvertion;
 
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
@@ -44,7 +44,7 @@ public class HTMLTemplateManager {
         return DEFAULT_TEMPLATE;
     }
 
-    public Template getTemplate(com.slamperboom.htmlConverter.Template templateName) throws IOException {
+    public Template getTemplate(com.slamperboom.htmlConvertion.Template templateName) throws IOException {
         String templateFileName = templateMap.getProperty(templateName.toString());
         return templateConfiguration.getTemplate(templateFileName, StandardCharsets.UTF_8.name());
     }

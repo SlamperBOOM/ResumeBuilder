@@ -10,6 +10,7 @@ import com.slamperboom.backend.DTO.UpdatePayload;
 import com.slamperboom.backend.FrontendAction;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
+import com.slamperboom.exceptions.UserExceptionFactory;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
@@ -30,14 +31,15 @@ public class BDUActionPerformer {
     private final IResumeManager resumeManager;
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
-
-    private ObjectNode getResumeIdPayload(String resumeId) {
-        return objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId);
-    }
+    private final TranslationsManager translationsManager;
 
     private JsonNode handleFailure(String message, Throwable cause) {
         logger.error(message, cause);
         return dialogBuilders.buildMessageDialogWithoutTitle(message);
+    }
+
+    private ObjectNode getResumeIdPayload(String resumeId) {
+        return objectMapper.createObjectNode().put(BackendConstants.RESUME_ID_KEY, resumeId);
     }
 
     private JsonNode makeActionNode(FrontendAction action) {
@@ -79,7 +81,7 @@ public class BDUActionPerformer {
             String resumeId = payload.getResumeId();
             IResume resume = resumeManager.getResume(resumeId);
             if (resume == null) {
-                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+                throw UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND);
             }
             if (payload.getResumeInfo() != null) {
                 resume.updateResumeInformation(payload.getResumeInfo());
@@ -98,12 +100,12 @@ public class BDUActionPerformer {
 
     public JsonNode performDelete(String resumeId) {
         ConfirmationDialogPayload payload = new ConfirmationDialogPayload();
-        JsonNode translations = TranslationsManager.getInstance().getConfirmationDialogTranslations();
+        JsonNode translations = translationsManager.getConfirmationDialogTranslations();
         IResume resume;
         try {
             resume = resumeManager.getResume(resumeId);
             if (resume == null) {
-                throw new UserException(ErrorCode.RESUME_NOT_FOUND);
+                throw UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND);
             }
         } catch (UserException e) {
             return handleFailure(e.getMessage(), e);
@@ -147,7 +149,7 @@ public class BDUActionPerformer {
             return Optional.of(handleFailure(e.getMessage(), e));
         }
         ConfirmationDialogPayload confirmPayload = new ConfirmationDialogPayload();
-        JsonNode translations = TranslationsManager.getInstance().getConfirmationDialogTranslations();
+        JsonNode translations = translationsManager.getConfirmationDialogTranslations();
 
         confirmPayload.setTitle(translations.get("after_export_confirmation.title").asText());
         confirmPayload.setText(translations.get("after_export_confirmation.text").asText());
@@ -180,7 +182,7 @@ public class BDUActionPerformer {
     public Optional<JsonNode> performOpenDir(String dirPath) {
         try {
             if (!Desktop.isDesktopSupported()) {
-                throw new UserException(ErrorCode.UNABLE_TO_PERFORM_ACTION);
+                throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION);
             }
             Desktop.getDesktop().open(new File(dirPath));
             logger.info("Open resume dir");

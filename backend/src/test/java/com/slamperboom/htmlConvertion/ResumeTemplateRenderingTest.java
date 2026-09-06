@@ -1,4 +1,4 @@
-package com.slamperboom.htmlConverter;
+package com.slamperboom.htmlConvertion;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

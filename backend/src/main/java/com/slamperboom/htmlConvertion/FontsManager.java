@@ -1,4 +1,4 @@
-package com.slamperboom.htmlConverter;
+package com.slamperboom.htmlConvertion;
 
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;

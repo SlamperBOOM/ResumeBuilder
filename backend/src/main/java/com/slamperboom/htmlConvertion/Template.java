@@ -1,4 +1,4 @@
-package com.slamperboom.htmlConverter;
+package com.slamperboom.htmlConvertion;
 
 import lombok.RequiredArgsConstructor;
 
