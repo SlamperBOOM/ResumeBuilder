@@ -28,7 +28,8 @@ public class DynamicSettings {
     private static final String CONFIG_DIR = "config/";
     private static final String SAVE_FILE = "config/config.json";
 
-    private static final String LOCALE = "locale";
+    private static final String LOCALE_KEY = "locale";
+    private static final String MAX_RESPONSE_BODY_LENGTH_KEY = "max_response_body_length";
 
     private final ObjectNode settings;
 
@@ -39,7 +40,8 @@ public class DynamicSettings {
             if (!settingsFile.exists()) {
                 // fill with defaults
                 settings = mapper.createObjectNode()
-                        .put(LOCALE, "en");
+                        .put(LOCALE_KEY, "en");
+                settings.put(MAX_RESPONSE_BODY_LENGTH_KEY, 10000);
             } else {
                 settings =
                         (ObjectNode) mapper.readTree(settingsFile);
@@ -73,10 +75,14 @@ public class DynamicSettings {
     }
 
     public String getLocale() {
-        return settings.get(LOCALE).asText();
+        return settings.get(LOCALE_KEY).asText();
     }
 
     public void setLocale(String locale) {
-        settings.put(LOCALE, locale);
+        settings.put(LOCALE_KEY, locale);
+    }
+
+    public int getMaxResponseBodyLength() {
+        return settings.get(MAX_RESPONSE_BODY_LENGTH_KEY).asInt();
     }
 }

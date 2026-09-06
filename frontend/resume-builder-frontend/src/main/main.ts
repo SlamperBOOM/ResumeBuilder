@@ -70,7 +70,9 @@ const installExtensions = async () => {
       extensions.map((name) => installer[name]),
       forceDownload,
     )
-    .catch((error: unknown) => log.error('Failed to install devtools extensions', error));
+    .catch((error: unknown) =>
+      log.error('Failed to install devtools extensions', error),
+    );
 };
 
 const createWindow = async () => {

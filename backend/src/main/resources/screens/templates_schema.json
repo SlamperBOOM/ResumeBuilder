@@ -8,13 +8,7 @@
     "timeline_template": {
         "display_name": "templates.timeline_template_name"
     },
-    "simple_template_modern": {
-        "display_name": "templates.simple_template_modern_name"
-    },
     "simple_template_updated": {
         "display_name": "templates.simple_template_updated_name"
-    },
-    "dossier_template": {
-        "display_name": "templates.dossier_template_name"
     }
 }

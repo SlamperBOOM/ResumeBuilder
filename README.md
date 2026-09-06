@@ -40,6 +40,8 @@ Resume
 
 Pre-built installers for Windows, macOS, and Linux are published on the [Releases](https://github.com/SlamperBOOM/ResumeBuilder/releases) page. Want to build your own installer instead? Run `package.bat` (Windows) or `package.sh` (macOS/Linux) from the repository root.
 
+Also, don't forget to read "About" section in app. It will provide you full guide of the app capabilities.
+
 ## Development
 
 To clone and run the app in development mode, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org) 18+, and a [JDK](https://adoptium.net) 17 installed. From your terminal:
@@ -74,6 +76,20 @@ Some tests check correct HTML and PDF generation. If you add new template or cha
 $ gradlew test -Dgolden.update=true
 ```
 This command will update reference HTML and PDF files for test.
+
+If you want to check logs in readable format, use `log_dashboard.py`. This script generate you a dashboard from log file.
+
+Usage:
+
+```bash
+# simple run. Report will be generated to "report.html"
+python log_dashboard.py app.log
+
+# provide specific output file for report
+python log_dashboard.py app.log -o report.html
+```
+
+If you need backend to truncate less data from responses, adjust `max_response_body_length` param in config file, located at `*install dir*/config/config.json`.
 
 ## Tech Stack
 
