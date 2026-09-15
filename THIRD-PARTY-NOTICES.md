@@ -1,37 +1,42 @@
 # Third-Party Notices
 
 Resume Builder is licensed under MIT + Commons Clause (see `LICENSE`). That
-license applies only to the original source code of this project. This
-project also includes, or is built on top of, third-party open-source
-software and a bundled Java runtime, each of which remains under its own
-license. This file lists those components as required by their respective
-licenses.
+license applies only to the original source code of this project. The app
+also includes third-party software, fonts and a Java runtime, each of which
+remains under its own license. This file lists those components.
 
-## Scope and methodology
+In the installed app, license files are located in the `resources` folder
+(`Resume Builder.app/Contents/Resources` on macOS):
 
-This list was compiled manually from:
+- `LICENSE`, `THIRD-PARTY-NOTICES.md` — this project;
+- `licenses/fonts/` — font licenses;
+- `jre/NOTICE`, `jre/legal/` — Java runtime;
+- `backend/lib/` — backend libraries, shipped as unmodified JAR files with
+  their own license and notice files inside.
 
-- the production `dependencies` in
-  `frontend/resume-builder-frontend/package.json` (the set actually bundled
-  into the packaged app via the `files`/`extraResources` config);
-- the `runtimeClasspath` of `backend/build.gradle` (test-only dependencies
-  such as JUnit, Mockito and REST-Assured are not distributed and are
-  therefore not listed);
-- the bundled Eclipse Temurin JRE under `jre/<platform>-<arch>`.
+On Windows and Linux, electron-builder also places Electron's license and the
+Chromium licenses (`LICENSE.electron.txt`, `LICENSES.chromium.html`) next to
+the app executable.
 
-**It only covers direct dependencies and has not been verified by an
-automated license scanner.** Both the frontend and backend pull in
-transitive dependencies that are not individually enumerated here — for
-example, Quarkus's RESTEasy Reactive stack transitively bundles Vert.x,
-Netty, SmallRye and Jakarta API artifacts (almost all Apache License 2.0).
-Before a public release, this list **must** be cross-checked with:
+## How this list was compiled
 
-- Frontend: `npx license-checker --production --summary` (run from
-  `frontend/resume-builder-frontend`)
-- Backend: the Gradle plugin `com.github.jk1.dependency-license-report`
+Last reviewed on 2026-09-15.
 
-The audit should cover the actual packaged application, not just the
-dependency manifests.
+- **Frontend:** every non-dev package in
+  `frontend/resume-builder-frontend/package-lock.json` (225 packages, a
+  superset of what is actually bundled). Licenses were taken from the lockfile
+  or from each installed `package.json`.
+- **Backend:** every JAR in `backend/build/quarkus-app/lib` (172 files), which
+  is exactly what ships with the app. Licenses were taken from each JAR's POM,
+  following parent POMs on Maven Central where needed.
+- **Java runtime, fonts, icon:** checked manually. Font licenses were read
+  from the font files themselves.
+
+Re-check this list whenever dependencies change.
+
+No component is under a copyleft license that extends to this project's own
+code. Weak-copyleft components (LGPL, EPL) are used as unmodified libraries;
+see the notes below.
 
 ## Application scaffold
 
@@ -40,140 +45,102 @@ This project's frontend was originally bootstrapped from
 licensed under the MIT License. The original license and copyright notice
 are preserved at `frontend/resume-builder-frontend/LICENSE`.
 
-## Bundled Java Runtime
+## Java runtime
 
-Resume Builder bundles a full Java Runtime Environment for each target
-platform (`jre/win-x64`, `jre/linux-x64`, …) so end users do not need to
-install Java themselves.
-
-- **Eclipse Temurin JRE 17** (currently `17.0.20.1+1`), built by the
-  [Adoptium](https://adoptium.net/) project from OpenJDK.
+- **Eclipse Temurin JRE 17** by the [Adoptium](https://adoptium.net/) project,
+  built from OpenJDK. `package.sh` and `package.bat` download the latest
+  Temurin 17 GA release at build time.
 - License: **GNU General Public License v2.0 with the Classpath Exception**
-  (GPLv2+CE). The Classpath Exception means code that merely *links
-  against* the JRE (this application's own code and its other
-  dependencies) is not required to be released under the GPL.
-- Each platform's JRE ships with its own `NOTICE` file and a `legal/`
-  directory containing per-module license and notice files
-  (`jre/<platform>-<arch>/legal/...`). These are part of the official
-  Adoptium/OpenJDK distribution and **must be preserved as-is** in the
-  packaged output — do not strip or prune the `legal/` directory when
-  building installers.
+  (GPLv2+CE). The Classpath Exception means code that merely runs on or links
+  against the JRE (this app and its libraries) doesn't have to be released
+  under the GPL.
+- Source code: [adoptium/jdk17u](https://github.com/adoptium/jdk17u).
+- The JRE ships with its own `NOTICE` file and `legal/` directory. Keep them
+  as-is when building installers.
+- Only the launcher binary is renamed (`resume-builder-backend`,
+  `ResumeBuilderBackend.exe` on Windows); the runtime itself is not modified.
 
-## Frontend (npm) — runtime dependencies
+## Frontend (npm)
 
-Production `dependencies` that ship inside the packaged application.
+The app's code and its npm dependencies are bundled by webpack. License
+comments from bundled packages are preserved in the `*.LICENSE.txt` files
+next to the bundles.
 
-### MIT License
+| License        | Packages                                                                                                                  |
+|----------------|---------------------------------------------------------------------------------------------------------------------------|
+| MIT            | 205, including React, React DOM, MUI, Emotion, axios, dayjs, React Hook Form, react-pdf, React Router, Zod, electron-log |
+| ISC            | 9                                                                                                                         |
+| BSD-3-Clause   | 6: hoist-non-react-statics, react-transition-group, source-map, sprintf-js, global-agent, roarr                          |
+| BSD-2-Clause   | 2: extract-zip, http-cache-semantics                                                                                      |
+| Apache-2.0     | 2: pdfjs-dist (used by react-pdf), sumchecker                                                                             |
+| MIT OR CC0-1.0 | 1: type-fest (used under MIT)                                                                                             |
 
-- React, React DOM
-- @mui/material, @mui/icons-material, @mui/x-date-pickers (Community/MIT edition)
-- @emotion/react, @emotion/styled
-- axios
-- dayjs
-- detect-port
-- electron-debug
-- electron-log
-- electron-router-dom
-- electron-window-state
-- json-diff-ts
-- mui-image
-- react-hook-form
-- react-pdf
-- react-resizable-panels
-- react-router-dom
-- zod
+**Electron** (MIT) is the runtime the app ships and runs on. It is declared
+in `devDependencies`, so it isn't counted above.
 
-### Electron
+Build-time only, not included in the packaged app:
 
-- **Electron** — MIT License. Electron is the runtime shell the packaged
-  app ships and runs on, so it is treated as a runtime component (not a
-  build tool), even though it is declared as a `devDependency` in
-  `package.json`.
+- **electron-builder** (MIT) — packaging.
+- **@electron/notarize** (MIT) — used only by `.erb/scripts/notarize.js`
+  during macOS packaging. It is declared in `dependencies`, but the app code
+  doesn't import it and `release/app/package.json` has no dependencies, so it
+  isn't copied into the app.
 
-## Frontend (npm) — build-time only
+## Backend (Java)
 
-Not present in the final packaged application; listed here only because
-their tooling touches the release artifacts.
+| License                                     | Components                                                                                                                                                                                                                                   |
+|---------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Apache-2.0                                  | Quarkus, SmallRye, Mutiny, Netty, Jackson, JBoss Logging / LogManager / Threads, WildFly Common, Jakarta CDI and Inject APIs, MicroProfile Config and Context Propagation APIs, Apache FreeMarker, Apache PDFBox / FontBox / XmpBox, Apache Commons Logging, brotli4j, pdfbox-graphics2d, JetBrains Annotations |
+| Apache-2.0 OR EPL                           | Vert.x (used under Apache-2.0)                                                                                                                                                                                                               |
+| BSD-2-Clause                                | flexmark, org-crac                                                                                                                                                                                                                           |
+| MIT                                         | jsoup, autolink, SLF4J API                                                                                                                                                                                                                   |
+| MIT-0                                       | Reactive Streams                                                                                                                                                                                                                             |
+| EDL-1.0 (BSD-3-Clause)                      | Jakarta Activation API, Jakarta XML Binding API                                                                                                                                                                                              |
+| Unicode License                             | ICU4J (used by openhtmltopdf for right-to-left text)                                                                                                                                                                                         |
+| EPL-2.0 OR GPL-2.0 with Classpath Exception | Jakarta Annotations, Interceptors, Transactions, JSON Processing, Expression Language and RESTful Web Services APIs; Eclipse Parsson                                                                                                          |
+| LGPL-2.1-or-later                           | openhtmltopdf (core, pdfbox, rtl-support)                                                                                                                                                                                                    |
 
-- **electron-builder** (MIT License) — packaging tool only.
-- **@electron/notarize** (MIT License) — invoked only by the macOS
-  `afterSign` notarization script. It is currently declared under
-  `dependencies` rather than `devDependencies` in `package.json`; verify it
-  is actually excluded from the packaged `node_modules` (or move it to
-  `devDependencies`) so this classification stays accurate.
+Build-time only, not included in the packaged app: **Lombok** (MIT) —
+annotation processor.
 
-## Backend (Gradle) — runtime dependencies
+### openhtmltopdf — LGPL-2.1-or-later
 
-### Apache License 2.0
+- Shipped as unmodified JAR files loaded as separate libraries, so users can
+  replace them with a modified version.
+- Source code: [danfickle/openhtmltopdf](https://github.com/danfickle/openhtmltopdf)
+  (version 1.0.10).
+- Don't repackage the backend into a single uber-jar or shade this library
+  without re-checking the LGPL requirements.
 
-- Quarkus 3.7.3 (quarkus-resteasy-reactive-jackson and core artifacts,
-  plus their transitive runtime stack — Vert.x, Netty, SmallRye, Jakarta
-  APIs, etc.; enumerate exactly via the dependency-license-report plugin
-  before release)
-- Jackson (jackson-databind, jackson-datatype-jsr310)
-- Apache FreeMarker
+### Jakarta APIs and Eclipse Parsson — EPL-2.0
 
-### MIT License
+- Dual-licensed; used under EPL-2.0 as unmodified binaries.
+- Source code: [jakartaee](https://github.com/jakartaee) and
+  [eclipse-ee4j/parsson](https://github.com/eclipse-ee4j/parsson).
 
-- jsoup
+## Fonts
 
-### BSD-2-Clause License
+Bundled in `backend/src/main/resources/templates/fonts/`. Full license texts
+are in `templates/fonts/licenses/` (in the installed app:
+`resources/licenses/fonts/`).
 
-- flexmark-all
+| Font             | License                                                                     |
+|------------------|-----------------------------------------------------------------------------|
+| Fraunces         | SIL Open Font License 1.1                                                   |
+| Inter            | SIL Open Font License 1.1                                                   |
+| JetBrains Mono   | SIL Open Font License 1.1                                                   |
+| Noto Serif       | SIL Open Font License 1.1                                                   |
+| Playfair Display | SIL Open Font License 1.1, Reserved Font Name "Playfair Display"            |
+| Roboto (v3)      | SIL Open Font License 1.1                                                   |
+| Source Serif 4   | SIL Open Font License 1.1, Reserved Font Name "Source"                      |
+| DejaVu Serif     | Bitstream Vera and Arev font licenses; DejaVu changes are in the public domain |
 
-### GNU LGPL v2.1-or-later ⚠️
+These licenses allow bundling the fonts with the app and embedding them in
+exported PDFs. The fonts can't be sold on their own. Modified versions must
+be renamed (without using a Reserved Font Name) and released under the same
+license.
 
-- **openhtmltopdf-pdfbox** — this component is licensed under the LGPL,
-  which is a copyleft license and imposes obligations independent of this
-  project's own license:
-  - the LGPL notice and license text for this component must be preserved;
-  - users must be able to obtain the source of this component and to
-    replace/relink it with a modified or different version. Because it is
-    consumed as an ordinary external JAR dependency (not statically linked
-    or repackaged into a single fat class), this condition is satisfied by
-    default — just don't shade/relocate this dependency into your own
-    package namespace without re-checking this requirement.
-  - **Transitive dependencies:** openhtmltopdf-pdfbox pulls in Apache
-    PDFBox and Apache FontBox, both Apache License 2.0 (not LGPL
-    themselves), plus their own transitive dependencies (e.g.
-    commons-logging). Confirm the exact set with the
-    dependency-license-report plugin, since PDFBox's transitive graph can
-    change between versions.
-
-## Backend (Gradle) — build-time only
-
-Not present in the runtime output.
-
-- **Lombok** (MIT License) — annotation processor only
-  (`compileOnly`/`annotationProcessor`), not bundled in the built JAR.
-
-## Bundled assets
-
-### Fonts (`backend/src/main/resources/templates/fonts/`)
-
-These were sourced from [Google Fonts](https://fonts.google.com/). That
-holds for six of the seven families, all released under the **SIL Open
-Font License 1.1**, except Roboto, which Google Fonts itself distributes
-under **Apache License 2.0** rather than OFL:
-
-- Fraunces — SIL Open Font License 1.1
-- Inter — SIL Open Font License 1.1
-- JetBrains Mono — SIL Open Font License 1.1
-- Noto Serif — SIL Open Font License 1.1
-- Playfair Display — SIL Open Font License 1.1
-- Source Serif 4 — SIL Open Font License 1.1
-- **Roboto — Apache License 2.0
-- DejaVu — Bitstream Vera Fonts
-  Copyright + Arev Fonts Copyright, with DejaVu's own additions in the
-  public domain. [link](https://dejavu-fonts.github.io/License.html)
-
-All of the OFL/Apache fonts above permit embedding in a distributed
-application without a separate written agreement. For the OFL fonts
-specifically: the font files must keep their names, they can't be sold
-by themselves (only as part of the app), and a modified version would
-need to be renamed and re-released under the OFL.
-
-### Application icon (`frontend/resume-builder-frontend/assets/icon.*`, `assets/icons/*.png`)
+## Application icon (`frontend/resume-builder-frontend/assets/icon.*`, `assets/icons/*.png`)
 
 Generated with an AI image-generation tool (ChatGPT). Two
 things worth flagging here, rather than a conventional license entry:
@@ -192,5 +159,5 @@ things worth flagging here, rather than a conventional license entry:
 
 ---
 
-*This file was generated with AI assistance based on a manual read of the
-project's dependency manifests and bundled runtimes*
+*Compiled with AI assistance from the project's lockfile and packaged build
+output.*
