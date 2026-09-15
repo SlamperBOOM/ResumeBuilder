@@ -6,6 +6,18 @@ PROJECT_ROOT="$(pwd)"
 JAVA_VERSION=17
 NODE_MAJOR=24
 
+DOWNLOAD_NPM=0
+for arg in "$@"; do
+  case "$arg" in
+    --download-npm) DOWNLOAD_NPM=1 ;;
+    *)
+      echo "Unknown argument: $arg" >&2
+      echo "Usage: $0 [--download-npm]" >&2
+      exit 1
+      ;;
+  esac
+done
+
 OS="$(uname -s)"
 echo "Detected OS=$OS"
 
@@ -98,10 +110,9 @@ rename_jre_binary() {
 }
 
 # Node.js/npm are only needed to build the frontend - they are not
-# bundled into the final app (Electron ships its own JS runtime), so we
-# download a portable copy into a temp folder and remove it right after
-# the build (see the call below), instead of relying on a suitable
-# Node.js already being installed on the machine.
+# bundled into the final app (Electron ships its own JS runtime).
+# By default the system npm is used; with --download-npm a portable
+# copy is downloaded into a temp folder and removed after the build.
 download_node() {
   local node_os="$PLATFORM"
   if [[ "$PLATFORM" == "mac" ]]; then
@@ -152,14 +163,25 @@ done
 
 echo "Building frontend"
 
-download_node
-export PATH="$PROJECT_ROOT/.tmp-node/bin:$PATH"
+if [[ "$DOWNLOAD_NPM" == 1 ]]; then
+  trap 'echo "Removing portable Node.js"; rm -rf "$PROJECT_ROOT/.tmp-node"' EXIT
+  download_node
+  export PATH="$PROJECT_ROOT/.tmp-node/bin:$PATH"
+elif command -v npm >/dev/null 2>&1; then
+  echo "Using system npm"
+else
+  echo "npm not found. Install Node.js ${NODE_MAJOR}+ or re-run with --download-npm to fetch a portable copy for the build." >&2
+  exit 1
+fi
 
 cd frontend/resume-builder-frontend/
-npm install && npm run package
+if ! { npm install && npm run package; }; then
+  echo "Frontend build failed." >&2
+  if [[ "$DOWNLOAD_NPM" == 0 ]]; then
+    echo "If your system Node.js/npm is missing or incompatible, re-run with --download-npm to build with a portable Node.js ${NODE_MAJOR}." >&2
+  fi
+  exit 1
+fi
 cd "$PROJECT_ROOT"
 
 echo "Frontend built"
-
-echo "Removing portable Node.js"
-rm -rf "$PROJECT_ROOT/.tmp-node"

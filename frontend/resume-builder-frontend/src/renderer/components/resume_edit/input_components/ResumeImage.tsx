@@ -95,6 +95,7 @@ export default function ResumeImage(props: FieldRendererProps) {
           <CardActions sx={{ justifyContent: 'center' }}>
             <Button
               size="small"
+              aria-label={translateKey(currentField.change_button_title)}
               onClick={async () => {
                 const path = await window.electron.openImageDialog();
                 const fileName = path.filePaths[0];
@@ -121,6 +122,7 @@ export default function ResumeImage(props: FieldRendererProps) {
             <Button
               size="small"
               color="error"
+              aria-label={translateKey(currentField.delete_button_title)}
               onClick={() => controllerField.onChange(null)}
             >
               <Delete />

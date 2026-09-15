@@ -64,6 +64,11 @@
     ]
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/renderer/**/*.{ts,tsx}",
+      "!src/renderer/**/*.d.ts",
+      "!src/renderer/**/__mocks__/**"
+    ],
     "moduleDirectories": [
       "node_modules",
       "release/app/node_modules",
@@ -126,6 +131,7 @@
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.7",
     "@types/jest": "^29.5.14",
     "@types/node": "22.13.10",
     "@types/react": "^19.0.11",
@@ -291,13 +297,25 @@
       {
         "from": "../../jre/${os}-${arch}",
         "to": "jre"
+      },
+      {
+        "from": "../../LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "../../THIRD-PARTY-NOTICES.md",
+        "to": "THIRD-PARTY-NOTICES.md"
+      },
+      {
+        "from": "../../backend/src/main/resources/templates/fonts/licenses",
+        "to": "licenses/fonts"
       }
     ]
   },
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": ">=14.x",
+      "version": ">=22.12.0",
       "onFail": "error"
     },
     "packageManager": {

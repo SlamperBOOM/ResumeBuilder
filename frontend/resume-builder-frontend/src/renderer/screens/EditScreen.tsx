@@ -20,6 +20,8 @@ type EditScreenProps = {
 function EditScreenSkeleton() {
   return (
     <Box
+      role="status"
+      aria-busy="true"
       sx={{
         flex: 1,
         display: 'flex',
@@ -56,7 +58,7 @@ export default function EditScreen(props: EditScreenProps) {
   const previewScaleKey = 'editPreviewScale';
   const previewModeKey = 'editPreviewMode';
   const [previewScale, setPreviewScale] = useState(
-    Number.parseInt(localStorage.getItem(previewScaleKey), 10) || 0.5,
+    Number.parseFloat(localStorage.getItem(previewScaleKey) ?? '') || 0.5,
   );
   const [previewMode, setPreviewMode] = useState<ResumePreviewScaleEnum>(() => {
     const stored = localStorage.getItem(previewModeKey);
@@ -105,7 +107,7 @@ export default function EditScreen(props: EditScreenProps) {
         backgroundColor: '#f5f7fa',
       }}
     >
-      {editSchema ? (
+      {editSchema && schema ? (
         <Group
           orientation="horizontal"
           onLayoutChanged={(sizes: Layout) => {

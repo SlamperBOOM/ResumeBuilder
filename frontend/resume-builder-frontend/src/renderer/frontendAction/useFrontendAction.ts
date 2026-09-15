@@ -1,24 +1,25 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppDialogActions from '../dialogs/appDialogActions';
-import { UpdateScreenPayload } from '../utils/appActions';
+import { BDUActionParams, UpdateScreenPayload } from '../utils/appActions';
+import {
+  ConfirmationDialogSchema,
+  CustomDialogSchema,
+  InfoModalSchema,
+} from '../utils/backendTypes';
 import FrontendActionEnum from './FrontendActionEnum';
 import logger from '../utils/logger';
 
 interface FrontendActionParams {
-  payload?: JSON;
+  payload?: unknown;
   updateScreenPayload?: UpdateScreenPayload;
 }
 
 interface FrontendActionResult {
   bduAction: string;
-  payload?: JSON;
+  payload?: BDUActionParams;
 }
 
-// Record<enum, ...> instead of a `[action: string]` index signature -
-// FrontendActionEnum is already kept in sync with the handlers below, so
-// this catches a missing/renamed handler at compile time instead of
-// silently returning `undefined` at runtime.
 type FrontendActionApi = Record<
   FrontendActionEnum,
   (payload: FrontendActionParams) => FrontendActionResult | null
@@ -46,13 +47,12 @@ function useFrontendAction(
 
   const openEditScreen = useCallback(
     (params: FrontendActionParams) => {
-      if (!params.payload || !params.payload.resume_id) {
+      const payload = params.payload as { resume_id?: string } | undefined;
+      if (!payload?.resume_id) {
         logger.warn('No resume id for edit screen');
         return null;
       }
-      navigate(
-        appRoutes.editScreen.replace(':resumeId', params.payload.resume_id),
-      );
+      navigate(appRoutes.editScreen.replace(':resumeId', payload.resume_id));
       updateScreenViaBool();
       return null;
     },
@@ -69,11 +69,12 @@ function useFrontendAction(
 
   const performShowConfirmation = useCallback(
     (params: FrontendActionParams) => {
-      if (!params.payload) {
+      const payload = params.payload as ConfirmationDialogSchema | undefined;
+      if (!payload) {
         logger.warn('No data for confirmation dialog');
         return null;
       }
-      dialogActions.confirmationModal.open(params.payload);
+      dialogActions.confirmationModal.open(payload);
       return null;
     },
     [dialogActions.confirmationModal],
@@ -81,11 +82,12 @@ function useFrontendAction(
 
   const performShowMessage = useCallback(
     (params: FrontendActionParams) => {
-      if (!params.payload || !params.payload.text) {
+      const payload = params.payload as InfoModalSchema | undefined;
+      if (!payload?.text) {
         logger.warn('No data for message dialog');
         return null;
       }
-      dialogActions.infoModal.open(params.payload);
+      dialogActions.infoModal.open(payload);
       return null;
     },
     [dialogActions.infoModal],
@@ -93,11 +95,12 @@ function useFrontendAction(
 
   const performShowCustomDialog = useCallback(
     (params: FrontendActionParams) => {
-      if (!params.payload) {
+      const payload = params.payload as CustomDialogSchema | undefined;
+      if (!payload) {
         logger.warn('No data for custom dialog');
         return null;
       }
-      dialogActions.customModal.open(params.payload);
+      dialogActions.customModal.open(payload);
       return null;
     },
     [dialogActions.customModal],
@@ -108,7 +111,8 @@ function useFrontendAction(
       // Render through InfoDialog (React text rendering, escaped by
       // default) instead of window.open + document.writeln, which
       // inserted backend-supplied content as raw, unescaped HTML.
-      const text = params.payload.text ? params.payload.text : 'Halo';
+      const payload = params.payload as { text?: string } | undefined;
+      const text = payload?.text ? payload.text : 'Halo';
       dialogActions.infoModal.open({
         title: undefined,
         text,

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slamperboom.managers.TempFilesManager;
+import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.saves.Resume;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
@@ -161,10 +163,12 @@ class ResumeTemplateRenderingTest {
     }
 
     @BeforeAll
-    static void setUpAll() {
+    static void setUpAll() throws Exception {
         HTMLTemplateManager htmlTemplateManager = new HTMLTemplateManager();
         FontsManager fontsManager = new FontsManager(new TempFilesManager());
-        htmlConverter = new HTMLConverter(fontsManager, htmlTemplateManager);
+        var translationsConstructor = TranslationsManager.class.getDeclaredConstructor();
+        translationsConstructor.setAccessible(true);
+        htmlConverter = new HTMLConverter(fontsManager, htmlTemplateManager, translationsConstructor.newInstance());
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -180,7 +184,12 @@ class ResumeTemplateRenderingTest {
     @MethodSource("resumeAndTemplateCombinations")
     void renderResumeWithTemplate_matchesGoldenHtmlAndPdf(String fixtureName, Template template) throws Exception {
         Resume resume = loadResume(fixtureName);
-        String html = htmlConverter.processResumeToHTMLWithTemplate(resume, template);
+        String html;
+        LocalDate goldenToday = LocalDate.of(2026, 8, 31);
+        try (MockedStatic<LocalDate> dateMock = Mockito.mockStatic(LocalDate.class, Mockito.CALLS_REAL_METHODS)) {
+            dateMock.when(LocalDate::now).thenReturn(goldenToday);
+            html = htmlConverter.processResumeToHTMLWithTemplate(resume, template);
+        }
         String goldenBaseName = fixtureName + "_" + template;
 
         assertMatchesGolden(goldenBaseName + ".html", html.getBytes(StandardCharsets.UTF_8));

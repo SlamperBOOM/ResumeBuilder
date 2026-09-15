@@ -1,11 +1,13 @@
+import { ComponentType } from 'react';
 import ResumeDate from './input_components/ResumeDate';
 import ResumeDropDownList from './input_components/ResumeDropDownList';
 import ResumeTextArea from './input_components/ResumeTextArea';
 import ResumeTextInput from './input_components/ResumeTextInput';
 import ResumeToggle from './input_components/ResumeToggle';
 import ResumeImage from './input_components/ResumeImage';
+import { FieldRendererProps } from '../../utils/resumeBlockTypes';
 
-const baseFieldRegistry = {
+const baseFieldRegistry: Record<string, ComponentType<FieldRendererProps>> = {
   text_input: ResumeTextInput,
   text_area: ResumeTextArea,
   toggle: ResumeToggle,

@@ -32,3 +32,15 @@ if (!global.TextDecoder) {
   // @ts-ignore
   global.TextDecoder = TextDecoder;
 }
+
+// JSDOM does not implement ResizeObserver, used by react-resizable-panels
+// and a few components (ResumeTemplateField, ResumePDFPreview)
+if (!global.ResizeObserver) {
+  global.ResizeObserver = class ResizeObserver {
+    observe() {}
+
+    unobserve() {}
+
+    disconnect() {}
+  };
+}

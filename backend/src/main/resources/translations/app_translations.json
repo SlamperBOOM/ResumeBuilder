@@ -61,6 +61,7 @@
             "resume_locale_title": "Resume language",
             "template_name_title": "Chosen template",
             "template_choose_title": "Choose template",
+            "delete_entry": "Delete",
             "preview": {
                 "scale_title": "Scale:",
                 "full_width": "Full width",
@@ -76,6 +77,8 @@
                 "title": "Basic information",
                 "person_photo": "Your photo",
                 "empty_person_photo": "Choose your photo",
+                "change_person_photo": "Change photo",
+                "delete_person_photo": "Delete photo",
                 "desired_position": "Desired position",
                 "last_name": "Last name",
                 "first_name": "First name",
@@ -101,7 +104,7 @@
                 },
                 "is_moving_acceptable": "Ready to move",
                 "is_ready_for_business_trips": "Ready for business trips",
-                "driving_license": "Driving license",
+                "driver_license": "Driving license",
                 "marital_status": "Marital status",
                 "have_children": "Have children",
                 "goal_of_resume": "Goal of resume"
@@ -272,6 +275,7 @@
             "resume_locale_title": "Язык резюме",
             "template_name_title": "Выбранный шаблон",
             "template_choose_title": "Выберите шаблон",
+            "delete_entry": "Удалить",
             "preview": {
                 "scale_title": "Масштаб:",
                 "full_width": "По ширине",
@@ -287,6 +291,8 @@
                 "title": "Основная информация",
                 "person_photo": "Ваше фото",
                 "empty_person_photo": "Выберите своё фото",
+                "change_person_photo": "Изменить фото",
+                "delete_person_photo": "Удалить фото",
                 "desired_position": "Желаемая позиция",
                 "last_name": "Фамилия",
                 "first_name": "Имя",

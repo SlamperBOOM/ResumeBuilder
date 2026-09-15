@@ -1,9 +1,10 @@
+import { ComponentType } from 'react';
 import { FieldRendererProps } from '../../utils/resumeBlockTypes';
 import baseFieldRegistry from './fieldRegistry';
 import ResumeDynamicBlock from './input_components/ResumeDynamicBlock';
 import ResumeTemplateField from './input_components/ResumeTemplateField';
 
-const fieldRegistry = {
+const fieldRegistry: Record<string, ComponentType<FieldRendererProps>> = {
   ...baseFieldRegistry,
   dynamic_combined_block: ResumeDynamicBlock,
   template: ResumeTemplateField,

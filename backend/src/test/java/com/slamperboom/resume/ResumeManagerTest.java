@@ -5,6 +5,7 @@ import com.slamperboom.htmlConvertion.HTMLConverter;
 import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.saves.*;
+import com.slamperboom.resume.saves.migrations.MigrationRegistry;
 import com.slamperboom.settings.Settings;
 import com.slamperboom.testutil.FileSystemIsolationExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,22 +43,25 @@ class ResumeManagerTest {
     private HTMLConverter htmlConverter;
 
     @Mock
-    private ResumeLoader resumeLoader;
-
-    @Mock
     private TranslationsManager translationsManager;
+
+    private final ResumeLoader resumeLoader = new ResumeLoader(new MigrationRegistry());
 
     private IResumeManager manager;
 
     @BeforeEach
     void setUp() throws Exception {
+        manager = newManager();
+    }
+
+    private IResumeManager newManager() throws Exception {
         Constructor<ResumeManager> constructor = ResumeManager.class.getDeclaredConstructor(
                 HTMLConverter.class,
                 ResumeLoader.class,
                 TranslationsManager.class
         );
         constructor.setAccessible(true);
-        manager = constructor.newInstance(htmlConverter, resumeLoader, translationsManager);
+        return constructor.newInstance(htmlConverter, resumeLoader, translationsManager);
     }
 
     @Test
@@ -142,9 +146,7 @@ class ResumeManagerTest {
     void readAllResumes_reloadsResumesPersistedByAPreviousManagerInstance() throws Exception {
         String id = manager.createResume("Persisted resume");
 
-        Constructor<ResumeManager> constructor = ResumeManager.class.getDeclaredConstructor(HTMLConverter.class);
-        constructor.setAccessible(true);
-        IResumeManager freshManager = constructor.newInstance(htmlConverter);
+        IResumeManager freshManager = newManager();
 
         List<SimpleResume> resumes = freshManager.getListOfResumes();
         assertEquals(1, resumes.size());
@@ -178,9 +180,7 @@ class ResumeManagerTest {
     void readAllResumes_picksUpFileAddedByAnotherManagerInstance() throws Exception {
         assertTrue(manager.getListOfResumes().isEmpty());
 
-        Constructor<ResumeManager> constructor = ResumeManager.class.getDeclaredConstructor(HTMLConverter.class);
-        constructor.setAccessible(true);
-        IResumeManager anotherManager = constructor.newInstance(htmlConverter);
+        IResumeManager anotherManager = newManager();
         String externalId = anotherManager.createResume("Added by another instance");
 
         // `manager` has not been told about this yet - its own maps were never touched.

@@ -1,11 +1,11 @@
 import { Card, Typography } from '@mui/material';
-import { BlockSchema } from '../../../utils/backendTypes';
-import { Translations } from '../../../utils/resumeBlockTypes';
-import { useTranslate } from '../../../utils/translations';
+import { BlockContent } from '../../../utils/backendTypes';
+import { ResumeInput } from '../../../utils/resumeBlockTypes';
+import { Translations, useTranslate } from '../../../utils/translations';
 import FieldRenderer from '../FieldRenderer';
 
 type ResumeBlockProps = {
-  schema: BlockSchema;
+  schema: BlockContent;
   translations: Translations;
   resumeId: string;
 };
@@ -34,7 +34,7 @@ export default function ResumeBlock(props: ResumeBlockProps) {
         if (NON_FIELD_KEYS.has(fieldKey)) {
           return null;
         }
-        const field = schema[fieldKey];
+        const field = schema[fieldKey] as ResumeInput;
         return (
           <FieldRenderer
             key={fieldKey}

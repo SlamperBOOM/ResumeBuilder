@@ -2,7 +2,7 @@ import FrontendActionEnum from '../frontendAction/FrontendActionEnum';
 
 type ActionResponseDTO = {
   frontend_action: FrontendActionEnum;
-  payload?: JSON;
+  payload?: unknown;
 };
 
 export default ActionResponseDTO;

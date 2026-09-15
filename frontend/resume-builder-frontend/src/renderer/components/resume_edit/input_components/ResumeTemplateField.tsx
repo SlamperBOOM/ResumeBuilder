@@ -182,7 +182,7 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
                         <CardContent sx={{ flex: '0 0 auto' }}>
                           <Typography textAlign="center">
                             {translateKey(
-                              schema[template.name]?.display_name ?? '',
+                              schema?.[template.name]?.display_name ?? '',
                             )}
                           </Typography>
                         </CardContent>

@@ -32,6 +32,10 @@ const previewScaleMarks = [
   },
 ];
 
+function toPercent(scale: number) {
+  return `${scale * 100}%`;
+}
+
 type PreviewControlsProps = {
   scaleTitle: string;
   fullWidthLabel: string;
@@ -74,7 +78,9 @@ export default function PreviewControls(props: PreviewControlsProps) {
         <RadioGroup
           row
           value={previewMode}
-          onChange={(e) => onPreviewModeChange(e.target.value)}
+          onChange={(e) =>
+            onPreviewModeChange(e.target.value as ResumePreviewScaleEnum)
+          }
         >
           <FormControlLabel
             value={ResumePreviewScaleEnum.FULL_WIDTH}
@@ -101,6 +107,8 @@ export default function PreviewControls(props: PreviewControlsProps) {
           }}
         >
           <Slider
+            aria-label={scaleTitle}
+            getAriaValueText={toPercent}
             min={0.1}
             max={1}
             step={0.1}
@@ -118,7 +126,7 @@ export default function PreviewControls(props: PreviewControlsProps) {
             fontVariantNumeric: 'tabular-nums',
           }}
         >
-          {`${previewScale * 100}%`}
+          {toPercent(previewScale)}
         </Typography>
       </Stack>
     </Box>

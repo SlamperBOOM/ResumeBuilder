@@ -48,7 +48,10 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
               />
             );
           })}
-          <Button onClick={() => remove(index)}>
+          <Button
+            aria-label={translateKey(currentField.delete_button_title)}
+            onClick={() => remove(index)}
+          >
             <DeleteIcon color="error" />
           </Button>
         </Box>

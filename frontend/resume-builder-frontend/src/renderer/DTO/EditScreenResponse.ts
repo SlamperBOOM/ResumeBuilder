@@ -1,15 +1,10 @@
-import { EditScreenSchema, ResumeFormValues } from '../utils/backendTypes';
+import { EditScreenSchema, ResumePayload } from '../utils/backendTypes';
 import { Translations } from '../utils/translations';
-
-export type EditScreenPayload = {
-  resume: ResumeFormValues;
-  preview: string;
-};
 
 type EditScreenResponse = {
   schema: EditScreenSchema;
   translations: Translations;
-  payload: EditScreenPayload;
+  payload: ResumePayload;
 };
 
 export default EditScreenResponse;

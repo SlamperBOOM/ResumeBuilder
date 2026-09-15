@@ -2,6 +2,7 @@ import {
   DateInput,
   DropDownList,
   DynamicBlock,
+  ImageInput,
   TemplateChooser,
   TextArea,
   TextInput,
@@ -40,7 +41,7 @@ export type BDUActionPayload = {
 };
 
 export type MainScreenSchema = {
-  resume_menu: BDUButtonSchema[];
+  resume_menu: { [menuKey: string]: BDUButtonSchema };
   export_button: BDUButtonSchema;
   resume_menu_tooltip_title: string;
   create_new: BDUButtonSchema;
@@ -61,17 +62,19 @@ export type HeaderSchema = {
   menu: BDUButtonSchema[];
 };
 
-export type BlockSchema = {
-  [block_name: string]: { block_title: string } & {
-    [field: string]:
-      | TextInput
-      | Toggle
-      | TextArea
-      | DropDownList
-      | DateInput
-      | DynamicBlock;
-  };
+export type BlockContent = { block_title: string } & {
+  [field: string]:
+    | TextInput
+    | Toggle
+    | TextArea
+    | DropDownList
+    | DateInput
+    | ImageInput
+    | DynamicBlock
+    | string;
 };
+
+export type BlocksSchema = { [block_name: string]: BlockContent };
 
 export type EditScreenSchema = {
   edit_area: {
@@ -86,7 +89,7 @@ export type EditScreenSchema = {
       full_height_option_key: string;
       custom_option_key: string;
     };
-    resume_blocks: BlockSchema;
+    resume_blocks: BlocksSchema;
   };
 };
 
@@ -102,7 +105,6 @@ export type ResumePayload = {
     resume_locale: string;
     resume_name: string;
     template_name: string;
-    version_of_last_edit: string;
     blocks: {
       [block_name: string]: ResumeBlockFormat;
     };

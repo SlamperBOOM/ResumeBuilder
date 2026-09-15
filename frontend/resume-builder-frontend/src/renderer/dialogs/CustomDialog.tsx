@@ -35,7 +35,7 @@ export default function CustomDialog(props: CustomDialogProps) {
             <Button
               variant="contained"
               autoFocus
-              onClick={appActions.dialogActions.confirmationModal.close}
+              onClick={appActions.dialogActions.customModal.close}
             >
               {customDialogSchema.decline_button_text}
             </Button>

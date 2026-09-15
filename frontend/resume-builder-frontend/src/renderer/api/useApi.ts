@@ -94,7 +94,7 @@ export default function useApi() {
 
   const performDeleteRequest = useCallback(
     async <T = unknown>(url: string, schema?: ZodType<unknown>): Promise<T> => {
-      return performRequest('delete', url, schema);
+      return performRequest('delete', url, null, schema);
     },
     [],
   );

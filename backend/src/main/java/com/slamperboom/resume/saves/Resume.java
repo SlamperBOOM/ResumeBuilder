@@ -13,6 +13,7 @@ import com.slamperboom.exceptions.UserExceptionFactory;
 import com.slamperboom.resume.blocks.common.ContentMapper;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.blocks.common.IContent;
+import com.slamperboom.resume.saves.migrations.MigrationRegistry;
 import lombok.Setter;
 import org.jboss.logging.Logger;
 
@@ -36,7 +37,7 @@ public class Resume implements IResume {
 
     @JsonProperty("schema_version")
     @Setter
-    private int schemaVersion;
+    private int schemaVersion = MigrationRegistry.CURRENT_SCHEMA_VERSION;
 
     @JsonProperty("resume_name")
     @Setter

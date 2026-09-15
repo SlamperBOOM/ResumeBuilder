@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import {
@@ -10,6 +11,7 @@ export default function ResumeDropDownList(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride } = props;
   const currentField = resumeField as DropDownList;
   const translateKey = useTranslate(translations);
+  const labelId = useId();
 
   const { control } = useFormContext();
 
@@ -19,9 +21,12 @@ export default function ResumeDropDownList(props: FieldRendererProps) {
       control={control}
       render={({ field: controllerField }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel>{translateKey(currentField.title)}</InputLabel>
+          <InputLabel id={labelId}>
+            {translateKey(currentField.title)}
+          </InputLabel>
           <Select
             {...controllerField}
+            labelId={labelId}
             value={controllerField.value ?? ''}
             label={translateKey(currentField.title)}
             onChange={(e) => {

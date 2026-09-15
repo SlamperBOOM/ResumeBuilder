@@ -39,7 +39,9 @@
                     "type": "image",
                     "title": "main_block.person_photo",
                     "resume_value": "blocks.MAIN_BLOCK.person_photo_name",
-                    "empty_text_key": "main_block.empty_person_photo"
+                    "empty_text_key": "main_block.empty_person_photo",
+                    "change_button_title": "main_block.change_person_photo",
+                    "delete_button_title": "main_block.delete_person_photo"
                 },
                 "desired_position": {
                     "type": "text_input",
@@ -161,7 +163,8 @@
                             "resume_value": "social_net_profile_link"
                         }
                     },
-                    "add_button_title": "contacts.add_social_net"
+                    "add_button_title": "contacts.add_social_net",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "experience": {
@@ -204,7 +207,8 @@
                             "resume_value": "work_description"
                         }
                     },
-                    "add_button_title": "experience.add_experience"
+                    "add_button_title": "experience.add_experience",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "education": {
@@ -252,7 +256,8 @@
                             "resume_value": "year_of_graduate"
                         }
                     },
-                    "add_button_title": "education.add_education"
+                    "add_button_title": "education.add_education",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "advanced_training": {
@@ -277,7 +282,8 @@
                             "resume_value": "year_of_graduate"
                         }
                     },
-                    "add_button_title": "advanced_training.add_training"
+                    "add_button_title": "advanced_training.add_training",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "languages": {
@@ -307,7 +313,8 @@
                             "default": ""
                         }
                     },
-                    "add_button_title": "languages.add_language"
+                    "add_button_title": "languages.add_language",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "skills": {
@@ -335,7 +342,8 @@
                             "default": ""
                         }
                     },
-                    "add_button_title": "skills.add_skill"
+                    "add_button_title": "skills.add_skill",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "about": {
@@ -381,7 +389,8 @@
                             "resume_value": "phone_number"
                         }
                     },
-                    "add_button_title": "recommendations.add_recommendation"
+                    "add_button_title": "recommendations.add_recommendation",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "publications": {
@@ -402,7 +411,8 @@
                             "resume_value": "date"
                         }
                     },
-                    "add_button_title": "publications.add_publication"
+                    "add_button_title": "publications.add_publication",
+                    "delete_button_title": "delete_entry"
                 }
             },
             "additional_info": {

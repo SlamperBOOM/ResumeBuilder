@@ -15,6 +15,8 @@ function MainScreenSkeleton() {
   const animation = 'wave';
   return (
     <Box
+      role="status"
+      aria-busy="true"
       sx={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',

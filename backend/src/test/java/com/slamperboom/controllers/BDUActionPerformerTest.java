@@ -12,6 +12,7 @@ import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.exceptions.UserExceptionFactory;
+import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
@@ -57,8 +58,10 @@ class BDUActionPerformerTest {
     private BDUActionPerformer performer;
 
     @BeforeEach
-    void setUp() {
-        performer = new BDUActionPerformer(resumeManager, objectMapper, dialogBuilders);
+    void setUp() throws Exception {
+        var translationsConstructor = TranslationsManager.class.getDeclaredConstructor();
+        translationsConstructor.setAccessible(true);
+        performer = new BDUActionPerformer(resumeManager, objectMapper, dialogBuilders, translationsConstructor.newInstance());
         // Locale is process-wide (static) state inside DynamicSettings; pin it so translation
         // based assertions below don't depend on test execution order.
         DynamicSettings.getInstance().setLocale("en");

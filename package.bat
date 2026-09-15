@@ -2,7 +2,19 @@
 setlocal enabledelayedexpansion
 
 set JAVA_VERSION=17
+set NODE_MAJOR=24
 set TARGET_DIR=jre\win-x64
+
+set DOWNLOAD_NPM=0
+for %%A in (%*) do (
+    if /i "%%A"=="--download-npm" (
+        set DOWNLOAD_NPM=1
+    ) else (
+        echo Unknown argument: %%A
+        echo Usage: %~nx0 [--download-npm]
+        exit /b 1
+    )
+)
 
 echo Detecting platform...
 
@@ -67,16 +79,24 @@ ren "%TARGET_DIR%\bin\java.exe" "ResumeBuilderBackend.exe"
 
 echo Building frontend
 
-set NODE_MAJOR=24
-
 REM -----------------------------
 REM Node.js/npm are only needed to build the frontend - they are not
-REM bundled into the final app (Electron ships its own JS runtime),
-REM so we download a portable copy into a temp folder and remove it
-REM right after the build, instead of relying on a suitable Node.js
-REM already being installed on the machine.
+REM bundled into the final app (Electron ships its own JS runtime).
+REM By default the system npm is used; with --download-npm a portable
+REM copy is downloaded into a temp folder and removed after the build.
 REM -----------------------------
 
+if "%DOWNLOAD_NPM%"=="1" goto :download_node
+
+where npm >nul 2>nul
+if errorlevel 1 (
+    echo npm not found. Install Node.js %NODE_MAJOR%+ or re-run with --download-npm to fetch a portable copy for the build.
+    exit /b 1
+)
+echo Using system npm
+goto :build_frontend
+
+:download_node
 echo $ErrorActionPreference = 'Stop' > resolve-node.ps1
 echo [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 >> resolve-node.ps1
 echo $major = '%NODE_MAJOR%' >> resolve-node.ps1
@@ -121,11 +141,27 @@ echo Node.js installed to .\.tmp-node
 
 set PATH=%~dp0.tmp-node;%PATH%
 
+:build_frontend
 cd frontend/resume-builder-frontend/
-call npm install && call npm run package
+call npm install
+if errorlevel 1 goto :frontend_failed
+call npm run package
+if errorlevel 1 goto :frontend_failed
 cd /d %~dp0
 
 echo Frontend built
+call :remove_node
+exit /b 0
+
+:frontend_failed
+cd /d %~dp0
+echo Frontend build failed.
+if "%DOWNLOAD_NPM%"=="0" echo If your system Node.js/npm is missing or incompatible, re-run with --download-npm to build with a portable Node.js %NODE_MAJOR%.
+call :remove_node
+exit /b 1
+
+:remove_node
+if "%DOWNLOAD_NPM%"=="0" goto :eof
 
 echo Removing portable Node.js
 
@@ -142,3 +178,4 @@ if exist "%~dp0.tmp-node" (
 ) else (
     echo Portable Node.js removed
 )
+goto :eof

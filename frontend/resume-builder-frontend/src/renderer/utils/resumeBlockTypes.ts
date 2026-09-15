@@ -32,6 +32,8 @@ export type DateInput = BaseInput & {
 
 export type ImageInput = BaseInput & {
   empty_text_key: string;
+  change_button_title: string;
+  delete_button_title: string;
 };
 
 export type DynamicBlock = {
@@ -47,6 +49,7 @@ export type DynamicBlock = {
       | ImageInput;
   };
   add_button_title: string;
+  delete_button_title: string;
 };
 
 export type TemplateChooser = BaseInput & {
