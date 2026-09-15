@@ -242,7 +242,7 @@ public class ResumeManager implements IResumeManager{
             return resume.getId();
         } catch (IOException e) {
             logger.errorf(e, "Unable to import resume from file %s", fileName);
-            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_IMPORT_RESUME, e);
         }
     }
 

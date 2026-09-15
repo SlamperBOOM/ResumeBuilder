@@ -167,10 +167,8 @@ class BDUActionControllerTest {
     }
 
     @Test
-    void importResume_withAMissingFile_returnsAMessageDialogWithBlankText() {
-        // Every entry in error_messages.*.json is currently an empty string, so every
-        // UserException-driven error dialog in the app shows a blank message to the user.
-        // This test pins that down concretely for the import flow. See review notes.
+    void importResume_withAMissingFile_returnsAMessageDialogWithErrorText() {
+        // The text comes from error_messages in the current locale, which other tests may switch
         given()
             .contentType(ContentType.JSON)
             .body("{\"file_name\":\"does-not-exist.json\"}")
@@ -178,7 +176,7 @@ class BDUActionControllerTest {
             .then()
                 .statusCode(200)
                 .body("frontend_action", equalTo("SHOW_MESSAGE"))
-                .body("payload.text", equalTo(""));
+                .body("payload.text", not(emptyOrNullString()));
     }
 
     @Test

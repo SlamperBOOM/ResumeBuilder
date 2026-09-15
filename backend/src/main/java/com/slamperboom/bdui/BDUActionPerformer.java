@@ -189,7 +189,8 @@ public class BDUActionPerformer {
             return Optional.empty();
         } catch (UserException | IOException e) {
             logger.error("Failed to open directory: " + dirPath, e);
-            return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(""));
+            return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(
+                    UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION).getMessage()));
         }
     }
 

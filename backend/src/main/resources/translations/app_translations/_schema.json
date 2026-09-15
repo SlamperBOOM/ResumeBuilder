@@ -1,0 +1,215 @@
+{
+    "error_messages": {
+        "resume_save_error": "",
+        "unable_to_update_resume_block": "",
+        "unable_to_duplicate_resume": "",
+        "unable_to_delete_resume": "",
+        "error_while_saving_config": "",
+        "unable_to_save_pdf": "",
+        "unable_to_import_resume": "",
+        "resume_not_found": "",
+        "unable_to_perform_action": ""
+    },
+    "confirmation_dialog": {
+        "delete_confirmation": {
+            "title": "",
+            "text": "",
+            "confirm_button_text": "",
+            "decline_button_text": ""
+        },
+        "after_export_confirmation": {
+            "title": "",
+            "text": "",
+            "confirm_button_text": "",
+            "decline_button_text": ""
+        }
+    },
+    "main_screen": {
+        "resume_menu": {
+            "edit": "",
+            "duplicate": "",
+            "delete": "",
+            "tooltip_title": ""
+        },
+        "create_resume_title": "",
+        "export_title": "",
+        "import_title": "",
+        "empty_state": {
+            "title": "",
+            "subtitle": ""
+        }
+    },
+    "header": {
+        "exit": "",
+        "about": "",
+        "change_locale": "",
+        "open_save_dir": "",
+        "app_title": "",
+        "menu": ""
+    },
+    "language_dialog": {
+        "language_dialog_title": "",
+        "cancel_key": "",
+        "save_key": "",
+        "locale_ru": "",
+        "locale_en": ""
+    },
+    "edit_screen": {
+        "resume_name_title": "",
+        "to_main_screen_title": "",
+        "export_title": "",
+        "resume_locale_title": "",
+        "template_name_title": "",
+        "template_choose_title": "",
+        "delete_entry": "",
+        "preview": {
+            "scale_title": "",
+            "full_width": "",
+            "full_height": "",
+            "custom": ""
+        },
+        "locale_name": "",
+        "locales": {
+            "en": "",
+            "ru": ""
+        },
+        "main_block": {
+            "title": "",
+            "person_photo": "",
+            "empty_person_photo": "",
+            "change_person_photo": "",
+            "delete_person_photo": "",
+            "desired_position": "",
+            "last_name": "",
+            "first_name": "",
+            "date_of_birth": "",
+            "city": "",
+            "desired_salary": "",
+            "occupation": "",
+            "employment_title": "",
+            "employment": {
+                "full_time": "",
+                "part_time": "",
+                "project": "",
+                "volunteer": "",
+                "internship": ""
+            },
+            "schedule_title": "",
+            "schedule": {
+                "full_time": "",
+                "flexible": "",
+                "shift": "",
+                "remote": "",
+                "shift_watch": ""
+            },
+            "is_moving_acceptable": "",
+            "is_ready_for_business_trips": "",
+            "driver_license": "",
+            "marital_status": "",
+            "have_children": "",
+            "goal_of_resume": ""
+        },
+        "contacts": {
+            "title": "",
+            "email": "",
+            "phone_number": "",
+            "social_net_name": "",
+            "social_net_link": "",
+            "add_social_net": ""
+        },
+        "experience": {
+            "title": "",
+            "position": "",
+            "company": "",
+            "start_date": "",
+            "end_date": "",
+            "is_still_working": "",
+            "work_description": "",
+            "add_experience": ""
+        },
+        "education": {
+            "title": "",
+            "institution": "",
+            "education_level": "",
+            "level": {
+                "middle": "",
+                "middle_spec": "",
+                "unfinished_university": "",
+                "university": "",
+                "bachelor": "",
+                "specialist": "",
+                "master": "",
+                "doctor": "",
+                "candidate": ""
+            },
+            "faculty": "",
+            "speciality": "",
+            "year_of_graduate": "",
+            "add_education": ""
+        },
+        "advanced_training": {
+            "title": "",
+            "course_name": "",
+            "organization": "",
+            "year_of_graduate": "",
+            "add_training": ""
+        },
+        "languages": {
+            "title": "",
+            "language": "",
+            "language_level": "",
+            "level": {
+                "a1": "",
+                "a2": "",
+                "b1": "",
+                "b2": "",
+                "c1": "",
+                "c2": ""
+            },
+            "add_language": ""
+        },
+        "skills": {
+            "title": "",
+            "skill_name": "",
+            "skill_level": "",
+            "level": {
+                "beginner": "",
+                "base": "",
+                "experienced": "",
+                "professional": ""
+            },
+            "add_skill": ""
+        },
+        "about": {
+            "title": ""
+        },
+        "hobbies": {
+            "title": ""
+        },
+        "recommendations": {
+            "title": "",
+            "recommending": "",
+            "company": "",
+            "email": "",
+            "phone_number": "",
+            "add_recommendation": ""
+        },
+        "publications": {
+            "title": "",
+            "publication": "",
+            "publication_date": "",
+            "add_publication": ""
+        },
+        "additional_info": {
+            "title": ""
+        },
+        "templates": {
+            "simple_template_name": "",
+            "simple_divided_template_name": "",
+            "timeline_template_name": "",
+            "simple_template_modern_name": "",
+            "simple_template_updated_name": "",
+            "dossier_template_name": ""
+        }
+    }
+}

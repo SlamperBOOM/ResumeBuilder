@@ -5,6 +5,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.managers.TempFilesManager;
+import com.slamperboom.utils.ResourceFiles;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.fontbox.ttf.NamingTable;
 import org.apache.fontbox.ttf.OS2WindowsMetricsTable;
@@ -12,29 +13,19 @@ import org.apache.fontbox.ttf.TTFParser;
 import org.apache.fontbox.ttf.TrueTypeFont;
 import org.jboss.logging.Logger;
 
-import java.io.*;
-import java.net.JarURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.stream.Stream;
 
 @ApplicationScoped
 public class FontsManager {
-    private static final String FONTS_PATH = "templates/fonts/";
+    private static final String FONTS_PATH = "templates/fonts";
     private static final String[] SUPPORTED_EXTENSIONS = {".ttf", ".otf"};
 
     private final Logger logger = Logger.getLogger(this.getClass());
     private final List<FontInfo> fonts;
-    private final TempFilesManager tempFilesManager;
 
     private String stripExtension(String name) {
         int dot = name.lastIndexOf('.');
@@ -79,67 +70,16 @@ public class FontsManager {
         }
     }
 
-    private boolean hasSupportedExtension(String name) {
-        String lower = name.toLowerCase();
-        for (String ext : SUPPORTED_EXTENSIONS) {
-            if (lower.endsWith(ext)) return true;
-        }
-        return false;
-    }
-
-    private void loadFromJar(URL url) throws IOException {
-        JarURLConnection connection = (JarURLConnection) url.openConnection();
-        JarFile jarFile = connection.getJarFile();
-
-        Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            String name = entry.getName();
-            if (name.startsWith(FONTS_PATH) && hasSupportedExtension(name)) {
-                try (InputStream is = jarFile.getInputStream(entry)) {
-                    File tempFile = tempFilesManager.createNewTempFile();
-                    try (OutputStream os = new FileOutputStream(tempFile)) {
-                        is.transferTo(os);
-                    }
-                    registerFontFile(tempFile, name);
-                }
-            }
-        }
-    }
-
-    private void loadFromDirectory(URL url) throws IOException, URISyntaxException {
-        Path dir = Paths.get(url.toURI());
-        try (Stream<Path> stream = Files.walk(dir)) {
-            stream
-                .filter(p -> hasSupportedExtension(p.toString()))
-                .forEach(p -> {
-                    try {
-                        File tempFile = tempFilesManager.createNewTempFile();
-                        Files.copy(p, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        registerFontFile(tempFile, p.getFileName().toString());
-                    } catch (IOException e) {
-                        String message = "Unable to read fonts";
-                        StartupExceptionHolder.addException(message);
-                        throw new StartupException(message);
-                    }
-                });
-        }
-    }
-
     FontsManager(TempFilesManager tempFilesManager) {
-        this.tempFilesManager = tempFilesManager;
         fonts = new ArrayList<>();
         try {
-            Enumeration<URL> resources = getClass().getClassLoader().getResources(FONTS_PATH);
-            while (resources.hasMoreElements()) {
-                URL url = resources.nextElement();
-                if ("jar".equals(url.getProtocol())) {
-                    loadFromJar(url);
-                } else if ("file".equals(url.getProtocol())) {
-                    loadFromDirectory(url);
-                }
+            for (ResourceFiles.ResourceFile font : ResourceFiles.read(FONTS_PATH, SUPPORTED_EXTENSIONS)) {
+                // openhtmltopdf needs fonts as files, a jar entry isn't one
+                File tempFile = tempFilesManager.createNewTempFile();
+                Files.write(tempFile.toPath(), font.content());
+                registerFontFile(tempFile, font.name());
             }
-        } catch (IOException | URISyntaxException | RuntimeException e) {
+        } catch (IOException | RuntimeException e) {
             logger.error("Unable to load fonts");
             String message = "Error while reading fonts";
             StartupExceptionHolder.addException(message);

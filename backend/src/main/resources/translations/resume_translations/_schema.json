@@ -1,0 +1,84 @@
+{
+    "main_block": {
+        "date_of_birth": "",
+        "city": "",
+        "desired_salary": "",
+        "work_conditions": "",
+        "occupation": "",
+        "moving": {
+            "ready": "",
+            "not_ready": ""
+        },
+        "business_trips_ready": "",
+        "employment": {
+            "FULL_TIME": "",
+            "PART_TIME": "",
+            "PROJECT": "",
+            "VOLUNTEER": "",
+            "INTERNSHIP": ""
+        },
+        "schedule": {
+            "FULL_TIME": "",
+            "FLEXIBLE": "",
+            "SHIFT": "",
+            "REMOTE": "",
+            "SHIFT_WATCH": ""
+        },
+        "marital_status": "",
+        "driving_license": "",
+        "have_children": ""
+    },
+    "experience": {
+        "title": "",
+        "until_now": ""
+    },
+    "education": {
+        "title": "",
+        "level": {
+            "MIDDLE": "",
+            "MIDDLE_SPEC": "",
+            "UNFINISHED_UNIVERSITY": "",
+            "UNIVERSITY": "",
+            "BACHELOR": "",
+            "SPECIALIST": "",
+            "MASTER": "",
+            "DOCTOR": "",
+            "CANDIDATE": ""
+        }
+    },
+    "contacts": {
+        "title": "",
+        "phone": "",
+        "email": ""
+    },
+    "adv_training": {
+        "title": ""
+    },
+    "skills": {
+        "title": "",
+        "level": {
+            "BEGINNER": "",
+            "BASE": "",
+            "EXPERIENCED": "",
+            "PROFESSIONAL": ""
+        }
+    },
+    "languages": {
+        "title": ""
+    },
+    "about": {
+        "title": ""
+    },
+    "hobbies": {
+        "title": ""
+    },
+    "recommendations": {
+        "title": ""
+    },
+    "publications": {
+        "title": ""
+    },
+    "additional": {
+        "title": ""
+    }
+}

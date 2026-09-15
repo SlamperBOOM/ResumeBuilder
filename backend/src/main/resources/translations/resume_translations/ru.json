@@ -1,0 +1,84 @@
+{
+    "main_block": {
+        "date_of_birth": "Дата рождения",
+        "city": "Город",
+        "desired_salary": "Желаемая зарплата",
+        "work_conditions": "Занятость",
+        "occupation": "Гражданство",
+        "moving": {
+            "ready": "Готов к переезду",
+            "not_ready": "Не готов к переезду"
+        },
+        "business_trips_ready": "Возможны командировки",
+        "employment": {
+            "FULL_TIME": "Полная занятость",
+            "PART_TIME": "Частичная занятость",
+            "PROJECT": "Проектная работа",
+            "VOLUNTEER": "Волонтёрство",
+            "INTERNSHIP": "Стажировка"
+        },
+        "schedule": {
+            "FULL_TIME": "Полный день",
+            "FLEXIBLE": "Гибкий график",
+            "SHIFT": "Сменный график",
+            "REMOTE": "Удаленная работа",
+            "SHIFT_WATCH": "Вахтовый метод"
+        },
+        "marital_status": "Семейное положение",
+        "driving_license": "Водительские права",
+        "have_children": "есть дети"
+    },
+    "experience": {
+        "title": "Опыт работы",
+        "until_now": "н.в."
+    },
+    "education": {
+        "title": "Образование",
+        "level": {
+            "MIDDLE": "Среднее",
+            "MIDDLE_SPEC": "Среднее специальное",
+            "UNFINISHED_UNIVERSITY": "Неоконченное высшее",
+            "UNIVERSITY": "Высшее",
+            "BACHELOR": "Бакалавр",
+            "SPECIALIST": "Специалист",
+            "MASTER": "Магистр",
+            "DOCTOR": "Доктор наук",
+            "CANDIDATE": "Кандидат наук"
+        }
+    },
+    "contacts": {
+        "title": "Контакты",
+        "phone": "Телефон",
+        "email": "Почта"
+    },
+    "adv_training": {
+        "title": "Курсы повышения квалификации"
+    },
+    "skills": {
+        "title": "Навыки",
+        "level": {
+            "BEGINNER": "Начальный",
+            "BASE": "Базовый",
+            "EXPERIENCED": "Опытный",
+            "PROFESSIONAL": "Профессиональный"
+        }
+    },
+    "languages": {
+        "title": "Языки"
+    },
+    "about": {
+        "title": "О себе"
+    },
+    "hobbies": {
+        "title": "Хобби"
+    },
+    "recommendations": {
+        "title": "Рекоммендации"
+    },
+    "publications": {
+        "title": "Публикации"
+    },
+    "additional": {
+        "title": "Дополнительная информация"
+    }
+}

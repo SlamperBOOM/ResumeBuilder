@@ -80,6 +80,8 @@ Some tests check correct HTML and PDF generation. If you add new template or cha
 
 This command will update reference HTML and PDF files for test. In PowerShell, put the flag in quotes: `.\gradlew.bat test "-Dgolden.update=true"`.
 
+Backend translations are stored in a separate file per language in `backend/src/main/resources/translations/`. See its [README](backend/src/main/resources/translations/README.md) for how to add a language or a translation key.
+
 If you want to check logs in readable format, use `log_dashboard.py`. This script generate you a dashboard from log file. The backend writes its log to `app.log`:
 
 - in dev mode: `backend/logs/app.log`;

@@ -1,0 +1,215 @@
+{
+    "error_messages": {
+        "resume_save_error": "Unable to save the resume. Please try again.",
+        "unable_to_update_resume_block": "Unable to save changes to the resume. Please try again.",
+        "unable_to_duplicate_resume": "Unable to duplicate the resume. Please try again.",
+        "unable_to_delete_resume": "Unable to delete the resume. Please try again.",
+        "error_while_saving_config": "Unable to save app settings. Please try again.",
+        "unable_to_save_pdf": "Unable to generate the resume PDF. Please try again or choose another template.",
+        "unable_to_import_resume": "Unable to import the resume. Make sure the file exists and was saved by Resume Builder.",
+        "resume_not_found": "Resume not found. It may have been deleted or moved.",
+        "unable_to_perform_action": "Unable to perform this action. Please try again."
+    },
+    "confirmation_dialog": {
+        "delete_confirmation": {
+            "title": "Confirm deletion of ",
+            "text": "Are you sure you want to delete resume? This action is irreversible",
+            "confirm_button_text": "Delete",
+            "decline_button_text": "Cancel"
+        },
+        "after_export_confirmation": {
+            "title": "Open result",
+            "text": "Do you want to open folder with saved resume?",
+            "confirm_button_text": "Yes",
+            "decline_button_text": "No"
+        }
+    },
+    "main_screen": {
+        "resume_menu": {
+            "edit": "Edit",
+            "duplicate": "Duplicate",
+            "delete": "Delete",
+            "tooltip_title": "Actions"
+        },
+        "create_resume_title": "Create resume",
+        "export_title": "Export to PDF",
+        "import_title": "Import resume",
+        "empty_state": {
+            "title": "You don't have any resumes yet",
+            "subtitle": "Click \"Create resume\" above to get started"
+        }
+    },
+    "header": {
+        "exit": "Exit",
+        "about": "About",
+        "change_locale": "Change locale",
+        "open_save_dir": "Open resume save directory",
+        "app_title": "ResumeBuilder",
+        "menu": "Menu"
+    },
+    "language_dialog": {
+        "language_dialog_title": "Select language",
+        "cancel_key": "Cancel",
+        "save_key": "Save",
+        "locale_ru": "Russian",
+        "locale_en": "English"
+    },
+    "edit_screen": {
+        "resume_name_title": "Resume name",
+        "to_main_screen_title": "To main menu",
+        "export_title": "Export to PDF",
+        "resume_locale_title": "Resume language",
+        "template_name_title": "Chosen template",
+        "template_choose_title": "Choose template",
+        "delete_entry": "Delete",
+        "preview": {
+            "scale_title": "Scale:",
+            "full_width": "Full width",
+            "full_height": "Full height",
+            "custom": "Custom"
+        },
+        "locale_name": "en",
+        "locales": {
+            "en": "English",
+            "ru": "Russian"
+        },
+        "main_block": {
+            "title": "Basic information",
+            "person_photo": "Your photo",
+            "empty_person_photo": "Choose your photo",
+            "change_person_photo": "Change photo",
+            "delete_person_photo": "Delete photo",
+            "desired_position": "Desired position",
+            "last_name": "Last name",
+            "first_name": "First name",
+            "date_of_birth": "Date of birth",
+            "city": "City",
+            "desired_salary": "Desired salary",
+            "occupation": "Occupation",
+            "employment_title": "Employment",
+            "employment": {
+                "full_time": "Full time",
+                "part_time": "Part time",
+                "project": "Project work",
+                "volunteer": "Volunteering",
+                "internship": "Internship"
+            },
+            "schedule_title": "Work schedule",
+            "schedule": {
+                "full_time": "Full time",
+                "flexible": "Flexible schedule",
+                "shift": "Shift schedule",
+                "remote": "Remote work",
+                "shift_watch": "Rotation based work"
+            },
+            "is_moving_acceptable": "Ready to move",
+            "is_ready_for_business_trips": "Ready for business trips",
+            "driver_license": "Driving license",
+            "marital_status": "Marital status",
+            "have_children": "Have children",
+            "goal_of_resume": "Goal of resume"
+        },
+        "contacts": {
+            "title": "Contacts",
+            "email": "E-mail",
+            "phone_number": "Phone number",
+            "social_net_name": "Social network",
+            "social_net_link": "Profile link",
+            "add_social_net": "Add social network"
+        },
+        "experience": {
+            "title": "Work experience",
+            "position": "Position",
+            "company": "Company",
+            "start_date": "Start date",
+            "end_date": "End date",
+            "is_still_working": "Still working",
+            "work_description": "Job responsibilities",
+            "add_experience": "Add work experience"
+        },
+        "education": {
+            "title": "Education",
+            "institution": "Institution",
+            "education_level": "Education level",
+            "level": {
+                "middle": "School",
+                "middle_spec": "College",
+                "unfinished_university": "Unfinished university",
+                "university": "University",
+                "bachelor": "Bachelor degree",
+                "specialist": "Specialist",
+                "master": "Master degree",
+                "doctor": "Doctor of Science",
+                "candidate": "PhD"
+            },
+            "faculty": "Faculty",
+            "speciality": "Speciality",
+            "year_of_graduate": "Year of graduate",
+            "add_education": "Add education"
+        },
+        "advanced_training": {
+            "title": "Courses",
+            "course_name": "Course name",
+            "organization": "Organization",
+            "year_of_graduate": "Year of graduate",
+            "add_training": "Add course"
+        },
+        "languages": {
+            "title": "Languages",
+            "language": "Language",
+            "language_level": "Level",
+            "level": {
+                "a1": "A1",
+                "a2": "A2",
+                "b1": "B1",
+                "b2": "B2",
+                "c1": "C1",
+                "c2": "C2"
+            },
+            "add_language": "Add language"
+        },
+        "skills": {
+            "title": "Skills",
+            "skill_name": "Skill",
+            "skill_level": "Level",
+            "level": {
+                "beginner": "Beginner",
+                "base": "Base",
+                "experienced": "Experienced",
+                "professional": "Professional"
+            },
+            "add_skill": "Add skill"
+        },
+        "about": {
+            "title": "About me"
+        },
+        "hobbies": {
+            "title": "Hobbies"
+        },
+        "recommendations": {
+            "title": "Recommendations",
+            "recommending": "Full name oof recommender",
+            "company": "Company",
+            "email": "E-male",
+            "phone_number": "Phone number",
+            "add_recommendation": "Add recommendation"
+        },
+        "publications": {
+            "title": "Publications",
+            "publication": "Publication name or link",
+            "publication_date": "Publication date",
+            "add_publication": "Add publication"
+        },
+        "additional_info": {
+            "title": "Additional info"
+        },
+        "templates": {
+            "simple_template_name": "Simple template",
+            "simple_divided_template_name": "Simple divided template",
+            "timeline_template_name": "Timeline style",
+            "simple_template_modern_name": "*ignore*",
+            "simple_template_updated_name": "Modern template",
+            "dossier_template_name": "Dossier style"
+        }
+    }
+}

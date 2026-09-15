@@ -54,8 +54,24 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-reactive-jackson'
 }
 
+def translationsDir = file('src/main/resources/translations')
+
+processResources {
+    exclude 'translations/README.md', 'translations/*/_schema.json'
+}
+
+tasks.register('syncTranslations', JavaExec) {
+    group = 'translations'
+    description = 'Adds keys missing from _schema.json to every translation file and warns about keys not in the schema'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.slamperboom.translations.TranslationsSync'
+    args translationsDir.absolutePath
+}
+
 test {
     useJUnitPlatform()
+    // _schema.json is not on the classpath, so tell gradle the schema test depends on it
+    inputs.dir translationsDir
     // Gradle forks a separate test JVM and does not auto-forward -D flags from the
     // gradlew command line, so golden.update must be explicitly piped through.
     systemProperty 'golden.update', System.getProperty('golden.update', 'false')

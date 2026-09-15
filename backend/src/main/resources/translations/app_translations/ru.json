@@ -1,0 +1,215 @@
+{
+    "error_messages": {
+        "resume_save_error": "Не удалось сохранить резюме. Попробуйте ещё раз.",
+        "unable_to_update_resume_block": "Не удалось сохранить изменения в резюме. Попробуйте ещё раз.",
+        "unable_to_duplicate_resume": "Не удалось создать копию резюме. Попробуйте ещё раз.",
+        "unable_to_delete_resume": "Не удалось удалить резюме. Попробуйте ещё раз.",
+        "error_while_saving_config": "Не удалось сохранить настройки приложения. Попробуйте ещё раз.",
+        "unable_to_save_pdf": "Не удалось сформировать PDF резюме. Попробуйте ещё раз или выберите другой шаблон.",
+        "unable_to_import_resume": "Не удалось импортировать резюме. Убедитесь, что файл существует и был сохранён в Resume Builder.",
+        "resume_not_found": "Резюме не найдено. Возможно, оно было удалено или перемещено.",
+        "unable_to_perform_action": "Не удалось выполнить действие. Попробуйте ещё раз."
+    },
+    "confirmation_dialog": {
+        "delete_confirmation": {
+            "title": "Подтвердите удаление ",
+            "text": "Вы точно хотите удалить резюме? Это действие необратимо",
+            "confirm_button_text": "Удалить",
+            "decline_button_text": "Отмена"
+        },
+        "after_export_confirmation": {
+            "title": "Открыть результат",
+            "text": "Хотите открыть папку с сохраненным резюме?",
+            "confirm_button_text": "Да",
+            "decline_button_text": "Нет"
+        }
+    },
+    "main_screen": {
+        "resume_menu": {
+            "edit": "Редактировать",
+            "duplicate": "Дублировать",
+            "delete": "Удалить",
+            "tooltip_title": "Действия"
+        },
+        "create_resume_title": "Создать резюме",
+        "export_title": "Экспортировать в PDF",
+        "import_title": "Импортировать резюме",
+        "empty_state": {
+            "title": "У вас пока нет резюме",
+            "subtitle": "Нажмите «Создать резюме», чтобы начать"
+        }
+    },
+    "header": {
+        "exit": "Выйти",
+        "about": "О программе",
+        "change_locale": "Сменить язык",
+        "open_save_dir": "Открыть папку с резюме",
+        "app_title": "ResumeBuilder",
+        "menu": "Меню"
+    },
+    "language_dialog": {
+        "language_dialog_title": "Выберите язык",
+        "cancel_key": "Отмена",
+        "save_key": "Сохранить",
+        "locale_ru": "Русский",
+        "locale_en": "Английский"
+    },
+    "edit_screen": {
+        "resume_name_title": "Название резюме",
+        "to_main_screen_title": "В главное меню",
+        "export_title": "Экспортировать в PDF",
+        "resume_locale_title": "Язык резюме",
+        "template_name_title": "Выбранный шаблон",
+        "template_choose_title": "Выберите шаблон",
+        "delete_entry": "Удалить",
+        "preview": {
+            "scale_title": "Масштаб:",
+            "full_width": "По ширине",
+            "full_height": "По высоте",
+            "custom": "Произвольный"
+        },
+        "locale_name": "ru",
+        "locales": {
+            "en": "Английский",
+            "ru": "Русский"
+        },
+        "main_block": {
+            "title": "Основная информация",
+            "person_photo": "Ваше фото",
+            "empty_person_photo": "Выберите своё фото",
+            "change_person_photo": "Изменить фото",
+            "delete_person_photo": "Удалить фото",
+            "desired_position": "Желаемая позиция",
+            "last_name": "Фамилия",
+            "first_name": "Имя",
+            "date_of_birth": "Дата рождения",
+            "city": "Город",
+            "desired_salary": "Желаемая зарплата",
+            "occupation": "Гражданство",
+            "employment_title": "Занятость",
+            "employment": {
+                "full_time": "Полная занятость",
+                "part_time": "Частичная занятость",
+                "project": "Проектная работа",
+                "volunteer": "Волонтерство",
+                "internship": "Стажировка"
+            },
+            "schedule_title": "График работы",
+            "schedule": {
+                "full_time": "Полный день",
+                "flexible": "Гибкий график",
+                "shift": "Сменный график",
+                "remote": "Удаленная работа",
+                "shift_watch": "Вахтовый метод"
+            },
+            "is_moving_acceptable": "Готовность к переезду",
+            "is_ready_for_business_trips": "Готовность к командировкам",
+            "driver_license": "Водительские права",
+            "marital_status": "Семейное положение",
+            "have_children": "Есть дети",
+            "goal_of_resume": "Цель резюме"
+        },
+        "contacts": {
+            "title": "Контакты",
+            "email": "Электронная почта",
+            "phone_number": "Номер телефона",
+            "social_net_name": "Соцсеть",
+            "social_net_link": "Ссылка на профиль",
+            "add_social_net": "Добавить соцсеть"
+        },
+        "experience": {
+            "title": "Опыт работы",
+            "position": "Должность",
+            "company": "Компания",
+            "start_date": "Начало работы",
+            "end_date": "Окончание работы",
+            "is_still_working": "Еще работаю",
+            "work_description": "Обязанности",
+            "add_experience": "Добавить опыт работы"
+        },
+        "education": {
+            "title": "Образование",
+            "institution": "Учебное заведение",
+            "education_level": "Уровень образования",
+            "level": {
+                "middle": "Среднее (школа)",
+                "middle_spec": "Среднее специальное",
+                "unfinished_university": "Неоконченное высшее",
+                "university": "Высшее",
+                "bachelor": "Бакалавр",
+                "specialist": "Специалист",
+                "master": "Магистр",
+                "doctor": "Доктор наук",
+                "candidate": "Кандидат наук"
+            },
+            "faculty": "Факультет",
+            "speciality": "Специальность",
+            "year_of_graduate": "Год окончания",
+            "add_education": "Добавить образование"
+        },
+        "advanced_training": {
+            "title": "Курсы повышения квалификации",
+            "course_name": "Название курса",
+            "organization": "Проводившая организация",
+            "year_of_graduate": "Год окончания",
+            "add_training": "Добавить курсы повышения квалификации"
+        },
+        "languages": {
+            "title": "Языки",
+            "language": "Язык",
+            "language_level": "Уровень владения",
+            "level": {
+                "a1": "A1 - Начальный",
+                "a2": "A2 - Базовый",
+                "b1": "B1 - Средний",
+                "b2": "B2 - Выше среднего",
+                "c1": "C1 - Продвинутый",
+                "c2": "C2 - Профессиональный"
+            },
+            "add_language": "Добавить язык"
+        },
+        "skills": {
+            "title": "Навыки",
+            "skill_name": "Навык/Описание навыка",
+            "skill_level": "Уровень навыка",
+            "level": {
+                "beginner": "Начальный",
+                "base": "Базовый",
+                "experienced": "Опытный",
+                "professional": "Профессиональный"
+            },
+            "add_skill": "Добавить навык"
+        },
+        "about": {
+            "title": "О себе"
+        },
+        "hobbies": {
+            "title": "Хобби"
+        },
+        "recommendations": {
+            "title": "Рекоммендации",
+            "recommending": "ФИО рекомендующего",
+            "company": "Компания, должность",
+            "email": "Электронная почта",
+            "phone_number": "Номер телефона",
+            "add_recommendation": "Добавить рекоммендацию"
+        },
+        "publications": {
+            "title": "Публикации",
+            "publication": "Название или ссылка",
+            "publication_date": "Дата публикации",
+            "add_publication": "Добавить публикацию"
+        },
+        "additional_info": {
+            "title": "Доп. инфо"
+        },
+        "templates": {
+            "simple_template_name": "Простой шаблон",
+            "simple_divided_template_name": "Простой разделенный шаблон",
+            "timeline_template_name": "В стиле таймлайн",
+            "simple_template_modern_name": "*игнор*",
+            "simple_template_updated_name": "Современный шаблон",
+            "dossier_template_name": "В стиле досье"
+        }
+    }
+}

@@ -7,6 +7,7 @@ import com.slamperboom.exceptions.StartupException;
 import com.slamperboom.exceptions.StartupExceptionHolder;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.settings.DynamicSettings;
+import com.slamperboom.utils.ResourceFiles;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
@@ -18,8 +19,9 @@ public class TranslationsManager {
     private final Logger logger = Logger.getLogger(this.getClass());
     private static TranslationsManager translationsManagerInstance;
 
-    private static final String APP_TRANSLATIONS_PATH = "/translations/app_translations.json";
-    private static final String RESUME_TRANSLATIONS_PATH = "/translations/resume_blocks_translations.json";
+    private static final String APP_TRANSLATIONS_PATH = "translations/app_translations";
+    private static final String RESUME_TRANSLATIONS_PATH = "translations/resume_translations";
+    private static final String TRANSLATIONS_EXTENSION = ".json";
     private static final String DEFAULT_LOCALE = "en";
 
     private static final String MAIN_SCREEN_KEY = "main_screen";
@@ -64,29 +66,38 @@ public class TranslationsManager {
         }
     }
 
+    // Files starting with "_" (_schema.json) are templates for new languages, not languages
+    private static List<ResourceFiles.ResourceFile> readTranslationFiles(String dir) throws IOException {
+        return ResourceFiles.read(dir, TRANSLATIONS_EXTENSION).stream()
+                .filter(file -> !file.name().startsWith("_"))
+                .toList();
+    }
+
+    private static String localeOf(ResourceFiles.ResourceFile file) {
+        return file.name().substring(0, file.name().length() - TRANSLATIONS_EXTENSION.length());
+    }
+
     TranslationsManager(){
         appTranslations = new HashMap<>();
         resumeTranslations = new HashMap<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
 
-            JsonNode appTranslationsFile = mapper.readTree(getClass().getResourceAsStream(APP_TRANSLATIONS_PATH));
-            var appIterator = appTranslationsFile.fields();
-            while (appIterator.hasNext()) {
-                var entry = appIterator.next();
+            for (ResourceFiles.ResourceFile file : readTranslationFiles(APP_TRANSLATIONS_PATH)) {
                 ObjectNode screenNode = mapper.createObjectNode();
-                for (Iterator<Map.Entry<String, JsonNode>> it = entry.getValue().fields(); it.hasNext(); ) {
+                for (Iterator<Map.Entry<String, JsonNode>> it = mapper.readTree(file.content()).fields(); it.hasNext(); ) {
                     var screen = it.next();
                     screenNode.set(screen.getKey(), flatten(screen.getValue()));
                 }
-                appTranslations.put(entry.getKey(), screenNode);
+                appTranslations.put(localeOf(file), screenNode);
             }
 
-            JsonNode resumeTranslationsFile = mapper.readTree(getClass().getResourceAsStream(RESUME_TRANSLATIONS_PATH));
-            var resumeIterator = resumeTranslationsFile.fields();
-            while (resumeIterator.hasNext()) {
-                var entry = resumeIterator.next();
-                resumeTranslations.put(entry.getKey(), entry.getValue());
+            for (ResourceFiles.ResourceFile file : readTranslationFiles(RESUME_TRANSLATIONS_PATH)) {
+                resumeTranslations.put(localeOf(file), mapper.readTree(file.content()));
+            }
+
+            if (!appTranslations.containsKey(DEFAULT_LOCALE) || !resumeTranslations.containsKey(DEFAULT_LOCALE)) {
+                throw new IOException("Translations for default locale \"" + DEFAULT_LOCALE + "\" not found");
             }
         } catch (IOException e) {
             String message = "Error while creating translations manager instance";

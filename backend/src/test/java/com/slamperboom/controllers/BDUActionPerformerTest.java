@@ -251,7 +251,7 @@ class BDUActionPerformerTest {
 
     @Test
     void performImport_whenManagerThrows_returnsMessageDialog() throws UserException {
-        when(resumeManager.importResumeFromFile("bad.json")).thenThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF));
+        when(resumeManager.importResumeFromFile("bad.json")).thenThrow(UserExceptionFactory.construct(ErrorCode.UNABLE_TO_IMPORT_RESUME));
 
         JsonNode result = performer.performImport("bad.json");
 
