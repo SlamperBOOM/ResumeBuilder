@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Skeleton, Typography } from '@mui/material';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import MainScreenResponse from '../DTO/MainScreenResponse';
@@ -104,6 +104,16 @@ export default function MainScreen(props: MainScreenProps) {
         setLoadError(true);
       });
   }, [appActions, retryCount]);
+
+  // Once per mount, after the screen is loaded; the backend answers with
+  // nothing when onboarding has already been seen
+  const onboardingChecked = useRef(false);
+  useEffect(() => {
+    if (mainSchema && !onboardingChecked.current) {
+      onboardingChecked.current = true;
+      appActions.performBduAction('onboarding_status');
+    }
+  }, [mainSchema, appActions]);
 
   const screenSchema = mainSchema?.schema;
   const newButton = screenSchema?.create_new;

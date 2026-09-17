@@ -7,6 +7,9 @@ export function makeDialogActions(): AppDialogActions {
     infoModal: { open: jest.fn(), close: jest.fn() },
     confirmationModal: { open: jest.fn(), close: jest.fn() },
     customModal: { open: jest.fn(), close: jest.fn() },
+    aboutModal: { open: jest.fn(), close: jest.fn() },
+    helpModal: { open: jest.fn(), close: jest.fn() },
+    onboardingModal: { open: jest.fn(), close: jest.fn() },
   };
 }
 

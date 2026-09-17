@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <!-- The page is shown through an iframe srcDoc, and such a document resolves
+         relative links against the URL of the page that embeds it, not against its
+         own. Without this, every link of the table of contents below would navigate
+         the iframe to the app itself instead of scrolling to a section -->
+    <base href="about:srcdoc">
+    <!-- Shown in the app only, never rendered to PDF: regular modern CSS is fine here -->
+    <style>
+        :root {
+            --accent: #1976d2;
+            --text: #1f2937;
+            --muted: #4b5563;
+            --line: #e5e7eb;
+            --surface: #f8fafc;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0.5rem 1.5rem 3rem;
+            color: var(--text);
+            background: #ffffff;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 2.5rem;
+            align-items: start;
+        }
+
+        .intro {
+            grid-column: 1 / -1;
+            margin: 0 0 0.5rem;
+            font-size: 1.05rem;
+            color: var(--muted);
+            max-width: 760px;
+        }
+
+        /* Table of contents: sticks next to the text on a wide window,
+           turns into a plain list above it on a narrow one */
+        nav {
+            position: sticky;
+            top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        nav h2 {
+            margin: 0 0 0.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        nav ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+        }
+
+        nav li {
+            counter-increment: toc;
+            margin: 0 0 0.35rem;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            border-left: 2px solid var(--line);
+            display: block;
+            padding: 0.1rem 0 0.1rem 0.6rem;
+        }
+
+        nav a::before {
+            content: counter(toc) ". ";
+            color: #9ca3af;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+
+        main {
+            counter-reset: section;
+            max-width: 760px;
+        }
+
+        section {
+            padding: 0 0 1.5rem;
+        }
+
+        section + section {
+            border-top: 1px solid var(--line);
+            padding-top: 1.5rem;
+        }
+
+        main h2 {
+            counter-increment: section;
+            font-size: 1.2rem;
+            margin: 0 0 0.5rem;
+            color: var(--accent);
+            scroll-margin-top: 0.5rem;
+        }
+
+        main h2::before {
+            content: counter(section);
+            display: inline-block;
+            min-width: 1.6rem;
+            height: 1.6rem;
+            margin-right: 0.6rem;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 0.85rem;
+            line-height: 1.6rem;
+            text-align: center;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        ol.steps {
+            margin: 0.75rem 0 0;
+            padding-left: 1.4rem;
+        }
+
+        ul.items {
+            margin: 0.75rem 0 0;
+            padding-left: 1.2rem;
+            list-style: none;
+        }
+
+        ul.items li {
+            position: relative;
+        }
+
+        ul.items li::before {
+            content: "";
+            position: absolute;
+            left: -0.9rem;
+            top: 0.65rem;
+            width: 0.35rem;
+            height: 0.35rem;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        ol.steps li,
+        ul.items li {
+            margin-bottom: 0.35rem;
+        }
+
+        .tip {
+            margin: 0.9rem 0 0;
+            padding: 0.6rem 0.9rem;
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 4px 4px 0;
+            color: var(--muted);
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .page {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1.5rem;
+            }
+
+            nav {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <p class="intro">${intro}</p>
+    <nav>
+        <h2>${toc_title}</h2>
+        <ol>
+            <#list sections as key, section>
+            <li><a href="#${key}">${section.heading}</a></li>
+            </#list>
+        </ol>
+    </nav>
+    <main>
+        <#list sections as key, section>
+        <section>
+            <h2 id="${key}">${section.heading}</h2>
+            <p>${section.body}</p>
+            <#if section.steps?? && section.steps?has_content>
+            <ol class="steps">
+                <#list section.steps?values as step>
+                <li>${step}</li>
+                </#list>
+            </ol>
+            </#if>
+            <#if section.items?? && section.items?has_content>
+            <ul class="items">
+                <#list section.items?values as item>
+                <li>${item}</li>
+                </#list>
+            </ul>
+            </#if>
+            <#if section.tip?? && section.tip?has_content>
+            <p class="tip">${section.tip}</p>
+            </#if>
+        </section>
+        </#list>
+    </main>
+    <footer>${footer}</footer>
+</div>
+</body>
+</html>

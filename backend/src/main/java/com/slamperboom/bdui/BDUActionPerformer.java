@@ -11,6 +11,7 @@ import com.slamperboom.backend.FrontendAction;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.exceptions.UserExceptionFactory;
+import com.slamperboom.htmlConvertion.HTMLConverter;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
@@ -32,6 +33,7 @@ public class BDUActionPerformer {
     private final ObjectMapper objectMapper;
     private final DialogBuilders dialogBuilders;
     private final TranslationsManager translationsManager;
+    private final HTMLConverter htmlConverter;
 
     private JsonNode handleFailure(String message, Throwable cause) {
         logger.error(message, cause);
@@ -212,7 +214,42 @@ public class BDUActionPerformer {
 
     public JsonNode performOpenAbout() {
         logger.info("Show about");
-        return makeActionNode(FrontendAction.OPEN_ABOUT, objectMapper.createObjectNode().put("text", "Hello about"));
+        ObjectNode payload = translationsManager.getAboutTranslations().deepCopy();
+        payload.put("github_url", Settings.getInstance().getGithubUrl());
+        payload.put("issues_url", Settings.getInstance().getIssuesUrl());
+        return makeActionNode(FrontendAction.OPEN_ABOUT, payload);
+    }
+
+    public JsonNode performOpenHelp() {
+        try {
+            JsonNode help = translationsManager.getHelpTranslations();
+            String html = htmlConverter.renderStaticPage("help_page", help);
+            logger.info("Show help");
+            return makeActionNode(FrontendAction.OPEN_HELP, objectMapper.createObjectNode()
+                    .put("title", help.get("title").asText())
+                    .put("html", html));
+        } catch (UserException e) {
+            return handleFailure(e.getMessage(), e);
+        }
+    }
+
+    public Optional<JsonNode> performCheckOnboarding() {
+        if (DynamicSettings.getInstance().getOnboardingSeenVersion() >= Settings.CURRENT_ONBOARDING_VERSION) {
+            return Optional.empty();
+        }
+        logger.info("Show onboarding");
+        return Optional.of(makeActionNode(FrontendAction.SHOW_ONBOARDING, translationsManager.getOnboardingTranslations()));
+    }
+
+    public Optional<JsonNode> performOnboardingSeen() {
+        try {
+            DynamicSettings.getInstance().setOnboardingSeenVersion(Settings.CURRENT_ONBOARDING_VERSION);
+            DynamicSettings.getInstance().saveSettings();
+            logger.debugf("Onboarding version %d marked as seen", Settings.CURRENT_ONBOARDING_VERSION);
+            return Optional.empty();
+        } catch (UserException e) {
+            return Optional.of(handleFailure(e.getMessage(), e));
+        }
     }
 
     public JsonNode performExit() {

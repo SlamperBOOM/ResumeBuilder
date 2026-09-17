@@ -1,0 +1,144 @@
+{
+    "help": {
+        "title": "How to use Resume Builder",
+        "intro": "Resume Builder keeps your resumes on your own computer, fills a ready-made design with your data and exports it to PDF. Nothing is uploaded anywhere. Below is every screen and every button explained, from the first resume to moving your files to another computer.",
+        "toc_title": "On this page",
+        "sections": {
+            "start": {
+                "heading": "Getting started",
+                "body": "The main screen lists every resume you have. Each one is a card with its name and the template it uses; while you have no resumes, the screen shows a short prompt instead.",
+                "steps": {
+                    "create": "\"Create resume\" makes an empty resume and opens it in the editor right away.",
+                    "import": "\"Import resume\" adds a resume file that was saved by Resume Builder on this or another computer.",
+                    "open": "To come back to a resume, open the \"Actions\" menu on its card and choose \"Edit\"."
+                }
+            },
+            "edit": {
+                "heading": "Filling in the resume",
+                "body": "The editor has the form on the left and a live preview of the page on the right. Everything you type ends up in the preview, so you can see the result while you write.",
+                "steps": {
+                    "name": "\"Resume name\" is only used inside the app: it is the title on the card and the name suggested when you export. It is not printed in the resume.",
+                    "blocks": "The form is split into blocks. Leave a field empty and it simply does not appear in the resume, so there is no need to fill in everything.",
+                    "entries": "Blocks that can hold several entries — jobs, schools, languages — have an \"Add\" button, and every entry has its own \"Delete\" button."
+                },
+                "tip": "There is no save button: changes are written to disk about two seconds after you stop typing. \"To main menu\" or closing the app is safe at any moment."
+            },
+            "blocks": {
+                "heading": "What you can fill in",
+                "body": "The blocks are always in the same order, and every template decides where each of them is drawn:",
+                "items": {
+                    "main": "Basic information — photo, name, desired position and salary, city, date of birth, employment type and schedule, readiness to move or travel, driving license, marital status.",
+                    "contacts": "Contacts — e-mail, phone number and any number of social network profiles.",
+                    "experience": "Work experience — position, company, start and end date, or the \"Still working\" switch, and a description of what you did.",
+                    "education": "Education — institution, level from school to PhD, faculty, speciality and year of graduation.",
+                    "training": "Courses — additional training: course name, organization and year.",
+                    "languages": "Languages — every language with a level from A1 to C2.",
+                    "skills": "Skills — skill name and level from beginner to professional.",
+                    "about": "About me — free text about yourself.",
+                    "hobbies": "Hobbies — free text about what you do outside work.",
+                    "recommendations": "Recommendations — who can recommend you, their company and contacts.",
+                    "publications": "Publications — title or link, and the date.",
+                    "additional": "Additional info — anything the other blocks have no field for."
+                }
+            },
+            "photo": {
+                "heading": "Photo",
+                "body": "In \"Basic information\", \"Choose your photo\" opens a file picker, and after that the thumbnail gets \"Change photo\" and \"Delete photo\" buttons. Every template places the photo differently, so it is worth looking at the preview after adding it.",
+                "tip": "The app remembers where the picture lies, it does not copy it into the resume. If you move or delete the file, the photo disappears from the preview and from the PDF — keep it somewhere permanent rather than in Downloads."
+            },
+            "template": {
+                "heading": "Choosing a template",
+                "body": "\"Choose template\" opens the list of designs. A template only changes the layout: your data stays as it is, so you can switch between them as often as you like.",
+                "items": {
+                    "simple": "Simple template — one column, all blocks one after another.",
+                    "divided": "Simple divided template — a sidebar for contacts and short facts, the rest in the main column.",
+                    "timeline": "Timeline style — experience and education drawn as a timeline.",
+                    "modern": "Modern template — an accented header with the name and the desired position."
+                },
+                "tip": "Some templates suit a long career and others a short one. Pick the one where the preview has no half-empty page at the end."
+            },
+            "preview": {
+                "heading": "Preview",
+                "body": "The preview to the right of the form is the same page that is exported to PDF, with the same page breaks. \"Scale\" above it fits the page to the width or the height of the panel, or lets you set the zoom yourself.",
+                "tip": "\"Full height\" shows the whole page at once and is the quickest way to check that the resume still fits on one page."
+            },
+            "language": {
+                "heading": "Languages",
+                "body": "There are two independent language settings. \"Resume language\" in the editor is the language of the headings printed inside the resume, such as \"Work experience\" — your own text is never translated. \"Change locale\" in the menu changes the language of the app itself: menus, buttons and this page.",
+                "tip": "A resume for a foreign employer needs \"Resume language\" set to English; the app itself can stay in any language you prefer."
+            },
+            "export": {
+                "heading": "Exporting to PDF",
+                "body": "\"Export to PDF\" is both in the editor and on every card on the main screen, so a finished resume can be exported without opening it.",
+                "steps": {
+                    "open": "Click \"Export to PDF\" and choose the folder and the file name.",
+                    "place": "The app renders the PDF and offers to open the folder it is in.",
+                    "check": "Open the file before sending it: the PDF is an exact copy of what the preview showed."
+                }
+            },
+            "manage": {
+                "heading": "Managing resumes",
+                "body": "The \"Actions\" menu on a card holds everything you can do with a resume:",
+                "items": {
+                    "edit": "Edit — opens the resume in the editor.",
+                    "duplicate": "Duplicate — makes a full copy, handy for a version of the resume for a different position.",
+                    "delete": "Delete — asks for confirmation and removes the file. A deleted resume cannot be restored from the app."
+                }
+            },
+            "files": {
+                "heading": "Files and moving to another computer",
+                "body": "Every resume is one file in the app's save folder. There is no account and no server: the files are yours, and you can copy, back up or version them however you like.",
+                "steps": {
+                    "open_dir": "\"Open resume save directory\" in the menu opens the folder with the files.",
+                    "copy": "Copy the file of the resume you need to a flash drive or a cloud folder.",
+                    "import": "On the other computer, click \"Import resume\" on the main screen and choose that file."
+                },
+                "tip": "The photo is not inside the file, so copy the picture too and choose it again on the other computer."
+            },
+            "problems": {
+                "heading": "If something goes wrong",
+                "body": "The most common cases and what to do about them:",
+                "items": {
+                    "no_pdf": "Export fails — try another template and make sure the folder you export to is writable.",
+                    "no_photo": "The photo is missing from the preview or the PDF — the picture has been moved or deleted, choose it again.",
+                    "wrong_language": "The headings inside the resume are in the wrong language — that is \"Resume language\" in the editor, not the app language.",
+                    "lost_resume": "A resume is missing from the main screen — check the save folder: if its file is still there, it will come back; if it was deleted, only your own backup can restore it."
+                }
+            }
+        },
+        "footer": "The app version and the license are under \"About\" in the menu, and there you will also find the link for reporting a bug or asking for a feature."
+    },
+    "onboarding": {
+        "slides": {
+            "welcome": {
+                "title": "Welcome to Resume Builder",
+                "body": "Build a resume, pick a design and export it to PDF. Here is a quick tour of the basics."
+            },
+            "create": {
+                "title": "Create your first resume",
+                "body": "Click \"Create resume\" on the main screen and fill in the blocks. Everything is saved automatically as you type."
+            },
+            "template": {
+                "title": "Pick a template",
+                "body": "Choose a design in the editor, and the preview next to the form updates right away."
+            },
+            "export": {
+                "title": "Export to PDF",
+                "body": "When the resume is ready, click \"Export to PDF\". More tips are always available under \"Help\" in the menu."
+            }
+        },
+        "back": "Back",
+        "next": "Next",
+        "skip": "Skip",
+        "finish": "Get started"
+    },
+    "about": {
+        "app_name": "Resume Builder",
+        "version_label": "Version",
+        "copyright": "© 2026 SlamperBOOM",
+        "license": "Licensed under MIT with the Commons Clause: free to use, modify and share, but not to sell.",
+        "github_title": "GitHub repository",
+        "issues_title": "Report a bug",
+        "close": "Close"
+    }
+}

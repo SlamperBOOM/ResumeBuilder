@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import AppDialogActions from '../dialogs/appDialogActions';
 import { BDUActionParams, UpdateScreenPayload } from '../utils/appActions';
 import {
+  AboutModalSchema,
   ConfirmationDialogSchema,
   CustomDialogSchema,
+  HelpModalSchema,
   InfoModalSchema,
+  OnboardingSchema,
 } from '../utils/backendTypes';
 import FrontendActionEnum from './FrontendActionEnum';
 import logger from '../utils/logger';
@@ -108,18 +111,41 @@ function useFrontendAction(
 
   const performOpenAbout = useCallback(
     (params: FrontendActionParams) => {
-      // Render through InfoDialog (React text rendering, escaped by
-      // default) instead of window.open + document.writeln, which
-      // inserted backend-supplied content as raw, unescaped HTML.
-      const payload = params.payload as { text?: string } | undefined;
-      const text = payload?.text ? payload.text : 'Halo';
-      dialogActions.infoModal.open({
-        title: undefined,
-        text,
-      });
+      const payload = params.payload as AboutModalSchema | undefined;
+      if (!payload?.app_name) {
+        logger.warn('No data for about dialog');
+        return null;
+      }
+      dialogActions.aboutModal.open(payload);
       return null;
     },
-    [dialogActions.infoModal],
+    [dialogActions.aboutModal],
+  );
+
+  const performOpenHelp = useCallback(
+    (params: FrontendActionParams) => {
+      const payload = params.payload as HelpModalSchema | undefined;
+      if (!payload?.html) {
+        logger.warn('No data for help dialog');
+        return null;
+      }
+      dialogActions.helpModal.open(payload);
+      return null;
+    },
+    [dialogActions.helpModal],
+  );
+
+  const performShowOnboarding = useCallback(
+    (params: FrontendActionParams) => {
+      const payload = params.payload as OnboardingSchema | undefined;
+      if (!payload?.slides) {
+        logger.warn('No data for onboarding dialog');
+        return null;
+      }
+      dialogActions.onboardingModal.open(payload);
+      return null;
+    },
+    [dialogActions.onboardingModal],
   );
 
   const performLocaleDialog = useCallback(
@@ -145,6 +171,8 @@ function useFrontendAction(
       [FrontendActionEnum.SHOW_CUSTOM_DIALOG]: performShowCustomDialog,
       [FrontendActionEnum.CLOSE]: performClose,
       [FrontendActionEnum.OPEN_ABOUT]: performOpenAbout,
+      [FrontendActionEnum.OPEN_HELP]: performOpenHelp,
+      [FrontendActionEnum.SHOW_ONBOARDING]: performShowOnboarding,
       [FrontendActionEnum.LOCALE_DIALOG]: performLocaleDialog,
     };
   }, [
@@ -153,6 +181,8 @@ function useFrontendAction(
     performClose,
     performLocaleDialog,
     performOpenAbout,
+    performOpenHelp,
+    performShowOnboarding,
     performShowConfirmation,
     performShowMessage,
     performShowCustomDialog,

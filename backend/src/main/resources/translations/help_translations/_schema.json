@@ -1,0 +1,144 @@
+{
+    "help": {
+        "title": "",
+        "intro": "",
+        "toc_title": "",
+        "sections": {
+            "start": {
+                "heading": "",
+                "body": "",
+                "steps": {
+                    "create": "",
+                    "import": "",
+                    "open": ""
+                }
+            },
+            "edit": {
+                "heading": "",
+                "body": "",
+                "steps": {
+                    "name": "",
+                    "blocks": "",
+                    "entries": ""
+                },
+                "tip": ""
+            },
+            "blocks": {
+                "heading": "",
+                "body": "",
+                "items": {
+                    "main": "",
+                    "contacts": "",
+                    "experience": "",
+                    "education": "",
+                    "training": "",
+                    "languages": "",
+                    "skills": "",
+                    "about": "",
+                    "hobbies": "",
+                    "recommendations": "",
+                    "publications": "",
+                    "additional": ""
+                }
+            },
+            "photo": {
+                "heading": "",
+                "body": "",
+                "tip": ""
+            },
+            "template": {
+                "heading": "",
+                "body": "",
+                "items": {
+                    "simple": "",
+                    "divided": "",
+                    "timeline": "",
+                    "modern": ""
+                },
+                "tip": ""
+            },
+            "preview": {
+                "heading": "",
+                "body": "",
+                "tip": ""
+            },
+            "language": {
+                "heading": "",
+                "body": "",
+                "tip": ""
+            },
+            "export": {
+                "heading": "",
+                "body": "",
+                "steps": {
+                    "open": "",
+                    "place": "",
+                    "check": ""
+                }
+            },
+            "manage": {
+                "heading": "",
+                "body": "",
+                "items": {
+                    "edit": "",
+                    "duplicate": "",
+                    "delete": ""
+                }
+            },
+            "files": {
+                "heading": "",
+                "body": "",
+                "steps": {
+                    "open_dir": "",
+                    "copy": "",
+                    "import": ""
+                },
+                "tip": ""
+            },
+            "problems": {
+                "heading": "",
+                "body": "",
+                "items": {
+                    "no_pdf": "",
+                    "no_photo": "",
+                    "wrong_language": "",
+                    "lost_resume": ""
+                }
+            }
+        },
+        "footer": ""
+    },
+    "onboarding": {
+        "slides": {
+            "welcome": {
+                "title": "",
+                "body": ""
+            },
+            "create": {
+                "title": "",
+                "body": ""
+            },
+            "template": {
+                "title": "",
+                "body": ""
+            },
+            "export": {
+                "title": "",
+                "body": ""
+            }
+        },
+        "back": "",
+        "next": "",
+        "skip": "",
+        "finish": ""
+    },
+    "about": {
+        "app_name": "",
+        "version_label": "",
+        "copyright": "",
+        "license": "",
+        "github_title": "",
+        "issues_title": "",
+        "close": ""
+    }
+}

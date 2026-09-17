@@ -148,26 +148,59 @@ describe('useFrontendAction', () => {
     warnSpy.mockRestore();
   });
 
-  it('OPEN_ABOUT opens the info modal with the payload text', () => {
+  it('OPEN_ABOUT opens the about modal with the payload', () => {
     const { actions, dialogActions } = setup();
+    const payload = {
+      app_name: 'Resume Builder',
+      version_label: 'Version',
+      copyright: '(c) 2026 SlamperBOOM',
+      license: 'MIT with the Commons Clause.',
+      github_title: 'GitHub',
+      github_url: 'https://github.com/SlamperBOOM/ResumeBuilder',
+      issues_title: 'Report a bug',
+      issues_url: 'https://github.com/SlamperBOOM/ResumeBuilder/issues',
+      close: 'Close',
+    };
 
-    actions[FrontendActionEnum.OPEN_ABOUT]({ payload: { text: 'About us' } });
+    actions[FrontendActionEnum.OPEN_ABOUT]({ payload });
 
-    expect(dialogActions.infoModal.open).toHaveBeenCalledWith({
-      title: undefined,
-      text: 'About us',
-    });
+    expect(dialogActions.aboutModal.open).toHaveBeenCalledWith(payload);
   });
 
-  it('OPEN_ABOUT falls back to a default message without payload text', () => {
+  it('OPEN_ABOUT warns and does nothing without a payload', () => {
+    const warnSpy = jest.spyOn(logger, 'warn').mockImplementation(() => {});
     const { actions, dialogActions } = setup();
 
     actions[FrontendActionEnum.OPEN_ABOUT]({});
 
-    expect(dialogActions.infoModal.open).toHaveBeenCalledWith({
-      title: undefined,
-      text: 'Halo',
-    });
+    expect(dialogActions.aboutModal.open).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledWith('No data for about dialog');
+
+    warnSpy.mockRestore();
+  });
+
+  it('OPEN_HELP opens the help modal with the payload', () => {
+    const { actions, dialogActions } = setup();
+    const payload = { title: 'Help', html: '<p>Hi</p>' };
+
+    actions[FrontendActionEnum.OPEN_HELP]({ payload });
+
+    expect(dialogActions.helpModal.open).toHaveBeenCalledWith(payload);
+  });
+
+  it('SHOW_ONBOARDING opens the onboarding modal with the payload', () => {
+    const { actions, dialogActions } = setup();
+    const payload = {
+      slides: { first: { title: 'Hi', body: 'Welcome' } },
+      back: 'Back',
+      next: 'Next',
+      skip: 'Skip',
+      finish: 'Done',
+    };
+
+    actions[FrontendActionEnum.SHOW_ONBOARDING]({ payload });
+
+    expect(dialogActions.onboardingModal.open).toHaveBeenCalledWith(payload);
   });
 
   it('LOCALE_DIALOG opens the language dialog', () => {

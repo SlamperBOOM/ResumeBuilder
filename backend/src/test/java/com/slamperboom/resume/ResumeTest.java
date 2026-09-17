@@ -88,10 +88,7 @@ class ResumeTest {
     }
 
     @Test
-    void updateResumeInformation_withMissingField_currentlyThrowsNullPointerException() throws Exception {
-        // Documents existing behaviour: updateResumeInformation() uses JsonNode#get (which
-        // returns null for a missing field) instead of #path(), so an incomplete payload
-        // blows up with an NPE rather than a graceful validation error. See review notes.
+    void updateResumeInformation_withMissingField_throwsUserException() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode incompleteInfo = mapper.readTree("{\"template_name\":\"simple_template\"}");
 
@@ -111,10 +108,8 @@ class ResumeTest {
 
     @Test
     void getJson_thenReparsingIntoAResume_roundTripsTheAboutBlock() throws Exception {
-        // AboutContent declares @JsonTypeName("About_Content"), which does not match the
-        // "AboutContent" name it is registered under in IContent's @JsonSubTypes. This test
-        // checks whether a resume can actually be saved and reloaded (as ResumeManager does
-        // on every startup) despite that mismatch. See review notes on AboutContent.
+        // A saved resume must reload into the same block types - ResumeManager does exactly
+        // this round trip on every startup.
         resume.setResumeName("My resume");
         resume.setResumeLocale("en");
         resume.setTemplateName("simple_template");

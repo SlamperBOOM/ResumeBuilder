@@ -18,8 +18,13 @@ public class Settings {
         return settingsInstance;
     }
 
+    // Increase to show onboarding again to users who have already seen it
+    public static final int CURRENT_ONBOARDING_VERSION = 1;
+
     private static final String DEFAULT_RESUME_NAME = "default_resume_name";
     private static final String RESUME_SAVE_PATH = "save_path";
+    private static final String GITHUB_URL = "github_url";
+    private static final String ISSUES_URL = "issues_url";
 
     private final JsonNode staticSettings;
 
@@ -38,4 +43,8 @@ public class Settings {
     public String getDefaultNewResumeName() {return staticSettings.get(DEFAULT_RESUME_NAME).asText();}
 
     public String getResumeSavePath() {return staticSettings.get(RESUME_SAVE_PATH).asText();}
+
+    public String getGithubUrl() {return staticSettings.get(GITHUB_URL).asText();}
+
+    public String getIssuesUrl() {return staticSettings.get(ISSUES_URL).asText();}
 }

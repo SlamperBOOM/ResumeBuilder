@@ -21,11 +21,17 @@ import useSchemaApi from './api/useSchemaApi';
 import InfoDialog from './dialogs/InfoDialog';
 import ConfirmationDialog from './dialogs/ConfirmationDialog';
 import {
+  AboutModalSchema,
   ConfirmationDialogSchema,
   CustomDialogSchema,
+  HelpModalSchema,
   InfoModalSchema,
+  OnboardingSchema,
 } from './utils/backendTypes';
+import AboutDialog from './dialogs/AboutDialog';
 import CustomDialog from './dialogs/CustomDialog';
+import HelpDialog from './dialogs/HelpDialog';
+import OnboardingDialog from './dialogs/OnboardingDialog';
 import RouteNotFoundScreen from './screens/RouteNotFoundScreen';
 import logger from './utils/logger';
 
@@ -45,6 +51,9 @@ export default function App() {
   const infoModalProps = useDialog<InfoModalSchema>();
   const confirmationDialogProps = useDialog<ConfirmationDialogSchema>();
   const customDialogProps = useDialog<CustomDialogSchema>();
+  const aboutModalProps = useDialog<AboutModalSchema>();
+  const helpModalProps = useDialog<HelpModalSchema>();
+  const onboardingModalProps = useDialog<OnboardingSchema>();
 
   // app actions
 
@@ -66,12 +75,30 @@ export default function App() {
         open: customDialogProps.open,
         close: customDialogProps.close,
       },
+      aboutModal: {
+        open: aboutModalProps.open,
+        close: aboutModalProps.close,
+      },
+      helpModal: {
+        open: helpModalProps.open,
+        close: helpModalProps.close,
+      },
+      onboardingModal: {
+        open: onboardingModalProps.open,
+        close: onboardingModalProps.close,
+      },
     };
   }, [
+    aboutModalProps.close,
+    aboutModalProps.open,
     confirmationDialogProps.close,
     confirmationDialogProps.open,
     customDialogProps.close,
     customDialogProps.open,
+    helpModalProps.close,
+    helpModalProps.open,
+    onboardingModalProps.close,
+    onboardingModalProps.open,
     infoModalProps.close,
     infoModalProps.open,
     languageDialogProps.close,
@@ -197,6 +224,21 @@ export default function App() {
       <CustomDialog
         showState={customDialogProps.showState}
         customDialogSchema={customDialogProps.data}
+        appActions={appActions}
+      />
+      <AboutDialog
+        showState={aboutModalProps.showState}
+        schema={aboutModalProps.data}
+        dialogActions={dialogActions}
+      />
+      <HelpDialog
+        showState={helpModalProps.showState}
+        schema={helpModalProps.data}
+        dialogActions={dialogActions}
+      />
+      <OnboardingDialog
+        showState={onboardingModalProps.showState}
+        schema={onboardingModalProps.data}
         appActions={appActions}
       />
       <HeaderWrapper appActions={appActions}>

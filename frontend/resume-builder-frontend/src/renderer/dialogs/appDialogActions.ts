@@ -1,7 +1,10 @@
 import {
+  AboutModalSchema,
   ConfirmationDialogSchema,
   CustomDialogSchema,
+  HelpModalSchema,
   InfoModalSchema,
+  OnboardingSchema,
 } from '../utils/backendTypes';
 
 type AppDialogActions = {
@@ -19,6 +22,18 @@ type AppDialogActions = {
   };
   customModal: {
     open: (schema: CustomDialogSchema) => void;
+    close: () => void;
+  };
+  aboutModal: {
+    open: (schema: AboutModalSchema) => void;
+    close: () => void;
+  };
+  helpModal: {
+    open: (schema: HelpModalSchema) => void;
+    close: () => void;
+  };
+  onboardingModal: {
+    open: (schema: OnboardingSchema) => void;
     close: () => void;
   };
 };

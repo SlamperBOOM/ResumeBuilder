@@ -41,6 +41,7 @@
     },
     "header": {
         "exit": "",
+        "help": "",
         "about": "",
         "change_locale": "",
         "open_save_dir": "",

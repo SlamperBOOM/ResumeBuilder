@@ -3,6 +3,48 @@ set -euo pipefail
 
 PROJECT_ROOT="$(pwd)"
 
+SECONDS=0
+STAGE_START=0
+CURRENT_STAGE=""
+STAGE_TIMES=()
+
+fmt_time() {
+  printf '%02d:%02d:%02d' $(($1 / 3600)) $(($1 % 3600 / 60)) $(($1 % 60))
+}
+
+begin_stage() {
+  CURRENT_STAGE="$1"
+  STAGE_START=$SECONDS
+}
+
+end_stage() {
+  if [[ -n "$CURRENT_STAGE" ]]; then
+    STAGE_TIMES+=("${CURRENT_STAGE}|$((SECONDS - STAGE_START))")
+    CURRENT_STAGE=""
+  fi
+}
+
+on_exit() {
+  local status=$?
+  if [[ "${DOWNLOAD_NPM:-0}" == 1 ]]; then
+    echo "Removing portable Node.js"
+    rm -rf "$PROJECT_ROOT/.tmp-node"
+  fi
+  if [[ -n "$CURRENT_STAGE" ]]; then
+    CURRENT_STAGE="$CURRENT_STAGE (failed)"
+    end_stage
+  fi
+  echo
+  echo "Time spent:"
+  local entry
+  for entry in ${STAGE_TIMES[@]+"${STAGE_TIMES[@]}"}; do
+    printf '  %-24s %s\n' "${entry%%|*}:" "$(fmt_time "${entry##*|}")"
+  done
+  printf '  %-24s %s\n' "Total:" "$(fmt_time "$SECONDS")"
+  exit $status
+}
+trap on_exit EXIT
+
 JAVA_VERSION=17
 NODE_MAJOR=24
 
@@ -144,11 +186,15 @@ download_node() {
   echo "Node.js installed to $PROJECT_ROOT/.tmp-node"
 }
 
+begin_stage "JRE download"
 for arch in "${ARCHS_TO_FETCH[@]}"; do
   download_jre "$arch"
 done
+end_stage
 
 echo "Building backend"
+
+begin_stage "Backend"
 
 cd backend
 export JAVA_HOME="$(cd "../jre/${PLATFORM}-${ARCHS_TO_FETCH[0]}" && pwd)"
@@ -160,12 +206,14 @@ echo "Backend built"
 for arch in "${ARCHS_TO_FETCH[@]}"; do
   rename_jre_binary "$arch"
 done
+end_stage
 
 echo "Building frontend"
 
 if [[ "$DOWNLOAD_NPM" == 1 ]]; then
-  trap 'echo "Removing portable Node.js"; rm -rf "$PROJECT_ROOT/.tmp-node"' EXIT
+  begin_stage "Node.js download"
   download_node
+  end_stage
   export PATH="$PROJECT_ROOT/.tmp-node/bin:$PATH"
 elif command -v npm >/dev/null 2>&1; then
   echo "Using system npm"
@@ -174,6 +222,7 @@ else
   exit 1
 fi
 
+begin_stage "Frontend"
 cd frontend/resume-builder-frontend/
 if ! { npm install && npm run package; }; then
   echo "Frontend build failed." >&2
@@ -183,5 +232,6 @@ if ! { npm install && npm run package; }; then
   exit 1
 fi
 cd "$PROJECT_ROOT"
+end_stage
 
 echo "Frontend built"

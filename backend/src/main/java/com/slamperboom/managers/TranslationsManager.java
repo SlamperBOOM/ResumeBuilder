@@ -21,6 +21,7 @@ public class TranslationsManager {
 
     private static final String APP_TRANSLATIONS_PATH = "translations/app_translations";
     private static final String RESUME_TRANSLATIONS_PATH = "translations/resume_translations";
+    private static final String HELP_TRANSLATIONS_PATH = "translations/help_translations";
     private static final String TRANSLATIONS_EXTENSION = ".json";
     private static final String DEFAULT_LOCALE = "en";
 
@@ -30,9 +31,13 @@ public class TranslationsManager {
     private static final String LANGUAGE_DIALOG_KEY = "language_dialog";
     private static final String CONFIRMATION_DIALOG_KEY = "confirmation_dialog";
     private static final String ERROR_MESSAGES_KEY = "error_messages";
+    private static final String HELP_KEY = "help";
+    private static final String ONBOARDING_KEY = "onboarding";
+    private static final String ABOUT_KEY = "about";
 
     private final Map<String, JsonNode> resumeTranslations;
     private final Map<String, JsonNode> appTranslations;
+    private final Map<String, JsonNode> helpTranslations;
 
     private static JsonNode flatten(JsonNode rootNode) {
         ObjectMapper mapper = new ObjectMapper();
@@ -80,6 +85,7 @@ public class TranslationsManager {
     TranslationsManager(){
         appTranslations = new HashMap<>();
         resumeTranslations = new HashMap<>();
+        helpTranslations = new HashMap<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -96,7 +102,12 @@ public class TranslationsManager {
                 resumeTranslations.put(localeOf(file), mapper.readTree(file.content()));
             }
 
-            if (!appTranslations.containsKey(DEFAULT_LOCALE) || !resumeTranslations.containsKey(DEFAULT_LOCALE)) {
+            for (ResourceFiles.ResourceFile file : readTranslationFiles(HELP_TRANSLATIONS_PATH)) {
+                helpTranslations.put(localeOf(file), mapper.readTree(file.content()));
+            }
+
+            if (!appTranslations.containsKey(DEFAULT_LOCALE) || !resumeTranslations.containsKey(DEFAULT_LOCALE)
+                    || !helpTranslations.containsKey(DEFAULT_LOCALE)) {
                 throw new IOException("Translations for default locale \"" + DEFAULT_LOCALE + "\" not found");
             }
         } catch (IOException e) {
@@ -104,6 +115,29 @@ public class TranslationsManager {
             StartupExceptionHolder.addException(message);
             throw new StartupException(message, e);
         }
+    }
+
+    private JsonNode getAppSection(String key) {
+        String currentLocale = getCurrentLocaleString();
+        JsonNode localeTranslations = appTranslations.get(currentLocale);
+        if (localeTranslations == null) {
+            logger.warnf("Unknown locale \"%s\" for app translations, fallback to \"en\"", currentLocale);
+            localeTranslations = appTranslations.get(DEFAULT_LOCALE);
+        }
+        JsonNode section = localeTranslations.get(key);
+        if (section == null) {
+            logger.warnf("Missing translation section \"%s\" for locale \"%s\"", key, currentLocale);
+        }
+        return section;
+    }
+
+    private JsonNode getHelpSection(String key) {
+        String currentLocale = getCurrentLocaleString();
+        if (helpTranslations.containsKey(currentLocale)) {
+            return helpTranslations.get(currentLocale).get(key);
+        }
+        logger.warnf("Unknown locale \"%s\" for help translations, fallback to \"en\"", currentLocale);
+        return helpTranslations.get(DEFAULT_LOCALE).get(key);
     }
 
     public List<String> getAvailableLocales() {
@@ -127,44 +161,39 @@ public class TranslationsManager {
         return resumeTranslations.get(DEFAULT_LOCALE);
     }
 
-    private JsonNode getAppTranslations() {
-        String currentLocale = getCurrentLocaleString();
-        if (appTranslations.containsKey(currentLocale)) {
-            return appTranslations.get(currentLocale);
-        }
-        logger.warnf("Unknown locale \"%s\" for app translations, fallback to \"en\"", currentLocale);
-        return appTranslations.get(DEFAULT_LOCALE);
-    }
-
-    private JsonNode getSection(String key) {
-        JsonNode section = getAppTranslations().get(key);
-        if (section == null) {
-            logger.warnf("Missing translation section \"%s\" for locale \"%s\"", key, getCurrentLocaleString());
-        }
-        return section;
-    }
-
     public JsonNode getMainScreenTranslations() {
-        return getSection(MAIN_SCREEN_KEY);
+        return getAppSection(MAIN_SCREEN_KEY);
     }
 
     public JsonNode getEditScreenTranslations() {
-        return getSection(EDIT_SCREEN_KEY);
+        return getAppSection(EDIT_SCREEN_KEY);
     }
 
     public JsonNode getHeaderTranslations() {
-        return getSection(HEADER_KEY);
+        return getAppSection(HEADER_KEY);
     }
 
     public JsonNode getLanguageDialogTranslations() {
-        return getSection(LANGUAGE_DIALOG_KEY);
+        return getAppSection(LANGUAGE_DIALOG_KEY);
     }
 
     public JsonNode getConfirmationDialogTranslations() {
-        return getSection(CONFIRMATION_DIALOG_KEY);
+        return getAppSection(CONFIRMATION_DIALOG_KEY);
     }
 
     public JsonNode getErrorMessagesTranslations() {
-        return getSection(ERROR_MESSAGES_KEY);
+        return getAppSection(ERROR_MESSAGES_KEY);
+    }
+
+    public JsonNode getHelpTranslations() {
+        return getHelpSection(HELP_KEY);
+    }
+
+    public JsonNode getOnboardingTranslations() {
+        return getHelpSection(ONBOARDING_KEY);
+    }
+
+    public JsonNode getAboutTranslations() {
+        return getHelpSection(ABOUT_KEY);
     }
 }

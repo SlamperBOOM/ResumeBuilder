@@ -1,5 +1,6 @@
-# ignore downloaded jre
 /jre
 /release
 /.tmp-node
 /*.html
+/.idea
+/.claude

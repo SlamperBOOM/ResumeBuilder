@@ -48,6 +48,20 @@ const actionConfigs = {
     method: 'get',
     buildUrl: () => 'about',
   },
+  help: {
+    method: 'get',
+    buildUrl: () => 'help',
+  },
+  onboarding_status: {
+    method: 'get',
+    buildUrl: () => 'onboarding_status',
+    optionalResponse: true,
+  },
+  onboarding_seen: {
+    method: 'post',
+    buildUrl: () => 'onboarding_seen',
+    optionalResponse: true,
+  },
   locales: {
     method: 'get',
     buildUrl: () => 'locales',

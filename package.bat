@@ -16,6 +16,12 @@ for %%A in (%*) do (
     )
 )
 
+set STAGE_COUNT=0
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "[DateTime]::UtcNow.Ticks"`) do (
+    set START_TICKS=%%T
+    set STAGE_TICKS=%%T
+)
+
 echo Detecting platform...
 
 set ADOPTIUM_OS=windows
@@ -65,6 +71,7 @@ for /d %%D in (%TARGET_DIR%\*) do (
 
 :done
 echo JRE successfully installed to .\%TARGET_DIR%
+call :stage_end "JRE download"
 
 echo Building backend
 
@@ -76,6 +83,7 @@ cd ..
 echo Backend built
 
 ren "%TARGET_DIR%\bin\java.exe" "ResumeBuilderBackend.exe"
+call :stage_end "Backend"
 
 echo Building frontend
 
@@ -91,6 +99,7 @@ if "%DOWNLOAD_NPM%"=="1" goto :download_node
 where npm >nul 2>nul
 if errorlevel 1 (
     echo npm not found. Install Node.js %NODE_MAJOR%+ or re-run with --download-npm to fetch a portable copy for the build.
+    call :print_elapsed
     exit /b 1
 )
 echo Using system npm
@@ -112,6 +121,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File resolve-node.ps1
 if errorlevel 1 (
     echo Failed to download Node.js
     del resolve-node.ps1
+    call :stage_end "Node.js download (failed)"
+    call :print_elapsed
     exit /b 1
 )
 del resolve-node.ps1
@@ -125,6 +136,8 @@ powershell -Command ^
   "Expand-Archive -Path 'node-temp.zip' -DestinationPath '.tmp-node'"
 if errorlevel 1 (
     echo Failed to extract Node.js archive
+    call :stage_end "Node.js download (failed)"
+    call :print_elapsed
     exit /b 1
 )
 
@@ -138,6 +151,7 @@ for /d %%D in (.tmp-node\*) do (
 
 :node_flattened
 echo Node.js installed to .\.tmp-node
+call :stage_end "Node.js download"
 
 set PATH=%~dp0.tmp-node;%PATH%
 
@@ -148,16 +162,20 @@ if errorlevel 1 goto :frontend_failed
 call npm run package
 if errorlevel 1 goto :frontend_failed
 cd /d %~dp0
+call :stage_end "Frontend"
 
 echo Frontend built
 call :remove_node
+call :print_elapsed
 exit /b 0
 
 :frontend_failed
 cd /d %~dp0
+call :stage_end "Frontend (failed)"
 echo Frontend build failed.
 if "%DOWNLOAD_NPM%"=="0" echo If your system Node.js/npm is missing or incompatible, re-run with --download-npm to build with a portable Node.js %NODE_MAJOR%.
 call :remove_node
+call :print_elapsed
 exit /b 1
 
 :remove_node
@@ -178,4 +196,20 @@ if exist "%~dp0.tmp-node" (
 ) else (
     echo Portable Node.js removed
 )
+goto :eof
+
+:stage_end
+set /a STAGE_COUNT+=1
+for /f "usebackq tokens=1,2 delims=|" %%A in (`powershell -NoProfile -Command "$now = [DateTime]::UtcNow.Ticks; '{0:hh\:mm\:ss}|{1}' -f ([TimeSpan]::FromTicks($now - %STAGE_TICKS%)), $now"`) do (
+    set STAGE_TIME_!STAGE_COUNT!=%%A
+    set STAGE_TICKS=%%B
+)
+set STAGE_NAME_!STAGE_COUNT!=%~1
+goto :eof
+
+:print_elapsed
+echo.
+echo Time spent:
+for /l %%i in (1,1,%STAGE_COUNT%) do echo   !STAGE_NAME_%%i!: !STAGE_TIME_%%i!
+for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "'{0:hh\:mm\:ss}' -f ([TimeSpan]::FromTicks([DateTime]::UtcNow.Ticks - %START_TICKS%))"`) do echo   Total: %%T
 goto :eof

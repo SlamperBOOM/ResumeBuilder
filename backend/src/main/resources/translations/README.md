@@ -8,11 +8,19 @@ translations/
 │   ├── _schema.json        # every key with an empty value
 │   ├── en.json
 │   └── ru.json
-└── resume_translations/    # text rendered inside the resume: block titles, levels, ...
+├── resume_translations/    # text rendered inside the resume: block titles, levels, ...
+│   ├── _schema.json
+│   ├── en.json
+│   └── ru.json
+└── help_translations/      # help page and first-run onboarding slides
     ├── _schema.json
     ├── en.json
     └── ru.json
 ```
+
+`resume_translations` and `help_translations` are passed on as nested JSON (the help page template and the onboarding dialog iterate over their sections), `app_translations` are flattened into `a.b.c` keys. A new help section or onboarding slide is a new key in `_schema.json`, it shows up in the order of the file.
+
+A help section always has `heading` and `body`. On top of that it may have `steps` (numbered list), `items` (bulleted list) and `tip` (highlighted note) — the template renders whichever of them the section has, so a section only gets the ones it needs.
 
 - `_schema.json` is the list of keys every file in its folder must have.
 - `TranslationsManager` loads every other `*.json` at startup, so a new file needs no code changes. Files starting with `_` and this README are not packaged into the app.

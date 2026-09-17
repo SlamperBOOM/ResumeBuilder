@@ -132,6 +132,31 @@ export type InfoModalSchema = {
   text: string;
 };
 
+export type AboutModalSchema = {
+  app_name: string;
+  version_label: string;
+  copyright: string;
+  license: string;
+  github_title: string;
+  github_url: string;
+  issues_title: string;
+  issues_url: string;
+  close: string;
+};
+
+export type HelpModalSchema = {
+  title: string;
+  html: string;
+};
+
+export type OnboardingSchema = {
+  slides: { [slideKey: string]: { title: string; body: string } };
+  back: string;
+  next: string;
+  skip: string;
+  finish: string;
+};
+
 export type CustomActionButton = {
   title: string;
   action: string;

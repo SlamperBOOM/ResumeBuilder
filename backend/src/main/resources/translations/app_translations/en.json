@@ -41,6 +41,7 @@
     },
     "header": {
         "exit": "Exit",
+        "help": "Help",
         "about": "About",
         "change_locale": "Change locale",
         "open_save_dir": "Open resume save directory",

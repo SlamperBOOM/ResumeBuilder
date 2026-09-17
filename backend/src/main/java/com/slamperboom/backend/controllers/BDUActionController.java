@@ -9,6 +9,7 @@ import com.slamperboom.backend.DTO.OpenLocalDirPayload;
 import com.slamperboom.backend.DTO.UpdatePayload;
 import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.bdui.BDUActionPerformer;
+import com.slamperboom.htmlConvertion.HTMLConverter;
 import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.saves.IResumeManager;
 import jakarta.ws.rs.*;
@@ -21,10 +22,11 @@ import java.util.Optional;
 public class BDUActionController {
     private final BDUActionPerformer bduActionPerformer;
 
-    public BDUActionController(IResumeManager resumeManager, DialogBuilders builders, TranslationsManager translationsManager) {
+    public BDUActionController(IResumeManager resumeManager, DialogBuilders builders, TranslationsManager translationsManager,
+                               HTMLConverter htmlConverter) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper, builders, translationsManager);
+        bduActionPerformer = new BDUActionPerformer(resumeManager, objectMapper, builders, translationsManager, htmlConverter);
     }
 
     @POST
@@ -116,5 +118,23 @@ public class BDUActionController {
     @Path("/about")
     public JsonNode about() {
         return bduActionPerformer.performOpenAbout();
+    }
+
+    @GET
+    @Path("/help")
+    public JsonNode help() {
+        return bduActionPerformer.performOpenHelp();
+    }
+
+    @GET
+    @Path("/onboarding_status")
+    public Optional<JsonNode> onboardingStatus() {
+        return bduActionPerformer.performCheckOnboarding();
+    }
+
+    @POST
+    @Path("/onboarding_seen")
+    public Optional<JsonNode> onboardingSeen() {
+        return bduActionPerformer.performOnboardingSeen();
     }
 }

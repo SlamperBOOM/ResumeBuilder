@@ -12,11 +12,13 @@ import com.slamperboom.bdui.DialogBuilders;
 import com.slamperboom.exceptions.ErrorCode;
 import com.slamperboom.exceptions.UserException;
 import com.slamperboom.exceptions.UserExceptionFactory;
+import com.slamperboom.htmlConvertion.HTMLConverter;
 import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.resume.blocks.common.ContentType;
 import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
+import com.slamperboom.settings.Settings;
 import com.slamperboom.testutil.FileSystemIsolationExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +55,9 @@ class BDUActionPerformerTest {
     @Mock
     private IResume resume;
 
+    @Mock
+    private HTMLConverter htmlConverter;
+
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final DialogBuilders dialogBuilders = new DialogBuilders();
 
@@ -61,9 +67,7 @@ class BDUActionPerformerTest {
     void setUp() throws Exception {
         var translationsConstructor = TranslationsManager.class.getDeclaredConstructor();
         translationsConstructor.setAccessible(true);
-        performer = new BDUActionPerformer(resumeManager, objectMapper, dialogBuilders, translationsConstructor.newInstance());
-        // Locale is process-wide (static) state inside DynamicSettings; pin it so translation
-        // based assertions below don't depend on test execution order.
+        performer = new BDUActionPerformer(resumeManager, objectMapper, dialogBuilders, translationsConstructor.newInstance(), htmlConverter);
         DynamicSettings.getInstance().setLocale("en");
     }
 
@@ -125,11 +129,8 @@ class BDUActionPerformerTest {
 
         ArgumentCaptor<ContentType> typeCaptor = ArgumentCaptor.forClass(ContentType.class);
         verify(resume, times(2)).updateContent(typeCaptor.capture(), any());
-        // UpdatePayload.Content only has @Getter (no @JsonProperty/setter) on its fields - if
-        // Jackson cannot populate them on deserialization, both captured values will be null
-        // instead of ABOUT/SKILLS. See review notes on UpdatePayload.Content.
         assertEquals(List.of(ContentType.ABOUT, ContentType.SKILLS), typeCaptor.getAllValues(),
-                "UpdatePayload.Content.block did not deserialize correctly - see review notes");
+                "UpdatePayload.Content.block did not deserialize correctly");
     }
 
     @Test
@@ -169,10 +170,7 @@ class BDUActionPerformerTest {
     }
 
     @Test
-    void performDelete_whenResumeDoesNotExist_currentlyThrowsNullPointerException() {
-        // Documents existing behaviour: getResume() can return null for an unknown id, and
-        // performDelete() does not guard against it (see review notes). If this is fixed to
-        // return a graceful error dialog instead, update this test accordingly.
+    void performDelete_whenResumeDoesNotExist_returnsMessageDialog() {
         when(resumeManager.getResume("missing-id")).thenReturn(null);
         JsonNode result = performer.performDelete("missing-id");
         assertEquals(FrontendAction.SHOW_MESSAGE.toString(), result.get(BackendConstants.FRONTEND_ACTION_KEY).asText());
@@ -274,10 +272,32 @@ class BDUActionPerformerTest {
     }
 
     @Test
-    void performOpenAbout_returnsOpenAboutAction() {
+    void performOpenAbout_returnsOpenAboutActionWithAppInfoAndLinks() {
         JsonNode result = performer.performOpenAbout();
 
         assertEquals(FrontendAction.OPEN_ABOUT.toString(), result.get(BackendConstants.FRONTEND_ACTION_KEY).asText());
+        JsonNode payload = result.get(BackendConstants.PAYLOAD_KEY);
+        assertEquals("Resume Builder", payload.get("app_name").asText());
+        assertFalse(payload.get("license").asText().isBlank());
+        assertTrue(payload.get("github_url").asText().startsWith("https://github.com/"));
+        assertTrue(payload.get("issues_url").asText().startsWith("https://github.com/"));
+    }
+
+    @Test
+    void performCheckOnboarding_showsSlidesUntilOnboardingSeenIsPersisted() throws Exception {
+        DynamicSettings.getInstance().setOnboardingSeenVersion(0);
+
+        Optional<JsonNode> result = performer.performCheckOnboarding();
+
+        assertTrue(result.isPresent());
+        assertEquals(FrontendAction.SHOW_ONBOARDING.toString(), result.get().get(BackendConstants.FRONTEND_ACTION_KEY).asText());
+        assertFalse(result.get().get(BackendConstants.PAYLOAD_KEY).get("slides").isEmpty());
+
+        assertTrue(performer.performOnboardingSeen().isEmpty());
+
+        assertTrue(performer.performCheckOnboarding().isEmpty());
+        assertEquals(Settings.CURRENT_ONBOARDING_VERSION,
+                objectMapper.readTree(new File("config/config.json")).get("onboarding_seen_version").asInt());
     }
 
     @Test

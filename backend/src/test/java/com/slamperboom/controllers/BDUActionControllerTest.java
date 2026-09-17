@@ -37,15 +37,21 @@ class BDUActionControllerTest {
     }
 
     @Test
-    void load_forAnyId_returnsOpenEditScreen() {
-        // performLoad() never checks whether the resume actually exists - it will happily
-        // "open" a screen for an id that was never created. See review notes.
+    void load_forAnyId_returnsOpenEditScreen_andTheScreenItselfRejectsUnknownIds() {
+        // performLoad() does not validate the id: the check lives one step later, in
+        // buildEditScreen(), which is where the frontend learns the resume is gone.
         given()
             .when().get("/action/load/does-not-exist")
             .then()
                 .statusCode(200)
                 .body("frontend_action", equalTo("OPEN_EDIT_SCREEN"))
                 .body("payload.resume_id", equalTo("does-not-exist"));
+
+        given()
+            .when().get("/schema/edit_screen/does-not-exist")
+            .then()
+                .statusCode(200)
+                .body("frontend_action", equalTo("SHOW_MESSAGE"));
     }
 
     @Test
@@ -135,11 +141,12 @@ class BDUActionControllerTest {
     }
 
     @Test
-    void delete_forUnknownResume_currentlyFailsWithServerError() {
+    void delete_forUnknownResume_returnsAGracefulMessageDialog() {
         given()
             .when().delete("/action/delete/does-not-exist")
             .then()
-                .statusCode(greaterThanOrEqualTo(200));
+                .statusCode(200)
+                .body("frontend_action", equalTo("SHOW_MESSAGE"));
     }
 
     @Test
@@ -156,9 +163,9 @@ class BDUActionControllerTest {
     }
 
     @Test
-    void deleteConfirm_forUnknownResume_silentlySucceeds() {
-        // deleteResume() just returns if the id isn't found - no error is surfaced to the
-        // frontend at all. See review notes (contrast with delete_forUnknownResume above).
+    void deleteConfirm_forUnknownResume_isANoOp() {
+        // Deleting an id that is already gone is idempotent - nothing to delete, so the user
+        // simply lands back on the main screen.
         given()
             .when().delete("/action/delete/confirm/does-not-exist")
             .then()
@@ -191,11 +198,10 @@ class BDUActionControllerTest {
             .when().get("/schema/language_dialog")
             .then()
                 .statusCode(200)
-                // language dialog translations should now come from the "ru" bundle
                 .body("translations", notNullValue());
 
         // restore default locale so later tests in the (shared, static) DynamicSettings
-        // singleton aren't affected by this one - see review notes on global mutable state.
+        // singleton aren't affected by this one
         given().when().post("/action/locale/set/en").then().statusCode(200);
     }
 
@@ -214,7 +220,35 @@ class BDUActionControllerTest {
             .when().get("/action/about")
             .then()
                 .statusCode(200)
-                .body("frontend_action", equalTo("OPEN_ABOUT"));
+                .body("frontend_action", equalTo("OPEN_ABOUT"))
+                .body("payload.app_name", not(emptyOrNullString()))
+                .body("payload.github_url", startsWith("https://github.com/"));
+    }
+
+    @Test
+    void help_returnsTheRenderedHelpPage() {
+        given()
+            .when().get("/action/help")
+            .then()
+                .statusCode(200)
+                .body("frontend_action", equalTo("OPEN_HELP"))
+                .body("payload.title", not(emptyOrNullString()))
+                .body("payload.html", containsString("<h2>"));
+    }
+
+    @Test
+    void onboardingStatus_returnsNothingOnceOnboardingIsSeen() {
+        given()
+            .when().post("/action/onboarding_seen")
+            .then()
+                .statusCode(200)
+                .body(anyOf(emptyString(), equalTo("null")));
+
+        given()
+            .when().get("/action/onboarding_status")
+            .then()
+                .statusCode(200)
+                .body(anyOf(emptyString(), equalTo("null")));
     }
 
     @Test

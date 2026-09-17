@@ -79,7 +79,7 @@ export default function LanguageDialog(props: LanguageDialogProps) {
   return (
     <Dialog
       open={showState}
-      onTransitionEnd={() => setDialogData(null)}
+      slotProps={{ transition: { onExited: () => setDialogData(null) } }}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>

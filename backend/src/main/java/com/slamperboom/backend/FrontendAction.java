@@ -8,6 +8,8 @@ public enum FrontendAction {
     SHOW_CONFIRMATION,
     SHOW_CUSTOM_DIALOG,
     OPEN_ABOUT,
+    OPEN_HELP,
+    SHOW_ONBOARDING,
     LOCALE_DIALOG,
     CLOSE
 }

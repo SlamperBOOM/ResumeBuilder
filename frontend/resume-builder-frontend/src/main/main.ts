@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'node:path';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import axios from 'axios';
 import windowStateKeeper from 'electron-window-state';
@@ -187,6 +187,20 @@ ipcMain.handle('open-image-dialog', async () => {
 });
 
 ipcMain.handle('get-backend-port', () => activeBackendPort);
+
+ipcMain.handle('get-app-version', () => app.getVersion());
+
+const allowedExternalHost = new Set(['github.com']);
+
+ipcMain.handle('open-external', async (_event, url: string) => {
+  const target = new URL(url);
+  if (
+    target.protocol !== 'https:' || !allowedExternalHost.has(target.hostname)
+  ) {
+    throw new Error(`Refused to open external link: ${url}`);
+  }
+  await shell.openExternal(target.toString());
+});
 
 app.on('before-quit', async (event) => {
   if (!isBackendRunning()) {

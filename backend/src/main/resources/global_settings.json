@@ -1,4 +1,6 @@
 {
     "default_resume_name": "New resume",
-    "save_path": "saves/"
+    "save_path": "saves/",
+    "github_url": "https://github.com/SlamperBOOM/ResumeBuilder",
+    "issues_url": "https://github.com/SlamperBOOM/ResumeBuilder/issues"
 }

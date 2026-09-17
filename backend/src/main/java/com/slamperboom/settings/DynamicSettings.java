@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 
 public class DynamicSettings {
     private final Logger logger = Logger.getLogger(this.getClass());
@@ -31,15 +32,19 @@ public class DynamicSettings {
 
     private static final String LOCALE_KEY = "locale";
     private static final String MAX_RESPONSE_BODY_LENGTH_KEY = "max_response_body_length";
+    private static final String ONBOARDING_SEEN_VERSION_KEY = "onboarding_seen_version";
 
     private final ObjectNode settings;
 
     private void fillSettingsWithEmptyField() {
         if (!settings.has(LOCALE_KEY)) {
-            settings.put(LOCALE_KEY, "en");
+            settings.put(LOCALE_KEY, Locale.getDefault().getLanguage());
         }
         if (!settings.has(MAX_RESPONSE_BODY_LENGTH_KEY)) {
             settings.put(MAX_RESPONSE_BODY_LENGTH_KEY, 10000);
+        }
+        if (!settings.has(ONBOARDING_SEEN_VERSION_KEY)) {
+            settings.put(ONBOARDING_SEEN_VERSION_KEY, 0);
         }
     }
 
@@ -92,5 +97,13 @@ public class DynamicSettings {
 
     public int getMaxResponseBodyLength() {
         return settings.get(MAX_RESPONSE_BODY_LENGTH_KEY).asInt();
+    }
+
+    public int getOnboardingSeenVersion() {
+        return settings.get(ONBOARDING_SEEN_VERSION_KEY).asInt();
+    }
+
+    public void setOnboardingSeenVersion(int version) {
+        settings.put(ONBOARDING_SEEN_VERSION_KEY, version);
     }
 }

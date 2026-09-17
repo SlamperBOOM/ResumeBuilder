@@ -34,6 +34,9 @@ const exposedApi = {
   openImageDialog: () => ipcRenderer.invoke('open-image-dialog'),
   getBackendPort: () =>
     ipcRenderer.invoke('get-backend-port') as Promise<number>,
+  getAppVersion: () => ipcRenderer.invoke('get-app-version') as Promise<string>,
+  openExternal: (url: string) =>
+    ipcRenderer.invoke('open-external', url) as Promise<void>,
 };
 
 export type ElectronHandler = typeof exposedApi;

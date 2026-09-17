@@ -3,6 +3,7 @@ package com.slamperboom.htmlConvertion;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openhtmltopdf.outputdevice.helper.BaseRendererBuilder;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -43,14 +44,14 @@ public class HTMLConverter {
      * @param templateName Name of template
      * @return HTML document as String
      */
+    private String renderTemplate(String templateName, Map<String, Object> data) throws IOException, TemplateException {
+        Template template = htmlTemplateManager.getTemplate(templateName);
+        StringWriter writer = new StringWriter();
+        template.process(data, writer);
+        return writer.toString();
+    }
+
     private String processResumeToHTML(IResume resume, String templateName) throws UserException {
-        Template template;
-        try {
-            template = htmlTemplateManager.getTemplate(templateName);
-        } catch (IOException e) {
-            logger.errorf(e, "Unable to load template %s", templateName);
-            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
-        }
         Map<String, Object> jsonRepresentation;
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -72,15 +73,28 @@ public class HTMLConverter {
             throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
 
-        StringWriter writer = new StringWriter();
         try {
-            template.process(jsonRepresentation, writer);
-            writer.flush();
+            return renderTemplate(templateName, jsonRepresentation);
         } catch (TemplateException | IOException e) {
             logger.errorf(e, "Unable to render template %s for resume %s", templateName, resume.getId());
             throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_SAVE_PDF, e);
         }
-        return writer.toString();
+    }
+
+    /**
+     * Renders a page that is only shown on screen (e.g. help), never converted to PDF,
+     * so its template is free of the openhtmltopdf CSS limitations
+     * @param templateName Key of the template in templates.properties
+     * @param data Template data model
+     * @return HTML document as String
+     */
+    public String renderStaticPage(String templateName, JsonNode data) throws UserException {
+        try {
+            return renderTemplate(templateName, new ObjectMapper().convertValue(data, new TypeReference<Map<String, Object>>() {}));
+        } catch (TemplateException | IOException e) {
+            logger.errorf(e, "Unable to render page %s", templateName);
+            throw UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION, e);
+        }
     }
 
     public String processResumeToHTML(IResume resume) throws UserException {
