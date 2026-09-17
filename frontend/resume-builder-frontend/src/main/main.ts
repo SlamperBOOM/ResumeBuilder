@@ -13,11 +13,14 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import log from 'electron-log';
 import axios from 'axios';
 import windowStateKeeper from 'electron-window-state';
-import { getFrontendPort, resolveHtmlPath } from './util';
+import { resolveHtmlPath } from './util';
+import { handleAppProtocol, registerAppScheme } from './app-protocol';
 import { startBackend, stopBackend, isBackendRunning } from './backend-manager';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
 import { appTitle, defaultBackendPort } from '../renderer/utils/consts';
 import ActionResponseDTO from '../renderer/DTO/ActionResponseDTO';
+
+registerAppScheme();
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -30,11 +33,7 @@ async function launchBackend(): Promise<void> {
   try {
     activeBackendPort = await startBackend({
       preferredPort: Number(defaultBackendPort),
-      extraJvmArgs: [
-        '-Xms128m',
-        '-Xmx512m',
-        `-Dquarkus.http.cors.origins=http://localhost:${getFrontendPort()}`,
-      ],
+      extraJvmArgs: ['-Xms128m', '-Xmx512m'],
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -245,6 +244,7 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(async () => {
+    handleAppProtocol();
     await launchBackend();
     createWindow();
     app.on('activate', () => {

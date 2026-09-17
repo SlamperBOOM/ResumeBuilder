@@ -8,16 +8,17 @@ import {
 } from '../../../utils/resumeBlockTypes';
 import { useTranslate } from '../../../utils/translations';
 import { validatePickedPath } from '../../../api/validatePickedPath';
+import { localFileOrigin } from '../../../utils/consts';
 import logger from '../../../utils/logger';
 
 // Converts an absolute filesystem path (Windows `C:\...` or POSIX `/...`)
-// into a `file://` URL usable as an <img> src.
-function toFileUrl(path: string): string {
+// into an `app://local-file/...` URL usable as an <img> src.
+function toLocalFileUrl(path: string): string {
   const normalized = path.replaceAll('\\', '/');
-  const withLeadingSlash = normalized.startsWith('/')
-    ? normalized
-    : `/${normalized}`;
-  return `file://${withLeadingSlash}`;
+  return (
+    localFileOrigin +
+    encodeURI(normalized.startsWith('/') ? normalized : `/${normalized}`)
+  );
 }
 
 export default function ResumeImage(props: FieldRendererProps) {
@@ -61,7 +62,7 @@ export default function ResumeImage(props: FieldRendererProps) {
             ) : (
               <Box
                 component="img"
-                src={toFileUrl(controllerField.value)}
+                src={toLocalFileUrl(controllerField.value)}
                 alt={translateKey(currentField.title)}
                 onError={() => {
                   logger.warn(

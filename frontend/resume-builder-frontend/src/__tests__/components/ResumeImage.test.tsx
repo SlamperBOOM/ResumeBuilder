@@ -51,7 +51,7 @@ describe('ResumeImage', () => {
 
     expect(screen.getByRole('img', { name: 'Avatar' })).toHaveAttribute(
       'src',
-      'file:///C:/avatars/me.png',
+      'app://local-file/C:/avatars/me.png',
     );
   });
 
@@ -66,7 +66,7 @@ describe('ResumeImage', () => {
     await waitFor(() =>
       expect(screen.getByRole('img', { name: 'Avatar' })).toHaveAttribute(
         'src',
-        'file:///C:/avatars/new.png',
+        'app://local-file/C:/avatars/new.png',
       ),
     );
   });
