@@ -105,13 +105,9 @@ export default function MainScreen(props: MainScreenProps) {
       });
   }, [appActions, retryCount]);
 
-  // Once per mount, after the screen is loaded; the backend answers with
-  // nothing when onboarding has already been seen
-  const onboardingChecked = useRef(false);
   useEffect(() => {
-    if (mainSchema && !onboardingChecked.current) {
-      onboardingChecked.current = true;
-      appActions.performBduAction('onboarding_status');
+    if (mainSchema?.payload.on_load_action !== undefined) {
+      appActions.performBduAction(mainSchema.payload.on_load_action);
     }
   }, [mainSchema, appActions]);
 
@@ -123,7 +119,7 @@ export default function MainScreen(props: MainScreenProps) {
     if (!mainSchema) {
       return [];
     }
-    const resumes = mainSchema.payload ?? [];
+    const resumes = mainSchema.payload.resumes ?? [];
     return resumes.map((resume) => (
       <ResumeCard
         key={resume.resume_id}

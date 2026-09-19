@@ -114,7 +114,7 @@ class BDUActionControllerTest {
             .when().get("/schema/main_screen")
             .then()
                 .statusCode(200)
-                .body("payload", hasSize(2));
+                .body("payload.resumes", hasSize(2));
     }
 
     @Test

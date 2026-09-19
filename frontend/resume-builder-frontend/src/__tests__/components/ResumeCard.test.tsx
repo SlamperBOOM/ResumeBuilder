@@ -25,7 +25,7 @@ const schema: MainScreenResponse = {
     export_key: 'Export',
     menu_tooltip_key: 'More options',
   },
-  payload: [],
+  payload: { resumes: [], on_load_action: undefined },
 };
 
 const resume: SimpleResume = {
@@ -39,18 +39,28 @@ const resume: SimpleResume = {
 describe('ResumeCard', () => {
   it('renders the name and formatted last-modified date', () => {
     render(
-      <ResumeCard resume={resume} schema={schema} appActions={makeAppActions()} />,
+      <ResumeCard
+        resume={resume}
+        schema={schema}
+        appActions={makeAppActions()}
+      />,
     );
 
     expect(screen.getByText('My resume')).toBeInTheDocument();
     expect(
-      screen.getByText(new Date(resume.last_modification_date).toLocaleString()),
+      screen.getByText(
+        new Date(resume.last_modification_date).toLocaleString(),
+      ),
     ).toBeInTheDocument();
   });
 
   it('renders the preview when pdf_preview is set', () => {
     render(
-      <ResumeCard resume={resume} schema={schema} appActions={makeAppActions()} />,
+      <ResumeCard
+        resume={resume}
+        schema={schema}
+        appActions={makeAppActions()}
+      />,
     );
 
     expect(screen.getByTestId('mock-pdf-preview')).toBeInTheDocument();
@@ -70,18 +80,28 @@ describe('ResumeCard', () => {
 
   it('opens the menu with one translated item per resume_menu entry', () => {
     render(
-      <ResumeCard resume={resume} schema={schema} appActions={makeAppActions()} />,
+      <ResumeCard
+        resume={resume}
+        schema={schema}
+        appActions={makeAppActions()}
+      />,
     );
 
     fireEvent.click(screen.getByRole('button', { name: 'More options' }));
 
-    expect(screen.getByRole('menuitem', { name: 'Rename' })).toBeInTheDocument();
-    expect(screen.getByRole('menuitem', { name: 'Delete' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Rename' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Delete' }),
+    ).toBeInTheDocument();
   });
 
   it('dispatches a menu action with the resume id and closes the menu', async () => {
     const appActions = makeAppActions();
-    render(<ResumeCard resume={resume} schema={schema} appActions={appActions} />);
+    render(
+      <ResumeCard resume={resume} schema={schema} appActions={appActions} />,
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'More options' }));
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete' }));
@@ -96,7 +116,9 @@ describe('ResumeCard', () => {
 
   it('dispatches the export action with the resume id and name', () => {
     const appActions = makeAppActions();
-    render(<ResumeCard resume={resume} schema={schema} appActions={appActions} />);
+    render(
+      <ResumeCard resume={resume} schema={schema} appActions={appActions} />,
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
 

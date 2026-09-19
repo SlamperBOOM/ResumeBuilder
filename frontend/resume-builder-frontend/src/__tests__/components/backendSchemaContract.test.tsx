@@ -49,10 +49,17 @@ function readScreen(name: string) {
   return readBackendJson(`main/resources/screens/${name}.json`);
 }
 
-const appTranslations = readBackendJson(
-  'main/resources/translations/app_translations.json',
+const APP_TRANSLATIONS = 'main/resources/translations/app_translations';
+const LOCALES = fs
+  .readdirSync(path.join(BACKEND_SRC, APP_TRANSLATIONS))
+  .filter((file) => file.endsWith('.json') && !file.startsWith('_'))
+  .map((file) => path.basename(file, '.json'));
+const appTranslations = Object.fromEntries(
+  LOCALES.map((locale) => [
+    locale,
+    readBackendJson(`${APP_TRANSLATIONS}/${locale}.json`),
+  ]),
 );
-const LOCALES = Object.keys(appTranslations);
 
 // Screen schema file -> translations section BDUIBuilder serves it with.
 const SCREENS: Record<string, string> = {
@@ -139,9 +146,7 @@ describe('backend screen schemas', () => {
     );
 
     expect(actions.length).toBeGreaterThan(0);
-    expect(actions.filter((action) => !(action in result.current))).toEqual(
-      [],
-    );
+    expect(actions.filter((action) => !(action in result.current))).toEqual([]);
   });
 
   it.each(LOCALES)(
@@ -190,15 +195,17 @@ describe('MainScreen with the real main screen schema', () => {
     const response: MainScreenResponse = {
       schema: readScreen('main_schema'),
       translations: translationsFor('main_screen'),
-      payload: [
-        {
-          resume_id: 'r1',
-          resume_name: 'My resume',
-          last_modification_date: '2024-01-01T00:00:00.000Z',
-          html_preview: '',
-          pdf_preview: '',
-        },
-      ],
+      payload: {
+        resumes: [
+          {
+            resume_id: 'r1',
+            resume_name: 'My resume',
+            last_modification_date: '2024-01-01T00:00:00.000Z',
+            html_preview: '',
+            pdf_preview: '',
+          },
+        ],
+      },
     };
     const { schema, translations } = response;
     const appActions = makeAppActions({
@@ -291,7 +298,9 @@ describe('EditArea with the real edit schema and a sample resume', () => {
       screen.getByLabelText(translations['main_block.first_name']),
     ).toHaveValue(resume.blocks.MAIN_BLOCK.first_name);
     expect(
-      screen.getByDisplayValue(resume.blocks.EXPERIENCE.experiences[1].position),
+      screen.getByDisplayValue(
+        resume.blocks.EXPERIENCE.experiences[1].position,
+      ),
     ).toBeInTheDocument();
     expect(warnSpy).not.toHaveBeenCalledWith(
       expect.stringContaining('Unknown'),

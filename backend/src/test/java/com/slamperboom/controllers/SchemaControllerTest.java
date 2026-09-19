@@ -43,7 +43,7 @@ class SchemaControllerTest {
             .when().get("/schema/main_screen")
             .then()
                 .statusCode(200)
-                .body("payload", hasSize(0));
+                .body("payload.resumes", hasSize(0));
     }
 
     @Test
@@ -58,7 +58,7 @@ class SchemaControllerTest {
             .when().get("/schema/main_screen")
             .then()
                 .statusCode(200)
-                .body("payload.resume_id", hasItem(resumeId));
+                .body("payload.resumes.resume_id", hasItem(resumeId));
     }
 
     @Test

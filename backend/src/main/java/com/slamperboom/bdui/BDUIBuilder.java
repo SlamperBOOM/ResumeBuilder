@@ -17,6 +17,7 @@ import com.slamperboom.resume.saves.IResume;
 import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
 import com.slamperboom.managers.TranslationsManager;
+import com.slamperboom.settings.Settings;
 import com.slamperboom.utils.ThreadPoolReducer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -63,15 +64,22 @@ public class BDUIBuilder {
         result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.MAIN_SCREEN));
         result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getMainScreenTranslations());
 
+        ObjectNode payload = objectMapper.createObjectNode();
         try {
             ArrayNode resumes = objectMapper.createArrayNode();
             for (var simpleResume : resumeManager.getListOfResumes()) {
                 resumes.add(objectMapper.valueToTree(simpleResume));
             }
-            result.set(BackendConstants.PAYLOAD_KEY, resumes);
+            payload.set("resumes", resumes);
         } catch (UserException e) {
             return handleFailure(e.getMessage(), e);
         }
+
+        if (DynamicSettings.getInstance().getOnboardingSeenVersion() < Settings.CURRENT_ONBOARDING_VERSION) {
+            payload.put("on_load_action", "onboarding_status");
+        }
+
+        result.set(BackendConstants.PAYLOAD_KEY, payload);
 
         logger.info("Built main screen");
         return result;

@@ -40,28 +40,31 @@ const translations = {
 const emptyResponse: MainScreenResponse = {
   schema,
   translations,
-  payload: [],
+  payload: { resumes: [], on_load_action: undefined },
 };
 
 const withResumesResponse: MainScreenResponse = {
   schema,
   translations,
-  payload: [
-    {
-      resume_id: 'r1',
-      resume_name: 'Resume One',
-      last_modification_date: '2024-01-01',
-      html_preview: '',
-      pdf_preview: '',
-    },
-    {
-      resume_id: 'r2',
-      resume_name: 'Resume Two',
-      last_modification_date: '2024-01-02',
-      html_preview: '',
-      pdf_preview: '',
-    },
-  ],
+  payload: {
+    on_load_action: undefined,
+    resumes: [
+      {
+        resume_id: 'r1',
+        resume_name: 'Resume One',
+        last_modification_date: '2024-01-01',
+        html_preview: '',
+        pdf_preview: '',
+      },
+      {
+        resume_id: 'r2',
+        resume_name: 'Resume Two',
+        last_modification_date: '2024-01-02',
+        html_preview: '',
+        pdf_preview: '',
+      },
+    ],
+  },
 };
 
 function respondingWith(response: MainScreenResponse) {
@@ -92,7 +95,9 @@ describe('MainScreen', () => {
 
     render(<MainScreen appActions={appActions} />);
 
-    expect(await screen.findByText('Failed to load resumes.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Failed to load resumes.'),
+    ).toBeInTheDocument();
     const retryButton = screen.getByRole('button', { name: 'Retry' });
 
     fireEvent.click(retryButton);
@@ -119,7 +124,9 @@ describe('MainScreen', () => {
 
     render(<MainScreen appActions={appActions} />);
 
-    expect(await screen.findByTestId('mock-resume-card-r1')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('mock-resume-card-r1'),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('mock-resume-card-r2')).toBeInTheDocument();
   });
 });
