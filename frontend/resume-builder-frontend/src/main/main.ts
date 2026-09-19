@@ -22,6 +22,8 @@ import ActionResponseDTO from '../renderer/DTO/ActionResponseDTO';
 
 registerAppScheme();
 
+app.disableHardwareAcceleration();
+
 let mainWindow: BrowserWindow | null = null;
 
 let activeBackendPort: number | null = null;

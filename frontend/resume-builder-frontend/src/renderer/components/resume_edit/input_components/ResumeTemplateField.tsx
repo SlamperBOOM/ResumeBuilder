@@ -26,6 +26,8 @@ const CARD_ASPECT_RATIO = 210 / 297;
 
 const GRID_GAP = 16;
 
+const RESIZE_DEBOUNCE_MS = 100;
+
 export default function ResumeTemplateField(props: FieldRendererProps) {
   const { resumeField, translations, fieldNameOverride, resumeId } = props;
   const currentField = resumeField as TemplateChooser;
@@ -49,13 +51,20 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
   useEffect(() => {
     if (!contentEl) return undefined;
 
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const observer = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      setContainerSize({ width, height });
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        setContainerSize({ width, height });
+      }, RESIZE_DEBOUNCE_MS);
     });
     observer.observe(contentEl);
 
-    return () => observer.disconnect();
+    return () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      observer.disconnect();
+    };
   }, [contentEl]);
 
   const rowHeight = containerSize.height;

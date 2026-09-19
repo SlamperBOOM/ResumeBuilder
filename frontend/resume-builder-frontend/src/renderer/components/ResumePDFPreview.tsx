@@ -13,6 +13,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url,
 ).toString();
 
+const RESIZE_DEBOUNCE_MS = 120;
+
 export enum ResumePreviewScaleEnum {
   FULL_WIDTH = 'full_width',
   FULL_HEIGHT = 'full_height',
@@ -44,16 +46,21 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const observer = new ResizeObserver(([entry]) => {
-      setContainerSize({
-        width: entry.contentRect.width,
-        height: entry.contentRect.height,
-      });
+      const { width, height } = entry.contentRect;
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        setContainerSize({ width, height });
+      }, RESIZE_DEBOUNCE_MS);
     });
 
     if (containerRef.current) observer.observe(containerRef.current);
 
-    return () => observer.disconnect();
+    return () => {
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -141,6 +148,7 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
             pageNumber={currentPage}
             scale={calculatedScale}
             renderAnnotationLayer={false}
+            renderTextLayer={false}
           />
         </Document>
       </Box>

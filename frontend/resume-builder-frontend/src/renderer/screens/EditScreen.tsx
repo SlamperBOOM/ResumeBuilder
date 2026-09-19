@@ -1,7 +1,7 @@
 import { Box, Button, colors, Skeleton, Stack } from '@mui/material';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { BDU_ACTION_OPEN_MAIN_SCREEN } from '../api/useActionApi';
 import { EditArea } from '../components/EditArea';
@@ -16,6 +16,8 @@ import logger from '../utils/logger';
 type EditScreenProps = {
   appActions: AppActions;
 };
+
+const LAYOUT_SAVE_DEBOUNCE_MS = 100;
 
 function EditScreenSkeleton() {
   return (
@@ -84,6 +86,21 @@ export default function EditScreen(props: EditScreenProps) {
     localStorage.setItem(previewScaleKey, scale.toString());
   }, []);
 
+  const layoutSaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleLayoutChanged = useCallback((sizes: Layout) => {
+    const arraySizes = Object.values(sizes).map((value) => value.toString());
+    if (layoutSaveTimeout.current) clearTimeout(layoutSaveTimeout.current);
+    layoutSaveTimeout.current = setTimeout(() => {
+      localStorage.setItem('editorLayout', JSON.stringify(arraySizes));
+    }, LAYOUT_SAVE_DEBOUNCE_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (layoutSaveTimeout.current) clearTimeout(layoutSaveTimeout.current);
+    };
+  }, []);
+
   useEffect(() => {
     appActions
       .updateCurrentScreen({
@@ -108,17 +125,7 @@ export default function EditScreen(props: EditScreenProps) {
       }}
     >
       {editSchema && schema ? (
-        <Group
-          orientation="horizontal"
-          onLayoutChanged={(sizes: Layout) => {
-            const arraySizes = Object.values(sizes).map(
-              (value, _index, _array) => {
-                return value.toString();
-              },
-            );
-            localStorage.setItem('editorLayout', JSON.stringify(arraySizes));
-          }}
-        >
+        <Group orientation="horizontal" onLayoutChanged={handleLayoutChanged}>
           {/* Left part -- Form */}
           <Panel defaultSize={layout[0]} minSize="30">
             <Box
