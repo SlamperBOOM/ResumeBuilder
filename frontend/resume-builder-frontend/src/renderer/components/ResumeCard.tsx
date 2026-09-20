@@ -82,7 +82,7 @@ export function ResumeCard(props: ResumeCardProps) {
       <CardMedia
         sx={{
           height: 320,
-          backgroundColor: '#eef2f6',
+          backgroundColor: 'surface.cardPreview',
           position: 'relative',
           overflow: 'hidden',
         }}

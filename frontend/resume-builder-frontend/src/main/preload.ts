@@ -1,6 +1,7 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import type { Settings } from '../renderer/utils/settingsDefaults';
 
 export type Channels = 'ipc-example';
 
@@ -37,6 +38,9 @@ const exposedApi = {
   getAppVersion: () => ipcRenderer.invoke('get-app-version') as Promise<string>,
   openExternal: (url: string) =>
     ipcRenderer.invoke('open-external', url) as Promise<void>,
+  getSettings: () => ipcRenderer.invoke('settings:get') as Promise<Settings>,
+  setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) =>
+    ipcRenderer.invoke('settings:set', key, value) as Promise<void>,
 };
 
 export type ElectronHandler = typeof exposedApi;

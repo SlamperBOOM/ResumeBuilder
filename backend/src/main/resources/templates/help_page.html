@@ -11,11 +11,29 @@
     <!-- Shown in the app only, never rendered to PDF: regular modern CSS is fine here -->
     <style>
         :root {
+            color-scheme: light dark;
             --accent: #1976d2;
+            --on-accent: #ffffff;
+            --bg: #ffffff;
             --text: #1f2937;
             --muted: #4b5563;
             --line: #e5e7eb;
             --surface: #f8fafc;
+        }
+
+        /* Follows the app theme: the Electron main process drives prefers-color-scheme
+           through nativeTheme.themeSource. Keep in step with colors.dark in the
+           frontend's src/renderer/theme/colors.ts */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --accent: #90caf9;    /* colors.dark.primary.main */
+                --on-accent: #121212;
+                --bg: #1e1e1e;        /* colors.dark.background.paper */
+                --text: #e6e6e6;
+                --muted: #b0b7c3;
+                --line: #33373e;
+                --surface: #262a31;
+            }
         }
 
         html {
@@ -27,7 +45,7 @@
             margin: 0;
             padding: 0.5rem 1.5rem 3rem;
             color: var(--text);
-            background: #ffffff;
+            background: var(--bg);
             line-height: 1.6;
         }
 
@@ -124,7 +142,7 @@
             margin-right: 0.6rem;
             border-radius: 50%;
             background: var(--accent);
-            color: #ffffff;
+            color: var(--on-accent);
             font-size: 0.85rem;
             line-height: 1.6rem;
             text-align: center;

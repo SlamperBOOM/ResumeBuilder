@@ -160,11 +160,11 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
                           border:
                             controllerField.value === template.name
                               ? '3px solid'
-                              : '1px solid #ddd',
+                              : '1px solid',
                           borderColor:
                             controllerField.value === template.name
                               ? 'primary.main'
-                              : undefined,
+                              : 'divider',
                           transition: '0.2s',
                           '&:hover': {
                             boxShadow: 6,

@@ -68,10 +68,10 @@ next to the bundles.
 
 | License        | Packages                                                                                                                  |
 |----------------|---------------------------------------------------------------------------------------------------------------------------|
-| MIT            | 205, including React, React DOM, MUI, Emotion, axios, dayjs, React Hook Form, react-pdf, React Router, Zod, electron-log |
+| MIT            | 205, including React, React DOM, MUI, Emotion, axios, dayjs, React Hook Form, react-pdf, React Router, Zod, electron-log, electron-store |
 | ISC            | 9                                                                                                                         |
-| BSD-3-Clause   | 6: hoist-non-react-statics, react-transition-group, source-map, sprintf-js, global-agent, roarr                          |
-| BSD-2-Clause   | 2: extract-zip, http-cache-semantics                                                                                      |
+| BSD-3-Clause   | 7: hoist-non-react-statics, react-transition-group, source-map, sprintf-js, global-agent, roarr, fast-uri                |
+| BSD-2-Clause   | 3: extract-zip, http-cache-semantics, json-schema-typed                                                                   |
 | Apache-2.0     | 2: pdfjs-dist (used by react-pdf), sumchecker                                                                             |
 | MIT OR CC0-1.0 | 1: type-fest (used under MIT)                                                                                             |
 

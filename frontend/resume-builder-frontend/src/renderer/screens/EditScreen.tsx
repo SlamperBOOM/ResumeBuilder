@@ -1,4 +1,4 @@
-import { Box, Button, colors, Skeleton, Stack } from '@mui/material';
+import { Box, Button, Skeleton, Stack } from '@mui/material';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,6 +12,7 @@ import ResumePDFPreview, {
 import PreviewControls from '../components/PreviewControls';
 import EditScreenResponse from '../DTO/EditScreenResponse';
 import logger from '../utils/logger';
+import { getSetting, setSetting } from '../utils/settings';
 
 type EditScreenProps = {
   appActions: AppActions;
@@ -45,27 +46,14 @@ export default function EditScreen(props: EditScreenProps) {
   const { resumeId } = useParams();
   const [editSchema, setEditSchema] = useState<EditScreenResponse | null>(null);
   const schema = editSchema?.schema;
-  const layout = (() => {
-    try {
-      const parsed = JSON.parse(
-        localStorage.getItem('editorLayout') || '["40","60"]',
-      );
-      return Array.isArray(parsed) && parsed.length === 2
-        ? parsed
-        : ['40', '60'];
-    } catch {
-      return ['40', '60'];
-    }
-  })();
-  const previewScaleKey = 'editPreviewScale';
-  const previewModeKey = 'editPreviewMode';
-  const [previewScale, setPreviewScale] = useState(
-    Number.parseFloat(localStorage.getItem(previewScaleKey) ?? '') || 0.5,
+  const layout = getSetting('editorLayout');
+  const [previewScale, setPreviewScale] = useState(() =>
+    getSetting('editPreviewScale'),
   );
   const [previewMode, setPreviewMode] = useState<ResumePreviewScaleEnum>(() => {
-    const stored = localStorage.getItem(previewModeKey);
+    const stored = getSetting('editPreviewMode');
     const validModes = Object.values(ResumePreviewScaleEnum) as string[];
-    return validModes.includes(stored ?? '')
+    return validModes.includes(stored)
       ? (stored as ResumePreviewScaleEnum)
       : ResumePreviewScaleEnum.FULL_HEIGHT;
   });
@@ -76,14 +64,14 @@ export default function EditScreen(props: EditScreenProps) {
   const handlePreviewModeChange = useCallback(
     (mode: ResumePreviewScaleEnum) => {
       setPreviewMode(mode);
-      localStorage.setItem(previewModeKey, mode);
+      setSetting('editPreviewMode', mode);
     },
     [],
   );
 
   const handlePreviewScaleChange = useCallback((scale: number) => {
     setPreviewScale(scale);
-    localStorage.setItem(previewScaleKey, scale.toString());
+    setSetting('editPreviewScale', scale);
   }, []);
 
   const layoutSaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -91,7 +79,7 @@ export default function EditScreen(props: EditScreenProps) {
     const arraySizes = Object.values(sizes).map((value) => value.toString());
     if (layoutSaveTimeout.current) clearTimeout(layoutSaveTimeout.current);
     layoutSaveTimeout.current = setTimeout(() => {
-      localStorage.setItem('editorLayout', JSON.stringify(arraySizes));
+      setSetting('editorLayout', arraySizes);
     }, LAYOUT_SAVE_DEBOUNCE_MS);
   }, []);
 
@@ -121,7 +109,7 @@ export default function EditScreen(props: EditScreenProps) {
         display: 'flex',
         minHeight: 0,
         overflow: 'hidden',
-        backgroundColor: '#f5f7fa',
+        backgroundColor: 'surface.editor',
       }}
     >
       {editSchema && schema ? (
@@ -133,8 +121,9 @@ export default function EditScreen(props: EditScreenProps) {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                backgroundColor: 'white',
-                borderRight: '1px solid #e0e0e0',
+                backgroundColor: 'background.paper',
+                borderRight: 1,
+                borderColor: 'divider',
               }}
             >
               <Stack
@@ -195,7 +184,7 @@ export default function EditScreen(props: EditScreenProps) {
           <Separator
             style={{
               width: '6px',
-              background: colors.blue[700],
+              background: 'var(--mui-palette-primary-main)',
               cursor: 'col-resize',
             }}
           />

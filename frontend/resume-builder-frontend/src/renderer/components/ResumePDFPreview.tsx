@@ -135,7 +135,7 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          backgroundColor: '#eeeeee',
+          backgroundColor: 'surface.pdfBackdrop',
           p: 2,
         }}
       >

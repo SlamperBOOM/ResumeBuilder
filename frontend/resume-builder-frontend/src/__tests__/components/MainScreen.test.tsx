@@ -105,6 +105,8 @@ describe('MainScreen', () => {
     await waitFor(() =>
       expect(appActions.updateCurrentScreen).toHaveBeenCalledTimes(2),
     );
+    // Reloads the header too, which is fetched outside this screen.
+    expect(appActions.updateScreen).toHaveBeenCalledTimes(1);
   });
 
   it('shows an empty state when the schema has no resumes', async () => {

@@ -1,10 +1,20 @@
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+import { DarkMode, LightMode } from '@mui/icons-material';
 import { ReactNode, useEffect, useState } from 'react';
 import useSchemaApi from '../api/useSchemaApi';
 import { AppActions } from '../utils/appActions';
 import { translate } from '../utils/translations';
 import appIcon from '../../../assets/icon.svg';
 import logger from '../utils/logger';
+import { setSetting } from '../utils/settings';
 
 type HeaderWrapperProps = {
   children: ReactNode;
@@ -17,6 +27,7 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
   const schemaApi = useSchemaApi();
   const [headerButtons, setHeaderButtons] = useState<Iterable<ReactNode>>([]);
   const [title, setTitle] = useState<string>();
+  const isDark = useMediaQuery('(prefers-color-scheme: dark)', { noSsr: true });
 
   useEffect(() => {
     schemaApi
@@ -62,6 +73,13 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
           <Typography variant="h4" marginRight={2}>
             {title}
           </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="Toggle theme"
+            onClick={() => setSetting('themeMode', isDark ? 'light' : 'dark')}
+          >
+            {isDark ? <LightMode /> : <DarkMode />}
+          </IconButton>
           {headerButtons}
         </Toolbar>
       </AppBar>

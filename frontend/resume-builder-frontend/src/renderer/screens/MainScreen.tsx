@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Skeleton, Typography } from '@mui/material';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import MainScreenResponse from '../DTO/MainScreenResponse';
@@ -111,6 +111,13 @@ export default function MainScreen(props: MainScreenProps) {
     }
   }, [mainSchema, appActions]);
 
+  // Retry reloads the header as well: it is fetched once per appActions
+  // identity, which updateScreen changes.
+  const handleRetry = useCallback(() => {
+    appActions.updateScreen();
+    setRetryCount((count) => count + 1);
+  }, [appActions]);
+
   const screenSchema = mainSchema?.schema;
   const newButton = screenSchema?.create_new;
   const importButton = screenSchema?.import_button;
@@ -195,7 +202,7 @@ export default function MainScreen(props: MainScreenProps) {
           </Box>
         </>
       ) : loadError ? (
-        <MainScreenError onRetry={() => setRetryCount((c) => c + 1)} />
+        <MainScreenError onRetry={handleRetry} />
       ) : (
         <MainScreenSkeleton />
       )}

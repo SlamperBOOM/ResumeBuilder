@@ -9,16 +9,25 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'node:path';
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  shell,
+} from 'electron';
 import log from 'electron-log';
 import axios from 'axios';
-import windowStateKeeper from 'electron-window-state';
 import { resolveHtmlPath } from './util';
 import { handleAppProtocol, registerAppScheme } from './app-protocol';
 import { startBackend, stopBackend, isBackendRunning } from './backend-manager';
 import FrontendActionEnum from '../renderer/frontendAction/FrontendActionEnum';
 import { appTitle, defaultBackendPort } from '../renderer/utils/consts';
 import ActionResponseDTO from '../renderer/DTO/ActionResponseDTO';
+import settings from './settings';
+import { settingsDefaults } from '../renderer/utils/settingsDefaults';
+import { colors } from '../renderer/theme/colors';
 
 registerAppScheme();
 
@@ -76,6 +85,18 @@ const installExtensions = async () => {
     );
 };
 
+function saveWindowState() {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+  const { width, height } = mainWindow.getNormalBounds();
+  settings.set('window', {
+    width,
+    height,
+    isMaximized: mainWindow.isMaximized(),
+  });
+}
+
 const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
@@ -89,10 +110,13 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
-  const windowState = windowStateKeeper({
-    defaultWidth: 1200,
-    defaultHeight: 800,
-  });
+  nativeTheme.themeSource = settings.get('themeMode');
+  const windowBackground = () =>
+    nativeTheme.shouldUseDarkColors
+      ? colors.dark.background.default
+      : colors.light.background.default;
+
+  const windowState = settings.get('window');
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -100,6 +124,7 @@ const createWindow = async () => {
     minWidth: 800,
     width: windowState.width,
     height: windowState.height,
+    backgroundColor: windowBackground(),
     icon: getAssetPath('icon.png'),
     title: appTitle,
     webPreferences: {
@@ -112,7 +137,10 @@ const createWindow = async () => {
     },
   });
 
-  windowState.manage(mainWindow);
+  if (windowState.isMaximized) {
+    mainWindow.maximize();
+  }
+  mainWindow.on('close', saveWindowState);
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -136,7 +164,7 @@ const createWindow = async () => {
         overrideBrowserWindowOptions: {
           frame: true,
           fullscreenable: false,
-          backgroundColor: 'white',
+          backgroundColor: windowBackground(),
           webPreferences: {
             preload: 'my-child-window-preload-script.js',
           },
@@ -187,6 +215,20 @@ ipcMain.handle('open-image-dialog', async () => {
   return result;
 });
 
+settings.onDidChange('themeMode', (mode) => {
+  nativeTheme.themeSource = mode ?? settingsDefaults.themeMode;
+});
+
+ipcMain.handle('settings:get', () => settings.store);
+
+ipcMain.handle('settings:set', (_event, key: string, value: unknown) => {
+  // Renderer input: reject unknown keys; the store schema rejects bad values.
+  if (!(key in settingsDefaults)) {
+    throw new Error(`Unknown setting: ${key}`);
+  }
+  settings.set(key as keyof typeof settingsDefaults, value as never);
+});
+
 ipcMain.handle('get-backend-port', () => activeBackendPort);
 
 ipcMain.handle('get-app-version', () => app.getVersion());
@@ -204,6 +246,8 @@ ipcMain.handle('open-external', async (_event, url: string) => {
 });
 
 app.on('before-quit', async (event) => {
+  // app.exit() below skips the window 'close' event, so save here as well.
+  saveWindowState();
   if (!isBackendRunning()) {
     return;
   }
