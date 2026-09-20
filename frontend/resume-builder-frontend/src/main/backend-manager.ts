@@ -117,11 +117,13 @@ export async function startBackend(options: BackendOptions): Promise<number> {
     jarPath,
   ];
 
+  const workingDir = app.getPath('userData');
+
   log.info(`[backend] spawning: "${javaPath}" ${args.join(' ')}`);
-  log.info(`[backend] cwd: ${path.dirname(jarPath)}`);
+  log.info(`[backend] cwd: ${workingDir}`);
 
   backendProcess = spawn(javaPath, args, {
-    cwd: path.dirname(jarPath),
+    cwd: workingDir,
     env: {
       ...process.env,
       ...options.env,
