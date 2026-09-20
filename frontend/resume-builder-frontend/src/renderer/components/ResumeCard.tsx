@@ -4,10 +4,12 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Chip,
   Grid,
   IconButton,
   Menu,
   MenuItem,
+  Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -147,10 +149,36 @@ export function ResumeCard(props: ResumeCardProps) {
           </Grid>
         </Grid>
 
-        <Box mt={2}>
+        {resume.tags && resume.tags.length > 0 && (
+          <Stack direction="row" flexWrap="wrap" gap={0.75} mt={1.5}>
+            {resume.tags.map((tag) => (
+              <Chip
+                key={tag}
+                label={translateKey(tag)}
+                size="small"
+                variant="outlined"
+              />
+            ))}
+          </Stack>
+        )}
+
+        <Box mt={2} display="flex" gap={1}>
           <Button
-            variant="text"
-            fullWidth
+            variant="contained"
+            sx={{ flex: 1 }}
+            onClick={() => {
+              appActions.performBduAction(screenSchema.edit_button.action, {
+                payload: {
+                  resume_id: resume.resume_id,
+                },
+              });
+            }}
+          >
+            {translateKey(screenSchema.edit_button.key)}
+          </Button>
+          <Button
+            variant="outlined"
+            sx={{ flex: 1 }}
             onClick={() => {
               appActions.performBduAction(screenSchema.export_button.action, {
                 payload: {

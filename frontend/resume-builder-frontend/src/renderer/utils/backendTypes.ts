@@ -42,10 +42,15 @@ export type BDUActionPayload = {
 
 export type MainScreenSchema = {
   resume_menu: { [menuKey: string]: BDUButtonSchema };
+  edit_button: BDUButtonSchema;
   export_button: BDUButtonSchema;
   resume_menu_tooltip_title: string;
   create_new: BDUButtonSchema;
   import_button: BDUButtonSchema;
+  search_placeholder: string;
+  no_search_results: string;
+  // Which resume fields become card chips. The frontend only renders them.
+  card_tags: { resume_value: string; key_prefix: string }[];
   empty_state: { title: string; subtitle: string };
 };
 
@@ -55,6 +60,7 @@ export type SimpleResume = {
   last_modification_date: string;
   html_preview: string;
   pdf_preview: string;
+  tags?: string[];
 };
 
 export type HeaderSchema = {
@@ -79,6 +85,7 @@ export type BlocksSchema = { [block_name: string]: BlockContent };
 export type EditScreenSchema = {
   edit_area: {
     to_main_screen_title: string;
+    blocks_title: string;
     export_button: BDUButtonSchema;
     resume_name: TextInput;
     resume_locale: DropDownList;

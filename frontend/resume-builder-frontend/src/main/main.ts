@@ -120,8 +120,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    minHeight: 600,
-    minWidth: 800,
+    minHeight: 800,
+    minWidth: 1000,
     width: windowState.width,
     height: windowState.height,
     backgroundColor: windowBackground(),

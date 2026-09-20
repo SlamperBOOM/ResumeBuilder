@@ -7,6 +7,7 @@ export type Settings = {
   themeMode: ThemeMode;
   window: { width: number; height: number; isMaximized: boolean };
   editorLayout: string[];
+  editorBlocksLayout: string[];
   editPreviewScale: number;
   editPreviewMode: string;
 };
@@ -15,6 +16,7 @@ export const settingsDefaults: Settings = {
   themeMode: 'system',
   window: { width: 1200, height: 800, isMaximized: false },
   editorLayout: ['40', '60'],
+  editorBlocksLayout: ['28', '72'],
   editPreviewScale: 0.5,
   editPreviewMode: 'full_height', // ResumePreviewScaleEnum.FULL_HEIGHT
 };

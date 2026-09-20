@@ -22,6 +22,12 @@ const settings = new Store<Settings>({
       minItems: 2,
       maxItems: 2,
     },
+    editorBlocksLayout: {
+      type: 'array',
+      items: { type: 'string' },
+      minItems: 2,
+      maxItems: 2,
+    },
     editPreviewScale: { type: 'number', exclusiveMinimum: 0 },
     editPreviewMode: { type: 'string' },
   },

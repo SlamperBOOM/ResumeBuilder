@@ -1,14 +1,32 @@
-import { Alert, Box, Button, Skeleton, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  InputAdornment,
+  Skeleton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import MainScreenResponse from '../DTO/MainScreenResponse';
 import { useTranslate } from '../utils/translations';
+import { searchByName } from '../utils/resumeSearch';
 import logger from '../utils/logger';
+
+const CARD_MIN_WIDTH = 340;
 
 type MainScreenProps = {
   appActions: AppActions;
+};
+
+type ResumeGridProps = {
+  hasResumes: boolean;
+  cards: ReactNode[];
+  schema: MainScreenResponse;
 };
 
 function MainScreenSkeleton() {
@@ -19,7 +37,7 @@ function MainScreenSkeleton() {
       aria-busy="true"
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_MIN_WIDTH}px, 1fr))`,
         gap: 3,
       }}
     >
@@ -63,6 +81,35 @@ function MainScreenEmptyState(props: { schema: MainScreenResponse }) {
   );
 }
 
+function ResumeGrid(props: ResumeGridProps) {
+  const { hasResumes, cards, schema } = props;
+  const translateKey = useTranslate(schema.translations);
+
+  if (!hasResumes) {
+    return <MainScreenEmptyState schema={schema} />;
+  }
+
+  if (cards.length === 0) {
+    return (
+      <Typography color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
+        {translateKey(schema.schema.no_search_results)}
+      </Typography>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_MIN_WIDTH}px, 1fr))`,
+        gap: 3,
+      }}
+    >
+      {cards}
+    </Box>
+  );
+}
+
 function MainScreenError(props: { onRetry: () => void }) {
   const { onRetry } = props;
   return (
@@ -90,6 +137,7 @@ export default function MainScreen(props: MainScreenProps) {
   const [mainSchema, setMainSchema] = useState<MainScreenResponse | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const translateKey = useTranslate(mainSchema?.translations);
 
   useEffect(() => {
@@ -122,12 +170,20 @@ export default function MainScreen(props: MainScreenProps) {
   const newButton = screenSchema?.create_new;
   const importButton = screenSchema?.import_button;
 
+  const resumes = useMemo(
+    () => mainSchema?.payload.resumes ?? [],
+    [mainSchema],
+  );
+
   const resumeCards = useMemo(() => {
     if (!mainSchema) {
       return [];
     }
-    const resumes = mainSchema.payload.resumes ?? [];
-    return resumes.map((resume) => (
+    return searchByName(
+      resumes,
+      searchQuery,
+      (resume) => resume.resume_name,
+    ).map((resume) => (
       <ResumeCard
         key={resume.resume_id}
         resume={resume}
@@ -135,7 +191,7 @@ export default function MainScreen(props: MainScreenProps) {
         appActions={appActions}
       />
     ));
-  }, [mainSchema, appActions]);
+  }, [mainSchema, resumes, searchQuery, appActions]);
 
   return (
     <Box
@@ -176,6 +232,28 @@ export default function MainScreen(props: MainScreenProps) {
             >
               {translateKey(importButton.key)}
             </Button>
+
+            {resumes.length > 0 && (
+              <TextField
+                size="small"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={translateKey(screenSchema.search_placeholder)}
+                slotProps={{
+                  htmlInput: {
+                    'aria-label': translateKey(screenSchema.search_placeholder),
+                  },
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon fontSize="small" />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{ margin: 2, width: 250 }}
+              />
+            )}
           </Box>
           <Box
             sx={{
@@ -186,19 +264,11 @@ export default function MainScreen(props: MainScreenProps) {
               paddingRight: 1,
             }}
           >
-            {resumeCards.length === 0 ? (
-              <MainScreenEmptyState schema={mainSchema} />
-            ) : (
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  gap: 3,
-                }}
-              >
-                {resumeCards}
-              </Box>
-            )}
+            <ResumeGrid
+              hasResumes={resumes.length > 0}
+              cards={resumeCards}
+              schema={mainSchema}
+            />
           </Box>
         </>
       ) : loadError ? (

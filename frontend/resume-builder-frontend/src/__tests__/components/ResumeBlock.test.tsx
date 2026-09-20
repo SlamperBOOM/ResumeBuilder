@@ -27,7 +27,8 @@ const schema: BlockContent = {
 };
 
 describe('ResumeBlock', () => {
-  it('renders the translated block title', () => {
+  // The block title belongs to the form header in EditArea, not to the block body.
+  it('does not render the block title', () => {
     render(
       <ResumeBlock
         schema={schema}
@@ -36,7 +37,7 @@ describe('ResumeBlock', () => {
       />,
     );
 
-    expect(screen.getByText('Personal info')).toBeInTheDocument();
+    expect(screen.queryByText('Personal info')).toBeNull();
   });
 
   it('skips block_title and renders one FieldRenderer per remaining key', () => {

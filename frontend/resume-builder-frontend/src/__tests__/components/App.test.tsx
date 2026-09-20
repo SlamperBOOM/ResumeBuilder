@@ -47,10 +47,14 @@ beforeEach(() => {
   mockGetMainScreen.mockReset().mockResolvedValue({
     schema: {
       resume_menu: {},
+      edit_button: { key: 'edit_key', action: 'load' },
       export_button: { key: 'export_key', action: 'export' },
       resume_menu_tooltip_title: 'menu_title',
       create_new: { key: 'create_new_key', action: 'create_new' },
       import_button: { key: 'import_key', action: 'import' },
+      search_placeholder: 'search_key',
+      no_search_results: 'no_results_key',
+      card_tags: [],
       empty_state: {
         title: 'empty_title_key',
         subtitle: 'empty_subtitle_key',

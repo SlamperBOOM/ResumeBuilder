@@ -1,4 +1,18 @@
 {
+    "common": {
+        "locales": {
+            "en": "",
+            "ru": ""
+        },
+        "templates": {
+            "simple_template": "",
+            "simple_divided_template": "",
+            "timeline_template": "",
+            "simple_template_modern": "",
+            "simple_template_updated": "",
+            "dossier_template": ""
+        }
+    },
     "error_messages": {
         "resume_save_error": "",
         "unable_to_update_resume_block": "",
@@ -26,14 +40,16 @@
     },
     "main_screen": {
         "resume_menu": {
-            "edit": "",
             "duplicate": "",
             "delete": "",
             "tooltip_title": ""
         },
+        "edit_title": "",
         "create_resume_title": "",
         "export_title": "",
         "import_title": "",
+        "search_placeholder": "",
+        "no_search_results": "",
         "empty_state": {
             "title": "",
             "subtitle": ""
@@ -58,6 +74,7 @@
     "edit_screen": {
         "resume_name_title": "",
         "to_main_screen_title": "",
+        "blocks_title": "",
         "export_title": "",
         "resume_locale_title": "",
         "template_name_title": "",
@@ -70,10 +87,6 @@
             "custom": ""
         },
         "locale_name": "",
-        "locales": {
-            "en": "",
-            "ru": ""
-        },
         "main_block": {
             "title": "",
             "person_photo": "",
@@ -203,14 +216,6 @@
         },
         "additional_info": {
             "title": ""
-        },
-        "templates": {
-            "simple_template_name": "",
-            "simple_divided_template_name": "",
-            "timeline_template_name": "",
-            "simple_template_modern_name": "",
-            "simple_template_updated_name": "",
-            "dossier_template_name": ""
         }
     }
 }

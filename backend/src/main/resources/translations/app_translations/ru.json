@@ -1,4 +1,18 @@
 {
+    "common": {
+        "locales": {
+            "en": "Английский",
+            "ru": "Русский"
+        },
+        "templates": {
+            "simple_template": "Простой шаблон",
+            "simple_divided_template": "Простой разделенный шаблон",
+            "timeline_template": "В стиле таймлайн",
+            "simple_template_modern": "*игнор*",
+            "simple_template_updated": "Современный шаблон",
+            "dossier_template": "В стиле досье"
+        }
+    },
     "error_messages": {
         "resume_save_error": "Не удалось сохранить резюме. Попробуйте ещё раз.",
         "unable_to_update_resume_block": "Не удалось сохранить изменения в резюме. Попробуйте ещё раз.",
@@ -26,14 +40,16 @@
     },
     "main_screen": {
         "resume_menu": {
-            "edit": "Редактировать",
             "duplicate": "Дублировать",
             "delete": "Удалить",
             "tooltip_title": "Действия"
         },
+        "edit_title": "Редактировать",
         "create_resume_title": "Создать резюме",
         "export_title": "Экспортировать в PDF",
         "import_title": "Импортировать резюме",
+        "search_placeholder": "Поиск по названию",
+        "no_search_results": "Ничего не найдено",
         "empty_state": {
             "title": "У вас пока нет резюме",
             "subtitle": "Нажмите «Создать резюме», чтобы начать"
@@ -58,6 +74,7 @@
     "edit_screen": {
         "resume_name_title": "Название резюме",
         "to_main_screen_title": "В главное меню",
+        "blocks_title": "Блоки резюме",
         "export_title": "Экспортировать в PDF",
         "resume_locale_title": "Язык резюме",
         "template_name_title": "Выбранный шаблон",
@@ -70,10 +87,6 @@
             "custom": "Произвольный"
         },
         "locale_name": "ru",
-        "locales": {
-            "en": "Английский",
-            "ru": "Русский"
-        },
         "main_block": {
             "title": "Основная информация",
             "person_photo": "Ваше фото",
@@ -203,14 +216,6 @@
         },
         "additional_info": {
             "title": "Доп. инфо"
-        },
-        "templates": {
-            "simple_template_name": "Простой шаблон",
-            "simple_divided_template_name": "Простой разделенный шаблон",
-            "timeline_template_name": "В стиле таймлайн",
-            "simple_template_modern_name": "*игнор*",
-            "simple_template_updated_name": "Современный шаблон",
-            "dossier_template_name": "В стиле досье"
         }
     }
 }

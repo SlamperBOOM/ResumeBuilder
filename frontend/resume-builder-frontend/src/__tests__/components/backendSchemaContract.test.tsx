@@ -67,6 +67,7 @@ const SCREENS: Record<string, string> = {
   edit_schema: 'edit_screen',
   header_schema: 'header',
   language_dialog_schema: 'language_dialog',
+  templates_schema: 'edit_screen',
 };
 
 // Mirrors TranslationsManager.flattenNode: { a: { b: 'x' } } -> { 'a.b': 'x' }
@@ -84,7 +85,10 @@ function flatten(node: object, prefix = ''): Translations {
 }
 
 function translationsFor(section: string, locale = 'en') {
-  return flatten(appTranslations[locale][section]);
+  return {
+    ...flatten(appTranslations[locale].common),
+    ...flatten(appTranslations[locale][section]),
+  };
 }
 
 // Every [prop, value] pair of a JSON tree, at any depth.
@@ -104,8 +108,12 @@ const TRANSLATED_PROPS = new Set([
   'title',
   'subtitle',
   'block_title',
+  'display_name',
   'resume_menu_tooltip_title',
+  'search_placeholder',
+  'no_search_results',
   'to_main_screen_title',
+  'blocks_title',
   'template_choose_title',
   'add_button_title',
   'change_button_title',
@@ -167,6 +175,33 @@ describe('backend screen schemas', () => {
       expect(missing).toEqual([]);
     },
   );
+
+  it.each(LOCALES)(
+    'resolve every card tag of a real resume in "%s"',
+    (locale) => {
+      const { card_tags: cardTags } = readScreen('main_schema');
+      const translations = translationsFor('main_screen', locale);
+      const resume = readBackendJson(
+        'test/resources/sample_resumes/data_analyst.json',
+      );
+
+      expect(cardTags.length).toBeGreaterThan(0);
+      cardTags.forEach(
+        ({
+          resume_value: resumeValue,
+          key_prefix: keyPrefix,
+        }: {
+          resume_value: string;
+          key_prefix: string;
+        }) => {
+          expect(typeof resume[resumeValue]).toBe('string');
+          expect(
+            translations[`${keyPrefix}${resume[resumeValue]}`],
+          ).toBeDefined();
+        },
+      );
+    },
+  );
 });
 
 describe('HeaderWrapper with the real header schema', () => {
@@ -191,9 +226,10 @@ describe('HeaderWrapper with the real header schema', () => {
 });
 
 describe('MainScreen with the real main screen schema', () => {
-  it('renders one menu item per resume_menu entry', async () => {
+  // A main screen response carrying one resume, tagged the way BDUIBuilder tags it.
+  function mainScreenFor(screenSchema: MainScreenResponse['schema']) {
     const response: MainScreenResponse = {
-      schema: readScreen('main_schema'),
+      schema: screenSchema,
       translations: translationsFor('main_screen'),
       payload: {
         resumes: [
@@ -203,11 +239,11 @@ describe('MainScreen with the real main screen schema', () => {
             last_modification_date: '2024-01-01T00:00:00.000Z',
             html_preview: '',
             pdf_preview: '',
+            tags: ['locales.en', 'templates.simple_template'],
           },
         ],
       },
     };
-    const { schema, translations } = response;
     const appActions = makeAppActions({
       updateCurrentScreen: jest.fn(async (payload: UpdateScreenPayload) => {
         if (payload.source === ScreenSource.MAIN) {
@@ -215,6 +251,12 @@ describe('MainScreen with the real main screen schema', () => {
         }
       }),
     });
+    return { response, appActions };
+  }
+
+  it('renders one menu item per resume_menu entry', async () => {
+    const { response, appActions } = mainScreenFor(readScreen('main_schema'));
+    const { schema, translations } = response;
 
     render(<MainScreen appActions={appActions} />);
     fireEvent.click(
@@ -230,6 +272,29 @@ describe('MainScreen with the real main screen schema', () => {
         (button) => translations[button.key],
       ),
     );
+    expect(schema.resume_menu).not.toHaveProperty('edit');
+  });
+
+  it('renders the edit button on the card and resolves the tag keys', async () => {
+    const { response, appActions } = mainScreenFor(readScreen('main_schema'));
+    const { schema, translations } = response;
+
+    render(<MainScreen appActions={appActions} />);
+
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: translations[schema.edit_button.key],
+      }),
+    );
+
+    expect(appActions.performBduAction).toHaveBeenCalledWith(
+      schema.edit_button.action,
+      { payload: { resume_id: 'r1' } },
+    );
+    (response.payload.resumes[0].tags ?? []).forEach((tag) => {
+      expect(translations[tag]).toBeDefined();
+      expect(screen.getByText(translations[tag])).toBeInTheDocument();
+    });
   });
 });
 
@@ -257,6 +322,13 @@ describe('EditArea with the real edit schema and a sample resume', () => {
     return appActions;
   }
 
+  // The form shows one block at a time; the rail switches to the given one.
+  function selectBlock(blockKey: string) {
+    const blockTitle =
+      translations[schema.edit_area.resume_blocks[blockKey].block_title];
+    fireEvent.click(screen.getByRole('button', { name: blockTitle }));
+  }
+
   // Waits out EditArea's 2s autosave debounce, returns saved blocks by name.
   async function saveAndGetBlocks(appActions: AppActions) {
     await act(async () => {
@@ -281,7 +353,7 @@ describe('EditArea with the real edit schema and a sample resume', () => {
     jest.useRealTimers();
   });
 
-  it('renders every block and fills the fields from the resume', () => {
+  it('lists every block in the rail and renders the selected one', () => {
     const warnSpy = jest.spyOn(console, 'warn');
 
     renderEditArea();
@@ -291,12 +363,21 @@ describe('EditArea with the real edit schema and a sample resume', () => {
     }[];
     blocks.forEach((block) => {
       expect(
-        screen.getByText(translations[block.block_title]),
-      ).toBeInTheDocument();
+        screen.getAllByText(translations[block.block_title]).length,
+      ).toBeGreaterThan(0);
     });
+
+    // The first block is selected by default, the others are not rendered yet.
     expect(
       screen.getByLabelText(translations['main_block.first_name']),
     ).toHaveValue(resume.blocks.MAIN_BLOCK.first_name);
+    expect(
+      screen.queryByDisplayValue(
+        resume.blocks.EXPERIENCE.experiences[1].position,
+      ),
+    ).toBeNull();
+
+    selectBlock('experience');
     expect(
       screen.getByDisplayValue(
         resume.blocks.EXPERIENCE.experiences[1].position,
@@ -307,6 +388,20 @@ describe('EditArea with the real edit schema and a sample resume', () => {
     );
 
     warnSpy.mockRestore();
+  });
+
+  it('does not save when the user only switches blocks', async () => {
+    const appActions = renderEditArea();
+
+    selectBlock('experience');
+    selectBlock('contacts');
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    // Switching registers and unregisters the fields of both blocks, which the
+    // form reports like any other change - but the user edited nothing.
+    expect(appActions.performBduAction).not.toHaveBeenCalled();
   });
 
   it('saves an edited block field and leaves the other blocks as loaded', async () => {
@@ -329,6 +424,7 @@ describe('EditArea with the real edit schema and a sample resume', () => {
     const appActions = renderEditArea();
     const [first, second] = resume.blocks.EXPERIENCE.experiences;
 
+    selectBlock('experience');
     fireEvent.change(screen.getByDisplayValue(second.position), {
       target: { value: 'Lead Data Analyst' },
     });

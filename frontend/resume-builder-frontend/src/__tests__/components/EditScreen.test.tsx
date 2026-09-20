@@ -27,6 +27,7 @@ jest.mock('../../renderer/components/ResumePDFPreview');
 const schema: EditScreenSchema = {
   edit_area: {
     to_main_screen_title: 'to_main_key',
+    blocks_title: 'blocks_title_key',
     export_button: { key: 'export_key', action: 'export' },
     resume_name: {
       type: 'text_input',
@@ -114,8 +115,12 @@ describe('EditScreen', () => {
     expect(await screen.findByTestId('mock-edit-area')).toBeInTheDocument();
     expect(screen.getByTestId('mock-preview-controls')).toBeInTheDocument();
     expect(screen.getByTestId('mock-pdf-preview')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Back to main' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Back to main' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
+    // Document action row also carries the resume name.
+    expect(screen.getByText('My resume')).toBeInTheDocument();
   });
 
   it('navigates to the main screen when "Back to main" is clicked', async () => {
@@ -125,7 +130,9 @@ describe('EditScreen', () => {
 
     renderScreen(appActions);
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Back to main' }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Back to main' }),
+    );
 
     expect(appActions.performBduAction).toHaveBeenCalledWith(
       BDU_ACTION_OPEN_MAIN_SCREEN,

@@ -35,6 +35,7 @@ jest.mock(
 const schema: EditScreenSchema = {
   edit_area: {
     to_main_screen_title: 'to_main_key',
+    blocks_title: 'blocks_title_key',
     export_button: { key: 'export_key', action: 'export' },
     resume_name: {
       type: 'text_input',
@@ -86,7 +87,7 @@ const response: EditScreenResponse = {
 };
 
 describe('EditArea', () => {
-  it('renders the top-level fields and one block per resume block', () => {
+  it('renders the top-level fields and only the selected block', () => {
     render(
       <EditArea
         appActions={makeAppActions()}
@@ -102,8 +103,29 @@ describe('EditArea', () => {
       screen.getByTestId('mock-resume-block-personal_block_title'),
     ).toBeInTheDocument();
     expect(
+      screen.queryByTestId('mock-resume-block-experience_block_title'),
+    ).toBeNull();
+  });
+
+  it('switches the shown block when the rail selection changes', () => {
+    render(
+      <EditArea
+        appActions={makeAppActions()}
+        editSchemaResponse={response}
+        setEditSchema={jest.fn()}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /experience_block_title/ }),
+    );
+
+    expect(
       screen.getByTestId('mock-resume-block-experience_block_title'),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('mock-resume-block-personal_block_title'),
+    ).toBeNull();
   });
 
   it('auto-saves through performBduAction 2s after the user stops typing', async () => {

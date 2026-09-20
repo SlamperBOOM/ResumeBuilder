@@ -1,4 +1,12 @@
-import { Box, Button, Skeleton, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Skeleton,
+  Stack,
+  Typography,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -107,131 +115,137 @@ export default function EditScreen(props: EditScreenProps) {
       sx={{
         flex: 1,
         display: 'flex',
+        flexDirection: 'column',
         minHeight: 0,
         overflow: 'hidden',
         backgroundColor: 'surface.editor',
       }}
     >
       {editSchema && schema ? (
-        <Group orientation="horizontal" onLayoutChanged={handleLayoutChanged}>
-          {/* Left part -- Form */}
-          <Panel defaultSize={layout[0]} minSize="30">
-            <Box
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: 'background.paper',
-                borderRight: 1,
-                borderColor: 'divider',
-              }}
-            >
-              <Stack
-                spacing={2}
-                sx={{
-                  p: 2,
-                  backgroundColor: 'background.paper',
-                  boxShadow: 1,
-                  zIndex: 1,
-                }}
-              >
-                <Button
-                  onClick={() => {
-                    appActions.performBduAction(BDU_ACTION_OPEN_MAIN_SCREEN, {
-                      payload: { resume_id: resumeId },
-                    });
-                  }}
-                >
-                  {translateKey(schema.edit_area.to_main_screen_title)}
-                </Button>
-
-                <Button
-                  onClick={() =>
-                    appActions.performBduAction(
-                      schema.edit_area.export_button.action,
-                      {
-                        payload: {
-                          resume_id: editSchema.payload.resume.resume_id,
-                          resume_name: editSchema.payload.resume.resume_name,
-                        },
-                      },
-                    )
-                  }
-                >
-                  {translateKey(schema.edit_area.export_button.key)}
-                </Button>
-              </Stack>
-
-              <Box
-                sx={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  p: 2,
-                  minHeight: 0,
-                }}
-              >
-                {editSchema && (
-                  <EditArea
-                    appActions={appActions}
-                    editSchemaResponse={editSchema}
-                    setEditSchema={setEditSchema}
-                  />
-                )}
-              </Box>
-            </Box>
-          </Panel>
-
-          <Separator
-            style={{
-              width: '6px',
-              background: 'var(--mui-palette-primary-main)',
-              cursor: 'col-resize',
+        <>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={2}
+            sx={{
+              px: 2,
+              py: 1,
+              borderBottom: 1,
+              borderColor: 'divider',
+              backgroundColor: 'background.paper',
             }}
-          />
-
-          {/* Right part — preview */}
-          <Panel defaultSize={layout[1]} minSize="30">
-            <Box
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
+          >
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => {
+                appActions.performBduAction(BDU_ACTION_OPEN_MAIN_SCREEN, {
+                  payload: { resume_id: resumeId },
+                });
               }}
             >
+              {translateKey(schema.edit_area.to_main_screen_title)}
+            </Button>
+
+            <Divider orientation="vertical" flexItem />
+
+            <Typography variant="h6" noWrap sx={{ flex: 1, minWidth: 0 }}>
+              {editSchema.payload.resume.resume_name}
+            </Typography>
+
+            <Button
+              variant="contained"
+              onClick={() =>
+                appActions.performBduAction(
+                  schema.edit_area.export_button.action,
+                  {
+                    payload: {
+                      resume_id: editSchema.payload.resume.resume_id,
+                      resume_name: editSchema.payload.resume.resume_name,
+                    },
+                  },
+                )
+              }
+            >
+              {translateKey(schema.edit_area.export_button.key)}
+            </Button>
+          </Stack>
+
+          <Group orientation="horizontal" onLayoutChanged={handleLayoutChanged}>
+            {/* Left part -- block rail + form */}
+            <Panel defaultSize={layout[0]} minSize="30">
               <Box
                 sx={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  justifyContent: 'center',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: 0,
+                  backgroundColor: 'background.paper',
+                  borderRight: 1,
+                  borderColor: 'divider',
                 }}
               >
-                <ResumePDFPreview
-                  preview={editSchema?.payload?.preview}
-                  paginated
-                  scaleType={previewMode}
-                  scale={previewScale}
+                <EditArea
+                  appActions={appActions}
+                  editSchemaResponse={editSchema}
+                  setEditSchema={setEditSchema}
                 />
               </Box>
+            </Panel>
 
-              <PreviewControls
-                scaleTitle={translateKey(schema.edit_area.preview.scale_title)}
-                fullWidthLabel={translateKey(
-                  schema.edit_area.preview.full_width_option_key,
-                )}
-                fullHeightLabel={translateKey(
-                  schema.edit_area.preview.full_height_option_key,
-                )}
-                customLabel={translateKey(
-                  schema.edit_area.preview.custom_option_key,
-                )}
-                previewMode={previewMode}
-                onPreviewModeChange={handlePreviewModeChange}
-                previewScale={previewScale}
-                onPreviewScaleChange={handlePreviewScaleChange}
-              />
-            </Box>
-          </Panel>
-        </Group>
+            <Separator
+              style={{
+                width: '6px',
+                background: 'var(--mui-palette-primary-main)',
+                cursor: 'col-resize',
+              }}
+            />
+
+            {/* Right part — preview */}
+            <Panel defaultSize={layout[1]} minSize="30">
+              <Box
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Box
+                  sx={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ResumePDFPreview
+                    preview={editSchema?.payload?.preview}
+                    paginated
+                    scaleType={previewMode}
+                    scale={previewScale}
+                  />
+                </Box>
+
+                <PreviewControls
+                  scaleTitle={translateKey(
+                    schema.edit_area.preview.scale_title,
+                  )}
+                  fullWidthLabel={translateKey(
+                    schema.edit_area.preview.full_width_option_key,
+                  )}
+                  fullHeightLabel={translateKey(
+                    schema.edit_area.preview.full_height_option_key,
+                  )}
+                  customLabel={translateKey(
+                    schema.edit_area.preview.custom_option_key,
+                  )}
+                  previewMode={previewMode}
+                  onPreviewModeChange={handlePreviewModeChange}
+                  previewScale={previewScale}
+                  onPreviewScaleChange={handlePreviewScaleChange}
+                />
+              </Box>
+            </Panel>
+          </Group>
+        </>
       ) : (
         <EditScreenSkeleton />
       )}

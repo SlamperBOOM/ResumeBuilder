@@ -1,6 +1,7 @@
 {
     "edit_area": {
         "to_main_screen_title": "to_main_screen_title",
+        "blocks_title": "blocks_title",
         "export_button": {
             "key": "export_title",
             "action": "export"

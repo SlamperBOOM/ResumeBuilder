@@ -13,17 +13,24 @@ const schema: MainScreenResponse = {
       rename: { key: 'rename_key', action: 'rename' },
       delete: { key: 'delete_key', action: 'delete' },
     },
+    edit_button: { key: 'edit_key', action: 'load' },
     export_button: { key: 'export_key', action: 'export' },
     resume_menu_tooltip_title: 'menu_tooltip_key',
     create_new: { key: 'create_new_key', action: 'create_new' },
     import_button: { key: 'import_key', action: 'import' },
+    search_placeholder: 'search_key',
+    no_search_results: 'no_results_key',
+    card_tags: [],
     empty_state: { title: 'empty_title_key', subtitle: 'empty_subtitle_key' },
   },
   translations: {
     rename_key: 'Rename',
     delete_key: 'Delete',
+    edit_key: 'Edit',
     export_key: 'Export',
     menu_tooltip_key: 'More options',
+    locales_ru_key: 'Russian',
+    template_key: 'Modern template',
   },
   payload: { resumes: [], on_load_action: undefined },
 };
@@ -34,6 +41,7 @@ const resume: SimpleResume = {
   last_modification_date: '2024-01-01T00:00:00.000Z',
   html_preview: '',
   pdf_preview: 'preview.pdf',
+  tags: ['locales_ru_key', 'template_key'],
 };
 
 describe('ResumeCard', () => {
@@ -112,6 +120,44 @@ describe('ResumeCard', () => {
     await waitFor(() =>
       expect(screen.queryByRole('menuitem', { name: 'Delete' })).toBeNull(),
     );
+  });
+
+  it('renders one chip per tag', () => {
+    render(
+      <ResumeCard
+        resume={resume}
+        schema={schema}
+        appActions={makeAppActions()}
+      />,
+    );
+
+    expect(screen.getByText('Russian')).toBeInTheDocument();
+    expect(screen.getByText('Modern template')).toBeInTheDocument();
+  });
+
+  it('renders no chips when the resume has no tags', () => {
+    render(
+      <ResumeCard
+        resume={{ ...resume, tags: [] }}
+        schema={schema}
+        appActions={makeAppActions()}
+      />,
+    );
+
+    expect(screen.queryByText('Russian')).toBeNull();
+  });
+
+  it('dispatches the edit action from the card button, not the menu', () => {
+    const appActions = makeAppActions();
+    render(
+      <ResumeCard resume={resume} schema={schema} appActions={appActions} />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+
+    expect(appActions.performBduAction).toHaveBeenCalledWith('load', {
+      payload: { resume_id: 'r1' },
+    });
   });
 
   it('dispatches the export action with the resume id and name', () => {

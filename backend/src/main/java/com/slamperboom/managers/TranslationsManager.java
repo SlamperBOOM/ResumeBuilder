@@ -17,7 +17,6 @@ import java.util.*;
 @ApplicationScoped
 public class TranslationsManager {
     private final Logger logger = Logger.getLogger(this.getClass());
-    private static TranslationsManager translationsManagerInstance;
 
     private static final String APP_TRANSLATIONS_PATH = "translations/app_translations";
     private static final String RESUME_TRANSLATIONS_PATH = "translations/resume_translations";
@@ -25,6 +24,7 @@ public class TranslationsManager {
     private static final String TRANSLATIONS_EXTENSION = ".json";
     private static final String DEFAULT_LOCALE = "en";
 
+    private static final String COMMON_KEY = "common";
     private static final String MAIN_SCREEN_KEY = "main_screen";
     private static final String HEADER_KEY = "header";
     private static final String EDIT_SCREEN_KEY = "edit_screen";
@@ -127,8 +127,16 @@ public class TranslationsManager {
         JsonNode section = localeTranslations.get(key);
         if (section == null) {
             logger.warnf("Missing translation section \"%s\" for locale \"%s\"", key, currentLocale);
+            return null;
         }
-        return section;
+
+        JsonNode common = localeTranslations.get(COMMON_KEY);
+        if (COMMON_KEY.equals(key) || common == null || !(section instanceof ObjectNode)) {
+            return section;
+        }
+        ObjectNode result = common.deepCopy();
+        result.setAll((ObjectNode) section);
+        return result;
     }
 
     private JsonNode getHelpSection(String key) {

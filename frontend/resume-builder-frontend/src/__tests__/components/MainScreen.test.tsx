@@ -23,16 +23,22 @@ jest.mock('../../renderer/components/ResumeCard', () => ({
 
 const schema: MainScreenSchema = {
   resume_menu: {},
+  edit_button: { key: 'edit_key', action: 'load' },
   export_button: { key: 'export_key', action: 'export' },
   resume_menu_tooltip_title: 'menu_title',
   create_new: { key: 'create_new_key', action: 'create_new' },
   import_button: { key: 'import_key', action: 'import' },
+  search_placeholder: 'search_key',
+  no_search_results: 'no_results_key',
+  card_tags: [],
   empty_state: { title: 'empty_title_key', subtitle: 'empty_subtitle_key' },
 };
 
 const translations = {
   create_new_key: 'New resume',
   import_key: 'Import',
+  search_key: 'Search by name',
+  no_results_key: 'Nothing found',
   empty_title_key: 'No resumes yet',
   empty_subtitle_key: 'Create your first resume to get started.',
 };
@@ -130,5 +136,61 @@ describe('MainScreen', () => {
       await screen.findByTestId('mock-resume-card-r1'),
     ).toBeInTheDocument();
     expect(screen.getByTestId('mock-resume-card-r2')).toBeInTheDocument();
+  });
+
+  it('hides the search field while there are no resumes', async () => {
+    const appActions = makeAppActions({
+      updateCurrentScreen: jest.fn(respondingWith(emptyResponse)),
+    });
+
+    render(<MainScreen appActions={appActions} />);
+
+    await screen.findByText('No resumes yet');
+    expect(screen.queryByLabelText('Search by name')).toBeNull();
+  });
+
+  it('keeps only the resumes matching the search query', async () => {
+    const appActions = makeAppActions({
+      updateCurrentScreen: jest.fn(respondingWith(withResumesResponse)),
+    });
+
+    render(<MainScreen appActions={appActions} />);
+
+    fireEvent.change(await screen.findByLabelText('Search by name'), {
+      target: { value: 'Two' },
+    });
+
+    expect(screen.getByTestId('mock-resume-card-r2')).toBeInTheDocument();
+    expect(screen.queryByTestId('mock-resume-card-r1')).toBeNull();
+  });
+
+  it('still finds a resume when the query has a typo', async () => {
+    const appActions = makeAppActions({
+      updateCurrentScreen: jest.fn(respondingWith(withResumesResponse)),
+    });
+
+    render(<MainScreen appActions={appActions} />);
+
+    fireEvent.change(await screen.findByLabelText('Search by name'), {
+      target: { value: 'Resme One' },
+    });
+
+    expect(screen.getByTestId('mock-resume-card-r1')).toBeInTheDocument();
+    expect(screen.queryByTestId('mock-resume-card-r2')).toBeNull();
+  });
+
+  it('reports that nothing matches the search query', async () => {
+    const appActions = makeAppActions({
+      updateCurrentScreen: jest.fn(respondingWith(withResumesResponse)),
+    });
+
+    render(<MainScreen appActions={appActions} />);
+
+    fireEvent.change(await screen.findByLabelText('Search by name'), {
+      target: { value: 'zzzzzz' },
+    });
+
+    expect(screen.getByText('Nothing found')).toBeInTheDocument();
+    expect(screen.queryByTestId('mock-resume-card-r1')).toBeNull();
   });
 });

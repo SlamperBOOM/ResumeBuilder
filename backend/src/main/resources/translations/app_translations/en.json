@@ -1,4 +1,18 @@
 {
+    "common": {
+        "locales": {
+            "en": "English",
+            "ru": "Russian"
+        },
+        "templates": {
+            "simple_template": "Simple template",
+            "simple_divided_template": "Simple divided template",
+            "timeline_template": "Timeline style",
+            "simple_template_modern": "*ignore*",
+            "simple_template_updated": "Modern template",
+            "dossier_template": "Dossier style"
+        }
+    },
     "error_messages": {
         "resume_save_error": "Unable to save the resume. Please try again.",
         "unable_to_update_resume_block": "Unable to save changes to the resume. Please try again.",
@@ -26,14 +40,16 @@
     },
     "main_screen": {
         "resume_menu": {
-            "edit": "Edit",
             "duplicate": "Duplicate",
             "delete": "Delete",
             "tooltip_title": "Actions"
         },
+        "edit_title": "Edit",
         "create_resume_title": "Create resume",
         "export_title": "Export to PDF",
         "import_title": "Import resume",
+        "search_placeholder": "Search by name",
+        "no_search_results": "Nothing found",
         "empty_state": {
             "title": "You don't have any resumes yet",
             "subtitle": "Click \"Create resume\" above to get started"
@@ -58,6 +74,7 @@
     "edit_screen": {
         "resume_name_title": "Resume name",
         "to_main_screen_title": "To main menu",
+        "blocks_title": "Resume blocks",
         "export_title": "Export to PDF",
         "resume_locale_title": "Resume language",
         "template_name_title": "Chosen template",
@@ -70,10 +87,6 @@
             "custom": "Custom"
         },
         "locale_name": "en",
-        "locales": {
-            "en": "English",
-            "ru": "Russian"
-        },
         "main_block": {
             "title": "Basic information",
             "person_photo": "Your photo",
@@ -203,14 +216,6 @@
         },
         "additional_info": {
             "title": "Additional info"
-        },
-        "templates": {
-            "simple_template_name": "Simple template",
-            "simple_divided_template_name": "Simple divided template",
-            "timeline_template_name": "Timeline style",
-            "simple_template_modern_name": "*ignore*",
-            "simple_template_updated_name": "Modern template",
-            "dossier_template_name": "Dossier style"
         }
     }
 }

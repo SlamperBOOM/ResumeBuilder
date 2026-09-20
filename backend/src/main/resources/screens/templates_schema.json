@@ -1,14 +1,14 @@
 {
     "simple_template": {
-        "display_name": "templates.simple_template_name"
+        "display_name": "templates.simple_template"
     },
     "simple_divided_template": {
-        "display_name": "templates.simple_divided_template_name"
+        "display_name": "templates.simple_divided_template"
     },
     "timeline_template": {
-        "display_name": "templates.timeline_template_name"
+        "display_name": "templates.timeline_template"
     },
     "simple_template_updated": {
-        "display_name": "templates.simple_template_updated_name"
+        "display_name": "templates.simple_template_updated"
     }
 }

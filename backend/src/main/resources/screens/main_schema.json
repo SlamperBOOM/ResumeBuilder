@@ -1,9 +1,5 @@
 {
     "resume_menu": {
-        "edit": {
-            "key": "resume_menu.edit",
-            "action": "load"
-        },
         "duplicate": {
             "key": "resume_menu.duplicate",
             "action": "duplicate"
@@ -14,6 +10,10 @@
         }
     },
     "resume_menu_tooltip_title": "resume_menu.tooltip_title",
+    "edit_button": {
+        "key": "edit_title",
+        "action": "load"
+    },
     "export_button": {
         "key": "export_title",
         "action": "export"
@@ -26,6 +26,18 @@
         "key": "import_title",
         "action": "import"
     },
+    "search_placeholder": "search_placeholder",
+    "no_search_results": "no_search_results",
+    "card_tags": [
+        {
+            "resume_value": "resume_locale",
+            "key_prefix": "locales."
+        },
+        {
+            "resume_value": "template_name",
+            "key_prefix": "templates."
+        }
+    ],
     "empty_state": {
         "title": "empty_state.title",
         "subtitle": "empty_state.subtitle"

@@ -57,18 +57,39 @@ public class BDUIBuilder {
         return dialogBuilders.buildMessageDialogWithoutTitle(message);
     }
 
+    private ArrayNode buildResumeTags(String resumeId, JsonNode mainScreenSchema) {
+        ArrayNode tags = objectMapper.createArrayNode();
+        IResume resume = resumeManager.getResume(resumeId);
+        if (resume == null) {
+            return tags;
+        }
+
+        JsonNode resumeJson = resume.getJson();
+        for (JsonNode tagSchema : mainScreenSchema.path("card_tags")) {
+            JsonNode value = resumeJson.path(tagSchema.path("resume_value").asText());
+            if (value.isTextual() && !value.asText().isBlank()) {
+                tags.add(tagSchema.path("key_prefix").asText() + value.asText());
+            }
+        }
+
+        return tags;
+    }
+
     public JsonNode buildMainScreen() {
         ObjectNode result = objectMapper.createObjectNode();
         resumeManager.readAllResumes();
 
-        result.set(BackendConstants.SCHEMA_KEY, schemaManager.getSchema(SchemaType.MAIN_SCREEN));
+        JsonNode mainScreenSchema = schemaManager.getSchema(SchemaType.MAIN_SCREEN);
+        result.set(BackendConstants.SCHEMA_KEY, mainScreenSchema);
         result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getMainScreenTranslations());
 
         ObjectNode payload = objectMapper.createObjectNode();
         try {
             ArrayNode resumes = objectMapper.createArrayNode();
             for (var simpleResume : resumeManager.getListOfResumes()) {
-                resumes.add(objectMapper.valueToTree(simpleResume));
+                ObjectNode resumeNode = objectMapper.valueToTree(simpleResume);
+                resumeNode.set("tags", buildResumeTags(simpleResume.resumeId(), mainScreenSchema));
+                resumes.add(resumeNode);
             }
             payload.set("resumes", resumes);
         } catch (UserException e) {
