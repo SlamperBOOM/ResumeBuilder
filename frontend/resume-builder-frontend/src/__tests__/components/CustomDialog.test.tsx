@@ -51,9 +51,7 @@ describe('CustomDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(1);
     expect(appActions.performBduAction).not.toHaveBeenCalled();
   });
 
@@ -69,18 +67,14 @@ describe('CustomDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'PDF' }));
 
-    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(1);
     expect(appActions.performBduAction).toHaveBeenCalledWith('export_pdf', {
       payload: { format: 'pdf' },
     });
 
     fireEvent.click(screen.getByRole('button', { name: 'DOCX' }));
 
-    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(
-      2,
-    );
+    expect(appActions.dialogActions.customModal.close).toHaveBeenCalledTimes(2);
     expect(appActions.performBduAction).toHaveBeenLastCalledWith(
       'export_docx',
       { payload: { format: 'docx' } },

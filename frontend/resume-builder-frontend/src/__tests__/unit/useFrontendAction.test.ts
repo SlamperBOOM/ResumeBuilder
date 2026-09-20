@@ -105,9 +105,7 @@ describe('useFrontendAction', () => {
 
     actions[FrontendActionEnum.SHOW_CONFIRMATION]({ payload });
 
-    expect(dialogActions.confirmationModal.open).toHaveBeenCalledWith(
-      payload,
-    );
+    expect(dialogActions.confirmationModal.open).toHaveBeenCalledWith(payload);
   });
 
   it('SHOW_CONFIRMATION warns and does nothing without a payload', () => {

@@ -8,7 +8,11 @@ describe('InfoDialog', () => {
   it('renders the title and text', () => {
     const schema: InfoModalSchema = { title: 'Heads up', text: 'Saved.' };
     render(
-      <InfoDialog showState schema={schema} dialogActions={makeDialogActions()} />,
+      <InfoDialog
+        showState
+        schema={schema}
+        dialogActions={makeDialogActions()}
+      />,
     );
 
     expect(screen.getByText('Heads up')).toBeInTheDocument();
@@ -18,7 +22,11 @@ describe('InfoDialog', () => {
   it('renders without a title when none is provided', () => {
     const schema: InfoModalSchema = { title: undefined, text: 'Saved.' };
     render(
-      <InfoDialog showState schema={schema} dialogActions={makeDialogActions()} />,
+      <InfoDialog
+        showState
+        schema={schema}
+        dialogActions={makeDialogActions()}
+      />,
     );
 
     expect(screen.getByText('Saved.')).toBeInTheDocument();

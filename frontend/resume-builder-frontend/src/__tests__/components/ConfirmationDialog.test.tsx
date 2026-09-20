@@ -41,9 +41,9 @@ describe('ConfirmationDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(appActions.dialogActions.confirmationModal.close).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(
+      appActions.dialogActions.confirmationModal.close,
+    ).toHaveBeenCalledTimes(1);
     expect(appActions.performBduAction).not.toHaveBeenCalled();
   });
 
@@ -59,9 +59,9 @@ describe('ConfirmationDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
-    expect(appActions.dialogActions.confirmationModal.close).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(
+      appActions.dialogActions.confirmationModal.close,
+    ).toHaveBeenCalledTimes(1);
     expect(appActions.performBduAction).toHaveBeenCalledWith('delete_resume', {
       payload: { resume_id: 'r1' },
     });

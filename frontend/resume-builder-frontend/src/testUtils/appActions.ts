@@ -13,7 +13,9 @@ export function makeDialogActions(): AppDialogActions {
   };
 }
 
-export function makeAppActions(overrides: Partial<AppActions> = {}): AppActions {
+export function makeAppActions(
+  overrides: Partial<AppActions> = {},
+): AppActions {
   return {
     dialogActions: makeDialogActions(),
     performBduAction: jest.fn(),

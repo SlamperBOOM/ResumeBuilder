@@ -27,9 +27,8 @@ function loadUseApiWithEmptyPortCache(): typeof useApi {
 
 beforeEach(() => {
   mockedAxios.request.mockReset();
-  (
-    window as unknown as { electron: { getBackendPort: jest.Mock } }
-  ).electron = { getBackendPort: jest.fn().mockResolvedValue(3000) };
+  (window as unknown as { electron: { getBackendPort: jest.Mock } }).electron =
+    { getBackendPort: jest.fn().mockResolvedValue(3000) };
 });
 
 describe('useApi', () => {

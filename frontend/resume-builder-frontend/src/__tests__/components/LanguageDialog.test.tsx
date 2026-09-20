@@ -113,9 +113,9 @@ describe('LanguageDialog', () => {
     render(<LanguageDialog showState appActions={appActions} />);
 
     await waitFor(() =>
-      expect(appActions.dialogActions.languageDialog.close).toHaveBeenCalledTimes(
-        1,
-      ),
+      expect(
+        appActions.dialogActions.languageDialog.close,
+      ).toHaveBeenCalledTimes(1),
     );
     expect(appActions.dialogActions.infoModal.open).toHaveBeenCalledWith({
       title: undefined,
@@ -127,7 +127,9 @@ describe('LanguageDialog', () => {
   it('renders one radio per locale from the loaded schema', async () => {
     render(<LanguageDialog showState appActions={makeAppActions()} />);
 
-    expect(await screen.findByRole('radio', { name: 'English' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('radio', { name: 'English' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('radio', { name: 'Polish' })).toBeInTheDocument();
   });
 
