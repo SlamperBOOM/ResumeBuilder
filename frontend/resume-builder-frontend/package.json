@@ -192,7 +192,7 @@
     "webpack-merge": "^6.0.1"
   },
   "build": {
-    "productName": "Resume Builder",
+    "productName": "ResumeBuilder",
     "appId": "com.slamperboom.ResumeBuilder",
     "asar": true,
     "afterSign": ".erb/scripts/notarize.js",
@@ -205,6 +205,9 @@
     ],
     "mac": {
       "notarize": false,
+      "extendInfo": {
+        "CFBundleDisplayName": "Resume Builder"
+      },
       "target": [
         {
           "target": "dmg",
@@ -276,10 +279,14 @@
       ],
       "category": "Development",
       "executableName": "resume-builder",
-      "maintainer": "SlamperBOOM <SlamperBOOM@users.noreply.github.com>"
+      "maintainer": "SlamperBOOM <SlamperBOOM@users.noreply.github.com>",
+      "desktop": {
+        "Name": "Resume Builder"
+      }
     },
     "deb": {
-      "artifactName": "${name}-${version}-${arch}.${ext}"
+      "artifactName": "${name}-${version}-${arch}.${ext}",
+      "afterInstall": "assets/deb-after-install.sh"
     },
     "appImage": {
       "artifactName": "${name}-${version}-${arch}.${ext}"
