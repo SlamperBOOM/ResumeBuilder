@@ -10,6 +10,10 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     surface?: Surface;
   }
+  // Types theme.colorSchemes, which cssVariables below does produce
+  interface CssThemeVariables {
+    enabled: true;
+  }
 }
 
 // Both schemes compile to CSS variables switched by prefers-color-scheme,

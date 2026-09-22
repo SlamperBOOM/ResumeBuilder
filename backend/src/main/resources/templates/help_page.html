@@ -21,14 +21,14 @@
             --surface: #f8fafc;
         }
 
-        /* Follows the app theme: the Electron main process drives prefers-color-scheme
-           through nativeTheme.themeSource. Keep in step with colors.dark in the
-           frontend's src/renderer/theme/colors.ts */
+        /* Fallback colors only. In the app, HelpDialog.tsx appends a style block that
+           sets these variables from the app theme, for both schemes. The Electron main
+           process drives prefers-color-scheme through nativeTheme.themeSource */
         @media (prefers-color-scheme: dark) {
             :root {
-                --accent: #90caf9;    /* colors.dark.primary.main */
+                --accent: #90caf9;
                 --on-accent: #121212;
-                --bg: #1e1e1e;        /* colors.dark.background.paper */
+                --bg: #1e1e1e;
                 --text: #e6e6e6;
                 --muted: #b0b7c3;
                 --line: #33373e;
@@ -104,7 +104,7 @@
 
         nav a::before {
             content: counter(toc) ". ";
-            color: #9ca3af;
+            color: var(--muted);
         }
 
         nav a:hover {

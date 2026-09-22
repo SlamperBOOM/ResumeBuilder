@@ -246,7 +246,7 @@
                     <p>
                         <strong>
                             <#if edu.institution??>${edu.institution}</#if>
-                        <#if edu.education_level??> — ${translations.education.level[edu.education_level]}</#if>
+                        <#if edu.education_level?has_content> — ${translations.education.level[edu.education_level]!edu.education_level}</#if>
                     </strong>
                     </p>
                     <#if edu.year_of_graduate??>
@@ -278,7 +278,7 @@
         <div class="skills">
             <#list blocks["SKILLS"].skills as skill>
             <#if skill.skill_name??>
-                <span class="tag">${skill.skill_name}<#if skill.skill_level??> — ${skill.skill_level}</#if></span>
+                <span class="tag">${skill.skill_name}<#if skill.skill_level?has_content> — ${translations.skills.level[skill.skill_level]!skill.skill_level}</#if></span>
             </#if>
             </#list>
         </div>

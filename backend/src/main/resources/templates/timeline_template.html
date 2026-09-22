@@ -310,7 +310,7 @@
         <div class="skills-wrap">
             <#list blocks["SKILLS"].skills as skill>
             <#if skill.skill_name??>
-                <span class="tag">${skill.skill_name}<#if skill.skill_level??> · ${skill.skill_level}</#if></span>
+                <span class="tag">${skill.skill_name}<#if skill.skill_level?has_content> · ${translations.skills.level[skill.skill_level]!skill.skill_level}</#if></span>
             </#if>
             </#list>
         </div>
@@ -366,7 +366,7 @@
                 <div class="timeline-item">
                     <p class="item-title">
                         <#if edu.institution??>${edu.institution}</#if>
-                        <#if edu.education_level??> — ${translations.education.level[edu.education_level]}</#if>
+                        <#if edu.education_level?has_content> — ${translations.education.level[edu.education_level]!edu.education_level}</#if>
                         <#if edu.year_of_graduate??><span class="item-dates"> — ${edu.year_of_graduate}</span></#if>
                     </p>
                     <#if edu.faculty??>

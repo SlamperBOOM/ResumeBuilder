@@ -1,7 +1,6 @@
 import Store from 'electron-store';
 import { Settings, settingsDefaults } from '../renderer/utils/settingsDefaults';
 
-// Frontend (non-BDUI) settings, stored in userData/settings.json.
 const settings = new Store<Settings>({
   name: 'settings',
   defaults: settingsDefaults,

@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { Palette, useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import AppDialogActions from './appDialogActions';
 import { HelpModalSchema } from '../utils/backendTypes';
@@ -9,12 +10,31 @@ type HelpDialogProps = {
   dialogActions: AppDialogActions;
 };
 
+// The help page styles itself with CSS variables (see help_page.html). The
+// style block below overrides them with the app theme, for both schemes: the
+// frame follows prefers-color-scheme the same way the app does
+function themeVars({ palette: p }: { palette: Palette }) {
+  return (
+    `--accent:${p.primary.main};--on-accent:${p.primary.contrastText};` +
+    `--bg:${p.background.paper};--text:${p.text.primary};` +
+    `--muted:${p.text.secondary};--line:${p.divider};--surface:${p.surface.editor};`
+  );
+}
+
 export default function HelpDialog(props: HelpDialogProps) {
   const { showState, schema, dialogActions } = props;
+  const theme = useTheme();
 
   if (!schema) {
     return null;
   }
+
+  const { light, dark } = theme.colorSchemes;
+  const themeCss =
+    light && dark
+      ? `<style>:root{${themeVars(light)}}` +
+        `@media (prefers-color-scheme: dark){:root{${themeVars(dark)}}}</style>`
+      : '';
 
   return (
     <Dialog open={showState} onClose={dialogActions.helpModal.close} fullScreen>
@@ -36,7 +56,7 @@ export default function HelpDialog(props: HelpDialogProps) {
         <iframe
           title={schema.title}
           sandbox="allow-same-origin"
-          srcDoc={schema.html}
+          srcDoc={schema.html.replace('</head>', `${themeCss}</head>`)}
           style={{ flex: 1, border: 'none' }}
         />
       </DialogContent>
