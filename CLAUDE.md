@@ -38,6 +38,7 @@ frontend/resume-builder-frontend/         electron-react-boilerplate app
   src/__tests__/                          Jest + Testing Library
 package.bat / package.sh                  build installers for Windows / macOS+Linux
 log_dashboard.py                          renders backend app.log into an HTML dashboard
+log_viewer.py / viewer_page.html          indexes a folder of logs into SQLite, serves a filterable UI
 ```
 
 ## Running it
@@ -100,7 +101,8 @@ cd frontend/resume-builder-frontend && npm run build && npm test   # Jest needs 
 - Frontend: TypeScript, functional React components, MUI, React Hook Form + Zod. Prettier with
   `singleQuote: true`; run `npm run lint` (or `lint:fix`) before finishing frontend work.
 - Both app UI and resume content are localized in English and Russian, chosen independently by the user.
-- Backend logs to `backend/logs/app.log` in dev. Use `python log_dashboard.py app.log` for a readable view.
+- Backend logs to `backend/logs/app.log` in dev. Use `python log_dashboard.py app.log` for a readable
+  view of one file, or `python log_viewer.py backend/logs` to browse a whole folder with filters.
 
 ## Gotchas
 

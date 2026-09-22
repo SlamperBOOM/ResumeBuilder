@@ -67,18 +67,27 @@ export function ResumeCard(props: ResumeCardProps) {
   return (
     <Card
       elevation={2}
-      sx={{
+      sx={(theme) => ({
         borderRadius: 3,
         display: 'flex',
         flexDirection: 'column',
-        transition: '0.2s',
+        transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
         width: '100%',
         minWidth: 0,
+        border: '1px solid transparent',
         '&:hover': {
           boxShadow: 6,
           transform: 'translateY(-2px)',
         },
-      }}
+        ...theme.applyStyles('dark', {
+          '&:hover': {
+            transform: 'translateY(-2px)',
+            borderColor: theme.palette.primary.main,
+            boxShadow:
+              '0 0 0 4px rgba(var(--mui-palette-primary-mainChannel) / 0.18)',
+          },
+        }),
+      })}
     >
       {/* Preview */}
       <CardMedia

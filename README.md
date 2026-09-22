@@ -97,6 +97,23 @@ python log_dashboard.py app.log
 python log_dashboard.py app.log -o report.html
 ```
 
+To browse many log files at once instead of generating one report per file, use `log_viewer.py`. It
+indexes a whole folder into a local SQLite database and serves a filterable UI at
+`http://127.0.0.1:8777` — time range, level, logger, thread, source file, substring or regex search,
+HTTP status and latency. Only the Python standard library is required, nothing to install:
+
+```bash
+# index backend/logs and open the browser
+python log_viewer.py backend/logs
+
+# several folders at once, on another port
+python log_viewer.py backend/logs frontend/logs --port 9000
+```
+
+On Windows you can also drag a folder onto `view_logs.bat`. The index (`log_index.db`) is reused
+between runs: unchanged files are not parsed again, and the "Reindex folder" button in the UI picks
+up files that grew since startup.
+
 If you need backend to truncate less data from responses, adjust `max_response_body_length` param in config file, located at `<resources>/backend/config/config.json` (in dev mode: `backend/config/config.json`).
 
 ### Architecture

@@ -1,6 +1,12 @@
 /jre
+/.jre-cache
 /release
 /.tmp-node
 /*.html
+# the log tools' page templates are source, not generated reports
+!/dashboard_template.html
+!/viewer_page.html
 /.idea
 /.claude
+/log_index.db
+__pycache__/

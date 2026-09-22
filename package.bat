@@ -6,15 +6,41 @@ set NODE_MAJOR=24
 set TARGET_DIR=jre\win-x64
 
 set DOWNLOAD_NPM=0
-for %%A in (%*) do (
-    if /i "%%A"=="--download-npm" (
-        set DOWNLOAD_NPM=1
-    ) else (
-        echo Unknown argument: %%A
-        echo Usage: %~nx0 [--download-npm]
-        exit /b 1
-    )
+set REUSE_JRE=0
+if "%~1"=="" echo Run "%~nx0 --help" to see available arguments.
+
+REM shift /1 keeps %0 intact, so %~dp0 still works below
+:parse_args
+if "%~1"=="" goto :args_done
+if /i "%~1"=="--download-npm" (
+    set DOWNLOAD_NPM=1
+) else if /i "%~1"=="--reuse-jre" (
+    set REUSE_JRE=1
+) else if /i "%~1"=="--help" (
+    goto :usage
+) else if /i "%~1"=="-h" (
+    goto :usage
+) else if "%~1"=="/?" (
+    goto :usage
+) else (
+    echo Unknown argument: %~1
+    echo Run "%~nx0 --help" to see available arguments.
+    exit /b 1
 )
+shift /1
+goto :parse_args
+
+:usage
+echo Usage: %~nx0 [options]
+echo.
+echo Options:
+echo   --download-npm   Download a portable Node.js %NODE_MAJOR% for the build instead of using the system npm.
+echo   --reuse-jre      Keep the downloaded JRE archive in .jre-cache\ and reuse it on later builds.
+echo                    Delete .jre-cache\ to fetch a fresh JRE.
+echo   --help, -h, /?   Show this help.
+exit /b 0
+
+:args_done
 
 set STAGE_COUNT=0
 for /f "usebackq delims=" %%T in (`powershell -NoProfile -Command "[DateTime]::UtcNow.Ticks"`) do (
@@ -36,9 +62,6 @@ if "%ARCH%"=="AMD64" (
 
 set URL=https://api.adoptium.net/v3/binary/latest/%JAVA_VERSION%/ga/%ADOPTIUM_OS%/%ARCH_NAME%/jre/hotspot/normal/eclipse
 
-echo Downloading JRE from:
-echo   %URL%
-
 REM -----------------------------
 REM Clear folder
 REM -----------------------------
@@ -48,20 +71,36 @@ if exist %TARGET_DIR% (
 mkdir %TARGET_DIR%
 
 set ARCHIVE=jre-win-x64.zip
+if "%REUSE_JRE%"=="1" (
+    set ARCHIVE=.jre-cache\jre-win-x64.zip
+    if not exist .jre-cache mkdir .jre-cache
+)
+if "%REUSE_JRE%"=="1" if exist "%ARCHIVE%" (
+    echo Reusing cached JRE archive %ARCHIVE%
+    goto :unpack_jre
+)
 
 REM -----------------------------
 REM Download jre
 REM -----------------------------
+echo Downloading JRE from:
+echo   %URL%
 powershell -Command ^
   "Invoke-WebRequest -Uri '%URL%' -OutFile '%ARCHIVE%'"
+if errorlevel 1 (
+    echo Failed to download JRE
+    del "%ARCHIVE%" 2>nul
+    exit /b 1
+)
 
 REM -----------------------------
 REM Unpack
 REM -----------------------------
+:unpack_jre
 powershell -Command ^
   "Expand-Archive -Path '%ARCHIVE%' -DestinationPath '%TARGET_DIR%'"
 
-del %ARCHIVE%
+if "%REUSE_JRE%"=="0" del %ARCHIVE%
 
 for /d %%D in (%TARGET_DIR%\*) do (
     xcopy "%%D\*" "%TARGET_DIR%\" /E /H /Y

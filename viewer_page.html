@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log viewer</title>
+<style>
+  :root{
+    --bg:#14161a;
+    --panel:#1b1e24;
+    --panel-2:#20242c;
+    --border:#2a2e37;
+    --text:#e7e9ee;
+    --text-dim:#8b93a3;
+    --text-faint:#5b6270;
+    --accent:#4fd1c5;
+    --lvl-info:#5b8def;
+    --lvl-warn:#e0a73a;
+    --lvl-error:#e5484d;
+    --lvl-debug:#8b93a3;
+    --lvl-trace:#a78bfa;
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:var(--font-sans); font-size:14px; line-height:1.45;}
+  a{color:var(--accent);}
+  ::selection{background:#2a5f5a;}
+
+  header{
+    position:sticky; top:0; z-index:20;
+    background:rgba(20,22,26,0.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border); padding:12px 24px;
+  }
+  .header-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  h1{font-size:17px; font-weight:600; margin:0; letter-spacing:-0.01em;}
+  .meta-tags{display:flex; gap:8px; flex-wrap:wrap;}
+  .tag{
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-dim);
+    background:var(--panel-2); border:1px solid var(--border); padding:2px 8px; border-radius:3px;
+  }
+  .spacer{flex:1;}
+
+  main{padding:18px 24px 60px; max-width:1480px; margin:0 auto;}
+  section{margin-bottom:22px;}
+  h2{font-size:13px; font-weight:600; color:var(--text-dim); margin:0 0 10px;}
+
+  button, select, input{
+    background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+    border-radius:4px; padding:6px 9px; font-family:var(--font-sans); font-size:12.5px; outline:none;
+  }
+  button{cursor:pointer;}
+  button:hover:not(:disabled){border-color:var(--accent); color:var(--accent);}
+  button:disabled{opacity:.35; cursor:default;}
+  input:focus, select:focus{border-color:var(--accent);}
+  select[multiple]{padding:2px; font-family:var(--font-mono); font-size:11.5px; min-height:104px;}
+  select[multiple] option{padding:3px 6px;}
+  label.field{display:flex; flex-direction:column; gap:4px; font-size:11.5px; color:var(--text-dim);}
+
+  .filters{
+    background:var(--panel); border:1px solid var(--border); border-radius:5px;
+    padding:12px 14px; display:flex; flex-direction:column; gap:10px;
+  }
+  .filter-row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;}
+  .facets{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;}
+  .presets{display:flex; gap:4px;}
+  .presets button{padding:6px 8px; font-family:var(--font-mono); font-size:11.5px;}
+  .presets button.active{border-color:var(--accent); color:var(--accent);}
+  #search{flex:1; min-width:240px; font-family:var(--font-mono);}
+  .checkbox{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-dim); white-space:nowrap;}
+  .checkbox input{width:14px; height:14px; padding:0;}
+  .error-banner{
+    background:rgba(229,72,77,.12); border:1px solid var(--lvl-error); color:var(--lvl-error);
+    border-radius:4px; padding:8px 12px; font-family:var(--font-mono); font-size:12px; display:none;
+  }
+
+  .stats{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:5px; overflow:hidden;
+  }
+  .stat{background:var(--panel); padding:10px 14px;}
+  .stat .n{font-family:var(--font-mono); font-size:20px; font-weight:600; display:block;}
+  .stat .l{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+  .stat.info .n{color:var(--lvl-info);}
+  .stat.warn .n{color:var(--lvl-warn);}
+  .stat.error .n{color:var(--lvl-error);}
+
+  .panel{background:var(--panel); border:1px solid var(--border); border-radius:5px; padding:14px;}
+
+  #timeline-svg{width:100%; height:auto; display:block;}
+  #timeline-svg rect.bar{cursor:pointer;}
+  #timeline-svg rect.bar:hover{opacity:.75;}
+  .legend{display:flex; gap:16px; margin-top:8px; flex-wrap:wrap; align-items:center;}
+  .legend-item{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-dim); font-family:var(--font-mono);}
+  .legend-dot{width:9px; height:9px; border-radius:2px;}
+
+  details.panel-details{margin-bottom:22px;}
+  details.panel-details > summary{
+    cursor:pointer; font-size:13px; font-weight:600; color:var(--text-dim);
+    list-style:none; display:flex; align-items:center; gap:7px; padding:2px 0; user-select:none;
+  }
+  details.panel-details > summary::-webkit-details-marker{display:none;}
+  details.panel-details > summary::before{
+    content:'▸'; color:var(--accent); display:inline-block; width:10px; transition:transform .15s;
+  }
+  details.panel-details[open] > summary::before{transform:rotate(90deg);}
+
+  .chips{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:600;
+    padding:6px 9px; border-radius:3px; cursor:pointer; user-select:none;
+    border:1px solid var(--border); background:var(--panel-2); color:var(--text-dim);
+  }
+  .chip.active[data-lvl=INFO]{color:var(--lvl-info); border-color:var(--lvl-info);}
+  .chip.active[data-lvl=WARN]{color:var(--lvl-warn); border-color:var(--lvl-warn);}
+  .chip.active[data-lvl=ERROR]{color:var(--lvl-error); border-color:var(--lvl-error);}
+  .chip.active[data-lvl=DEBUG]{color:var(--lvl-debug); border-color:var(--lvl-debug);}
+  .chip.active[data-lvl=TRACE]{color:var(--lvl-trace); border-color:var(--lvl-trace);}
+  .chip:not(.active){opacity:.4;}
+
+  table{width:100%; border-collapse:collapse; font-family:var(--font-mono); font-size:12.5px;}
+  thead th{
+    text-align:left; font-family:var(--font-sans); font-weight:600; color:var(--text-dim);
+    font-size:11.5px; padding:6px 10px; border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  tbody td{padding:6px 10px; border-bottom:1px solid #21242b; vertical-align:top;}
+  tbody tr:hover{background:var(--panel-2);}
+
+  .lvl-badge{font-weight:700; font-size:11px; padding:1px 6px; border-radius:3px; letter-spacing:.02em;}
+  .lvl-badge.INFO{color:var(--lvl-info); background:rgba(91,141,239,.12);}
+  .lvl-badge.WARN{color:var(--lvl-warn); background:rgba(224,167,58,.14);}
+  .lvl-badge.ERROR{color:var(--lvl-error); background:rgba(229,72,77,.14);}
+  .lvl-badge.DEBUG{color:var(--lvl-debug); background:rgba(139,147,163,.12);}
+  .lvl-badge.TRACE{color:var(--lvl-trace); background:rgba(167,139,250,.14);}
+
+  .status-pill{font-weight:700;}
+  .status-pill.ok{color:#4fd18a;}
+  .status-pill.redirect{color:var(--lvl-warn);}
+  .status-pill.err{color:var(--lvl-error);}
+
+  .lat-cell{display:flex; align-items:center; gap:8px;}
+  .lat-bar{height:6px; background:var(--accent); border-radius:2px; opacity:.55;}
+  .lat-num{font-variant-numeric:tabular-nums; min-width:52px; text-align:right;}
+
+  .indicator-cell{width:20px; text-align:center; padding-left:6px !important; padding-right:0 !important;}
+  .chevron{display:inline-block; color:var(--accent); font-size:11px;}
+  .chevron::before{content:'▸';}
+  .chevron.open::before{content:'▾';}
+  .log-row.has-body{cursor:pointer;}
+  .log-row.has-body:hover .msg-cell{color:var(--text);}
+
+  .msg-cell{max-width:680px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  tr.expanded .msg-cell{white-space:normal; text-overflow:clip;}
+  .body-row td{background:#171a20; padding:0;}
+  .body-row pre{
+    margin:0; padding:12px 16px; font-size:12px; color:var(--text-dim);
+    white-space:pre-wrap; word-break:break-word; max-height:360px; overflow:auto;
+  }
+  .hint{color:var(--text-faint); font-size:11.5px; font-weight:400;}
+
+  .pagination{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:14px;}
+  .pagination span{color:var(--text-dim); font-size:12.5px; font-family:var(--font-mono);}
+  .empty{color:var(--text-faint); padding:20px; text-align:center; font-size:13px;}
+  body.loading main{opacity:.55;}
+
+  @media (max-width: 700px){ .msg-cell{max-width:200px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <h1>Log viewer</h1>
+    <div class="meta-tags" id="meta-tags"></div>
+    <div class="spacer"></div>
+    <button id="reindex">↻ Reindex folder</button>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="filters">
+      <div class="filter-row">
+        <div class="presets" id="presets">
+          <button data-min="5">5m</button>
+          <button data-min="15">15m</button>
+          <button data-min="60">1h</button>
+          <button data-min="360">6h</button>
+          <button data-min="1440">24h</button>
+          <button data-min="0" class="active">All</button>
+        </div>
+        <label class="field">From<input type="datetime-local" id="from" step="1"></label>
+        <label class="field">To<input type="datetime-local" id="to" step="1"></label>
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="filter-row">
+        <input id="search" type="text" placeholder="Search message, body, logger…  (prefix with re: for regex)">
+        <label class="field">Min latency, ms<input type="number" id="min-latency" min="0" step="10" style="width:120px;"></label>
+        <label class="checkbox"><input type="checkbox" id="errors-only">HTTP ≥ 400 only</label>
+        <label class="field">Order<select id="order"><option value="asc">Oldest first</option><option value="desc">Newest first</option></select></label>
+        <label class="field">Page size<select id="page-size">
+          <option value="50">50</option><option value="100" selected>100</option>
+          <option value="250">250</option><option value="500">500</option><option value="1000">1000</option>
+        </select></label>
+        <button id="reset">Reset filters</button>
+      </div>
+
+      <div class="facets">
+        <label class="field">Source file<select multiple id="f-source"></select></label>
+        <label class="field">Logger<select multiple id="f-logger"></select></label>
+        <label class="field">Thread<select multiple id="f-thread"></select></label>
+      </div>
+
+      <div class="error-banner" id="error-banner"></div>
+    </div>
+  </section>
+
+  <section class="stats" id="stats"></section>
+
+  <section>
+    <h2>Timeline (by level) <span class="hint">— click a bar to zoom into it</span></h2>
+    <div class="panel">
+      <svg id="timeline-svg" viewBox="0 0 1000 220"></svg>
+      <div class="legend" id="timeline-legend"></div>
+    </div>
+  </section>
+
+  <details class="panel-details" id="requests-details">
+    <summary>Request statistics <span class="hint" id="requests-count-hint"></span></summary>
+    <div class="panel" style="padding:0; margin-top:10px;">
+      <table>
+        <thead><tr>
+          <th style="width:80px;">Method</th><th>Path</th>
+          <th style="width:80px;">Status</th><th style="width:220px;">Latency</th><th style="width:110px;">Time</th>
+        </tr></thead>
+        <tbody id="requests-tbody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <section>
+    <h2>Log entries <span class="hint" id="logs-count-hint"></span></h2>
+    <div class="panel" style="padding:0;">
+      <table>
+        <thead><tr>
+          <th class="indicator-cell"></th>
+          <th style="width:180px;">Time</th>
+          <th style="width:70px;">Level</th>
+          <th style="width:160px;">Logger</th>
+          <th style="width:140px;">Thread</th>
+          <th style="width:120px;">Source</th>
+          <th>Message</th>
+        </tr></thead>
+        <tbody id="logs-tbody"></tbody>
+      </table>
+      <div id="logs-empty" class="empty" style="display:none;">No entries match the current filter.</div>
+    </div>
+    <div class="pagination">
+      <button id="page-prev">‹ Prev</button>
+      <span id="page-indicator"></span>
+      <button id="page-next">Next ›</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const LEVEL_ORDER = ['TRACE','DEBUG','INFO','WARN','ERROR'];
+const LEVEL_COLOR = {
+  TRACE:'var(--lvl-trace)', DEBUG:'var(--lvl-debug)', INFO:'var(--lvl-info)',
+  WARN:'var(--lvl-warn)', ERROR:'var(--lvl-error)'
+};
+const $ = id => document.getElementById(id);
+
+function esc(s){
+  if(s===null||s===undefined) return '';
+  return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+// datetime-local works in local time; the backend stores local epoch ms, so a
+// plain Date round-trip is enough (no timezone maths needed).
+function msFromInput(v){ return v ? new Date(v).getTime() : null; }
+function inputFromMs(ms){
+  if(ms==null) return '';
+  const d = new Date(ms - new Date().getTimezoneOffset()*60000);
+  return d.toISOString().slice(0,19);
+}
+
+let facets = null;
+let offset = 0;
+let excludedLevels = new Set();   // chips start all-on; only exclusions are tracked
+
+function selected(id){ return [...$(id).selectedOptions].map(o=>o.value); }
+
+function buildQuery(){
+  const p = new URLSearchParams();
+  const from = msFromInput($('from').value), to = msFromInput($('to').value);
+  if(from!=null) p.set('from', from);
+  if(to!=null) p.set('to', to);
+  const levels = (facets?.levels||[]).map(l=>l.value).filter(l=>!excludedLevels.has(l));
+  if(excludedLevels.size) levels.forEach(l=>p.append('level', l));
+  selected('f-logger').forEach(v=>p.append('logger', v));
+  selected('f-thread').forEach(v=>p.append('thread', v));
+  selected('f-source').forEach(v=>p.append('source', v));
+  if($('search').value.trim()) p.set('q', $('search').value.trim());
+  if($('min-latency').value) p.set('min_latency', $('min-latency').value);
+  if($('errors-only').checked) p.set('errors_only', '1');
+  p.set('order', $('order').value);
+  p.set('limit', $('page-size').value);
+  p.set('offset', offset);
+  return p;
+}
+
+function showError(msg){
+  const el = $('error-banner');
+  el.style.display = msg ? 'block' : 'none';
+  el.textContent = msg || '';
+}
+
+async function load(){
+  document.body.classList.add('loading');
+  try{
+    const res = await fetch('/api/entries?' + buildQuery().toString());
+    const data = await res.json();
+    if(data.error){ showError(data.error); return; }
+    showError('');
+    renderStats(data);
+    renderTimeline(data.timeline, data.levels);
+    renderRequests(data.requests);
+    renderLogs(data);
+  }catch(e){
+    showError(String(e));
+  }finally{
+    document.body.classList.remove('loading');
+  }
+}
+
+// ---------- facets ----------
+function fillSelect(id, items){
+  const keep = new Set(selected(id));
+  $(id).innerHTML = items.map(i=>
+    `<option value="${esc(i.value)}"${keep.has(i.value)?' selected':''}>${esc(i.value)} (${i.count})</option>`
+  ).join('');
+}
+
+function renderChips(){
+  $('chips').innerHTML = LEVEL_ORDER
+    .filter(l => facets.levels.some(f=>f.value===l))
+    .concat(facets.levels.map(f=>f.value).filter(v=>!LEVEL_ORDER.includes(v)))
+    .map(l=>`<div class="chip${excludedLevels.has(l)?'':' active'}" data-lvl="${l}">${l}</div>`).join('');
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      const lvl = chip.dataset.lvl;
+      if(excludedLevels.has(lvl)){ excludedLevels.delete(lvl); chip.classList.add('active'); }
+      else{ excludedLevels.add(lvl); chip.classList.remove('active'); }
+      offset = 0; load();
+    });
+  });
+}
+
+async function loadFacets(){
+  facets = await (await fetch('/api/facets')).json();
+  fillSelect('f-logger', facets.loggers);
+  fillSelect('f-thread', facets.threads);
+  fillSelect('f-source', facets.sources);
+  renderChips();
+  const r = facets.range;
+  $('meta-tags').innerHTML = [
+    `${facets.files.length} file(s)`,
+    `${facets.total} entries indexed`,
+    (r.from && r.to) ? `${new Date(r.from).toLocaleString()} → ${new Date(r.to).toLocaleString()}` : null,
+  ].filter(Boolean).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+}
+
+// ---------- stats ----------
+function renderStats(d){
+  const items = [
+    {n:d.total, l:'Matching entries', cls:''},
+    {n:d.levels.ERROR||0, l:'Error', cls:'error'},
+    {n:d.levels.WARN||0, l:'Warn', cls:'warn'},
+    {n:d.levels.INFO||0, l:'Info', cls:'info'},
+    {n:d.requests.length, l:'HTTP responses', cls:''},
+    {n:d.http_errors, l:'HTTP errors', cls:d.http_errors?'error':''},
+    {n:d.avg_latency!=null ? d.avg_latency+' ms' : '—', l:'Avg latency', cls:''},
+  ];
+  $('stats').innerHTML = items.map(i=>
+    `<div class="stat ${i.cls}"><span class="n">${i.n}</span><span class="l">${i.l}</span></div>`
+  ).join('');
+}
+
+// ---------- timeline ----------
+function niceTicks(maxValue, tickCount){
+  if(maxValue<=0) return {step:1, niceMax:1};
+  const rawStep = maxValue/tickCount;
+  const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const norm = rawStep/mag;
+  const niceNorm = norm<=1 ? 1 : norm<=2 ? 2 : norm<=5 ? 5 : 10;
+  const step = niceNorm*mag;
+  return {step, niceMax: Math.ceil(maxValue/step)*step};
+}
+
+// buckets an hour or wider span several days, so the date has to be shown too
+function fmtTick(label, bucketSeconds){
+  return bucketSeconds >= 3600 ? label.slice(5,16) : label.slice(11,19);
+}
+
+function renderTimeline(tl, levelCounts){
+  const svg = $('timeline-svg'), legendEl = $('timeline-legend');
+  const n = tl.labels.length;
+  if(!n){ svg.innerHTML=''; legendEl.innerHTML=''; return; }
+
+  const levels = LEVEL_ORDER.filter(l => tl.series[l])
+    .concat(Object.keys(tl.series).filter(l=>!LEVEL_ORDER.includes(l)));
+  const totals = tl.labels.map((_,i)=> levels.reduce((a,l)=>a+tl.series[l][i],0));
+  const {step, niceMax} = niceTicks(Math.max(...totals, 1), 4);
+
+  const W=1000, H=220, marginL=42, marginR=10, marginT=10, marginB=30;
+  const chartW = W-marginL-marginR, chartH = H-marginT-marginB;
+  const gap = n>80 ? 0.5 : 2;
+  const barW = chartW/n - gap;
+  const parts = [];
+
+  const tickCount = Math.round(niceMax/step);
+  for(let t=0;t<=tickCount;t++){
+    const val = t*step, y = marginT + chartH - (val/niceMax)*chartH;
+    parts.push(`<line x1="${marginL}" y1="${y.toFixed(1)}" x2="${W-marginR}" y2="${y.toFixed(1)}" stroke="var(--border)"/>`);
+    parts.push(`<text x="${marginL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--text-dim)" font-family="var(--font-mono)">${val}</text>`);
+  }
+  parts.push(`<line x1="${marginL}" y1="${marginT}" x2="${marginL}" y2="${marginT+chartH}" stroke="var(--border)"/>`);
+  parts.push(`<line x1="${marginL}" y1="${marginT+chartH}" x2="${W-marginR}" y2="${marginT+chartH}" stroke="var(--border)"/>`);
+
+  for(let i=0;i<n;i++){
+    let y = marginT+chartH;
+    const x = marginL + i*(barW+gap);
+    // one transparent hit area per bucket so empty buckets are clickable too
+    parts.push(`<rect class="bar" data-bkt="${i}" x="${x.toFixed(2)}" y="${marginT}" width="${Math.max(barW,0.6).toFixed(2)}" height="${chartH}" fill="transparent"><title>${esc(tl.labels[i])} · ${totals[i]} entries — click to zoom</title></rect>`);
+    for(const lvl of levels){
+      const v = tl.series[lvl][i];
+      if(!v) continue;
+      const h = (v/niceMax)*chartH;
+      y -= h;
+      parts.push(`<rect class="bar" data-bkt="${i}" x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${Math.max(barW,0.6).toFixed(2)}" height="${h.toFixed(2)}" fill="${LEVEL_COLOR[lvl]||'var(--accent)'}"><title>${esc(tl.labels[i])} · ${lvl}: ${v}</title></rect>`);
+    }
+  }
+
+  const xTickCount = Math.min(7, n);
+  for(let k=0;k<xTickCount;k++){
+    const idx = Math.round(k*(n-1)/Math.max(xTickCount-1,1));
+    const x = marginL + idx*(barW+gap) + barW/2;
+    parts.push(`<text x="${x.toFixed(1)}" y="${marginT+chartH+16}" text-anchor="middle" font-size="10" fill="var(--text-dim)" font-family="var(--font-mono)">${esc(fmtTick(tl.labels[idx], tl.bucket_seconds))}</text>`);
+  }
+
+  svg.innerHTML = parts.join('');
+  svg.querySelectorAll('rect.bar').forEach(r=>{
+    r.addEventListener('click', ()=>{
+      const i = parseInt(r.dataset.bkt,10);
+      const start = tl.start_ms + i*tl.bucket_seconds*1000;
+      $('from').value = inputFromMs(start);
+      $('to').value = inputFromMs(start + tl.bucket_seconds*1000);
+      setPreset(null);
+      offset = 0; load();
+    });
+  });
+
+  legendEl.innerHTML = levels.map(l=>
+    `<div class="legend-item"><span class="legend-dot" style="background:${LEVEL_COLOR[l]||'var(--accent)'}"></span>${l} · ${levelCounts[l]||0}</div>`
+  ).join('') + `<div class="legend-item">bucket: ${tl.bucket_seconds}s</div>`;
+}
+
+// ---------- requests ----------
+function statusClass(s){
+  if(s==null) return '';
+  if(s>=400) return 'err';
+  if(s>=300) return 'redirect';
+  return 'ok';
+}
+function renderRequests(rows){
+  $('requests-count-hint').textContent = `(${rows.length}${rows.length>=300?'+':''})`;
+  const maxLat = Math.max(...rows.map(r=>r.latency_ms||0), 1);
+  $('requests-tbody').innerHTML = rows.map(r=>{
+    const pct = r.latency_ms!=null ? Math.min(100, (r.latency_ms/maxLat)*100) : 0;
+    return `<tr>
+      <td>${esc(r.http_method)}</td>
+      <td>${esc(r.http_path)}</td>
+      <td><span class="status-pill ${statusClass(r.http_status)}">${r.http_status??'—'}</span></td>
+      <td><div class="lat-cell"><div class="lat-bar" style="width:${pct}%"></div><span class="lat-num">${r.latency_ms!=null ? r.latency_ms.toFixed(1)+' ms' : '—'}</span></div></td>
+      <td>${esc((r.ts||'').slice(11))}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---------- logs ----------
+function shortLogger(l){
+  if(!l) return l;
+  const parts = l.split('.');
+  return parts.length > 2 ? '…' + parts.slice(-2).join('.') : l;
+}
+
+function renderLogs(d){
+  const tbody = $('logs-tbody');
+  $('logs-empty').style.display = d.rows.length ? 'none' : 'block';
+  tbody.innerHTML = d.rows.map((e, idx) => {
+    const hasBody = !!e.body;
+    let html = `<tr class="log-row ${hasBody?'has-body':''}" data-idx="${idx}">
+      <td class="indicator-cell">${hasBody ? '<span class="chevron"></span>' : ''}</td>
+      <td>${esc(e.ts)}</td>
+      <td><span class="lvl-badge ${esc(e.level)}">${esc(e.level)}</span></td>
+      <td title="${esc(e.logger)}">${esc(shortLogger(e.logger))}</td>
+      <td>${esc(e.thread)}</td>
+      <td title="${esc(e.source)}">${esc(e.source)}</td>
+      <td class="msg-cell">${esc(e.message)}</td>
+    </tr>`;
+    if(hasBody) html += `<tr class="body-row" id="body-${idx}" style="display:none;"><td colspan="7"><pre>${esc(e.body)}</pre></td></tr>`;
+    return html;
+  }).join('');
+
+  tbody.querySelectorAll('.log-row.has-body').forEach(tr=>{
+    tr.addEventListener('click', ()=>{
+      const row = $(`body-${tr.dataset.idx}`);
+      const isOpen = row.style.display !== 'none';
+      row.style.display = isOpen ? 'none' : 'table-row';
+      tr.classList.toggle('expanded', !isOpen);
+      tr.querySelector('.chevron')?.classList.toggle('open', !isOpen);
+    });
+  });
+
+  const pageSize = d.limit;
+  const page = Math.floor(d.offset/pageSize)+1;
+  const totalPages = Math.max(1, Math.ceil(d.total/pageSize));
+  const from = d.total ? d.offset+1 : 0;
+  $('logs-count-hint').textContent = `— showing ${from}–${d.offset+d.rows.length} of ${d.total}`;
+  $('page-indicator').textContent = `Page ${page} / ${totalPages}`;
+  $('page-prev').disabled = d.offset <= 0;
+  $('page-next').disabled = d.offset + pageSize >= d.total;
+}
+
+// ---------- controls ----------
+function setPreset(minutes){
+  document.querySelectorAll('#presets button').forEach(b=>
+    b.classList.toggle('active', minutes!==null && +b.dataset.min===minutes));
+}
+
+$('presets').addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const minutes = +btn.dataset.min;
+  setPreset(minutes);
+  if(minutes===0){ $('from').value = ''; $('to').value = ''; }
+  else{
+    // anchor on the newest indexed entry, not on "now": logs are usually old
+    const end = facets?.range?.to ?? Date.now();
+    $('from').value = inputFromMs(end - minutes*60000);
+    $('to').value = inputFromMs(end);
+  }
+  offset = 0; load();
+});
+
+['from','to','min-latency','errors-only','order','f-logger','f-thread','f-source']
+  .forEach(id => $(id).addEventListener('change', ()=>{ offset = 0; load(); }));
+
+$('page-size').addEventListener('change', ()=>{ offset = 0; load(); });
+$('page-prev').addEventListener('click', ()=>{ offset = Math.max(0, offset - +$('page-size').value); load(); });
+$('page-next').addEventListener('click', ()=>{ offset += +$('page-size').value; load(); });
+
+let searchTimer;
+$('search').addEventListener('input', ()=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{ offset = 0; load(); }, 250);
+});
+
+$('reset').addEventListener('click', ()=>{
+  ['from','to','min-latency','search'].forEach(id=>$(id).value='');
+  $('errors-only').checked = false;
+  ['f-logger','f-thread','f-source'].forEach(id=>[...$(id).options].forEach(o=>o.selected=false));
+  excludedLevels.clear();
+  renderChips();
+  setPreset(0);
+  offset = 0; load();
+});
+
+$('reindex').addEventListener('click', async ()=>{
+  const btn = $('reindex');
+  btn.disabled = true; btn.textContent = '↻ Indexing…';
+  try{
+    const stats = await (await fetch('/api/reindex')).json();
+    if(stats.error) showError(stats.error);
+    await loadFacets();
+    await load();
+    btn.textContent = `↻ Reindexed (${stats.indexed} changed)`;
+    setTimeout(()=>{ btn.textContent = '↻ Reindex folder'; }, 2500);
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+// ---------- init ----------
+(async function(){
+  await loadFacets();
+  await load();
+})();
+</script>
+</body>
+</html>

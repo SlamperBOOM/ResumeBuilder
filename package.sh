@@ -43,22 +43,42 @@ on_exit() {
   printf '  %-24s %s\n' "Total:" "$(fmt_time "$SECONDS")"
   exit $status
 }
-trap on_exit EXIT
 
 JAVA_VERSION=17
 NODE_MAJOR=24
 
+usage() {
+  cat <<EOF
+Usage: $0 [options]
+
+Options:
+  --download-npm   Download a portable Node.js ${NODE_MAJOR} for the build instead of using the system npm.
+  --reuse-jre      Keep the downloaded JRE archive in .jre-cache/ and reuse it on later builds.
+                   Delete .jre-cache/ to fetch a fresh JRE.
+  --help, -h       Show this help.
+EOF
+}
+
+# Parsed before the EXIT trap so --help and bad arguments don't print timings
 DOWNLOAD_NPM=0
+REUSE_JRE=0
+if [[ $# -eq 0 ]]; then
+  echo "Run '$0 --help' to see available arguments."
+fi
 for arg in "$@"; do
   case "$arg" in
     --download-npm) DOWNLOAD_NPM=1 ;;
+    --reuse-jre) REUSE_JRE=1 ;;
+    --help|-h) usage; exit 0 ;;
     *)
       echo "Unknown argument: $arg" >&2
-      echo "Usage: $0 [--download-npm]" >&2
+      echo "Run '$0 --help' to see available arguments." >&2
       exit 1
       ;;
   esac
 done
+
+trap on_exit EXIT
 
 OS="$(uname -s)"
 echo "Detected OS=$OS"
@@ -127,16 +147,27 @@ download_jre() {
   local target_dir="jre/${PLATFORM}-${eb_arch}"
   local url="https://api.adoptium.net/v3/binary/latest/${JAVA_VERSION}/ga/${PLATFORM}/${adoptium_arch}/jre/hotspot/normal/eclipse"
 
-  echo "Downloading JRE for ${PLATFORM}/${eb_arch} from:"
-  echo "  $url"
-
   rm -rf "$target_dir"
   mkdir -p "$target_dir"
 
   local archive="jre-${PLATFORM}-${eb_arch}.tar.gz"
-  download_file "$url" "$archive"
+  if [[ "$REUSE_JRE" == 1 ]]; then
+    mkdir -p "$PROJECT_ROOT/.jre-cache"
+    archive="$PROJECT_ROOT/.jre-cache/$archive"
+  fi
+
+  if [[ "$REUSE_JRE" == 1 && -f "$archive" ]]; then
+    echo "Reusing cached JRE archive $archive"
+  else
+    echo "Downloading JRE for ${PLATFORM}/${eb_arch} from:"
+    echo "  $url"
+    download_file "$url" "$archive" || { rm -f "$archive"; exit 1; }
+  fi
+
   tar -xzf "$archive" --strip-components=1 -C "$target_dir"
-  rm "$archive"
+  if [[ "$REUSE_JRE" == 0 ]]; then
+    rm "$archive"
+  fi
 
   chmod +x "$target_dir/bin/java"
 

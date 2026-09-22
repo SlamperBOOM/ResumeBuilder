@@ -140,9 +140,7 @@ export async function startBackend(options: BackendOptions): Promise<number> {
   };
 
   proc.stdout?.on('data', (data) => {
-    const text = data.toString();
-    appendOutput(text);
-    log.info(`[quarkus] ${text.trim()}`);
+    appendOutput(data.toString());
   });
 
   proc.stderr?.on('data', (data) => {

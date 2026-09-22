@@ -8,6 +8,7 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
+import fs from 'node:fs';
 import path from 'node:path';
 import {
   app,
@@ -30,6 +31,13 @@ import { settingsDefaults } from '../renderer/utils/settingsDefaults';
 import { colors } from '../renderer/theme/colors';
 
 registerAppScheme();
+
+// Chromium's own data (disk cache, local storage, network state) is disposable and is
+// removed on uninstall, so it goes into its own subfolder instead of sitting in userData/
+// next to the resumes, settings and logs.
+const sessionDataDir = path.join(app.getPath('userData'), 'chromium');
+fs.mkdirSync(sessionDataDir, { recursive: true });
+app.setPath('sessionData', sessionDataDir);
 
 app.disableHardwareAcceleration();
 

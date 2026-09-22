@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-log_dashboard.py — parses log files (Quarkus/Log4j-style format:
-"2026-09-03 23:59:50,952 host proc[pid] LEVEL [logger] (thread) message")
-and generates a self-contained HTML dashboard for visual analysis.
+log_dashboard.py — parses log files and generates a self-contained HTML
+dashboard for visual analysis. Supported formats (can be mixed in one file):
+  - backend (Quarkus): "2026-09-03 23:59:50,952 host proc[pid] LEVEL [logger] (thread) message"
+  - frontend (electron-log main.log): "[2026-09-03 23:59:50.952] [info]  message"
 
 Usage:
     python log_dashboard.py app.log
+    python log_dashboard.py app.log main.log        # merged into one timeline
     python log_dashboard.py app.log -o report.html
     python log_dashboard.py app.log --mask-fields preview,photo
 """
@@ -20,12 +22,22 @@ from pathlib import Path
 
 LOG_RE = re.compile(
     r'^(?P<ts>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})\s+'
-    r'(?P<host>\S+)\s+'
-    r'(?P<proc>\S+)\s+'
+    r'(?:(?P<host>\S+)\s+(?P<proc>\S+)\s+)?'  # absent in console output (forwarded to main.log)
     r'(?P<level>[A-Z]+)\s+'
     r'\[(?P<logger>[^\]]+)\]\s+'
     r'\((?P<thread>[^)]+)\)\s?(?P<message>.*)$'
 )
+
+ELECTRON_RE = re.compile(
+    r'^\[(?P<ts>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\]\s+'
+    r'\[(?P<level>[a-z]+)\]\s+(?P<message>.*)$'
+)
+
+# "[backend] spawning ..." -> logger "backend"; messages without a prefix get "main"
+ELECTRON_PREFIX_RE = re.compile(r'^\[(?P<logger>[\w:-]+)\]\s?(?P<rest>.*)$')
+
+# electron-log level names mapped onto the backend's naming
+ELECTRON_LEVELS = {'silly': 'TRACE', 'verbose': 'DEBUG'}
 
 HTTP_RE = re.compile(
     r'^(?P<dir>->|<-)\s+(?P<method>[A-Z]+)\s+(?P<path>\S+?)(?:\s+\[(?P<status>\d+)\])?\s*$'
@@ -70,39 +82,75 @@ def mask_json(obj, mask_substrings):
     return obj
 
 
+def parse_ts(ts, fmt):
+    try:
+        return datetime.strptime(ts, fmt)
+    except ValueError:
+        return None
+
+
+def parse_line(line):
+    """Returns a new entry if the line starts one (backend or frontend format), else None."""
+    m = LOG_RE.match(line)
+    if m:
+        d = m.groupdict()
+        return {
+            'ts': parse_ts(d['ts'], '%Y-%m-%d %H:%M:%S,%f'),
+            'host': d['host'] or '',
+            'proc': d['proc'] or '',
+            'level': d['level'],
+            'logger': d['logger'],
+            'thread': d['thread'],
+            'message': d['message'],
+            'extra': [],
+        }
+    m = ELECTRON_RE.match(line)
+    if not m:
+        return None
+    d = m.groupdict()
+    logger, message = 'main', d['message']
+    p = ELECTRON_PREFIX_RE.match(message)
+    if p:
+        logger, message = p.group('logger'), p.group('rest')
+        # backend-manager forwards Quarkus output as "[quarkus:err] <backend log line>"
+        # (and, in logs written before the split, "[quarkus] ..."). When the forwarded
+        # line is a real backend log line, use its own level instead of electron's.
+        if logger.startswith('quarkus'):
+            inner = parse_line(message)
+            if inner:
+                return inner
+    return {
+        'ts': parse_ts(d['ts'], '%Y-%m-%d %H:%M:%S.%f'),
+        'host': '',
+        'proc': 'electron',
+        'level': ELECTRON_LEVELS.get(d['level'], d['level'].upper()),
+        'logger': logger,
+        'thread': 'electron',
+        'message': message,
+        'extra': [],
+    }
+
+
 def parse_log(path):
-    """Splits the file into entries; lines that don't match LOG_RE are
+    """Splits the file into entries; lines that don't start an entry are
     treated as a continuation (e.g. 'Body: {...}') of the previous entry."""
     entries = []
     current = None
     with open(path, encoding='utf-8', errors='replace') as f:
         for raw in f:
             line = raw.rstrip('\n')
-            m = LOG_RE.match(line)
-            if m:
+            entry = parse_line(line)
+            if entry:
                 if current:
                     entries.append(current)
-                d = m.groupdict()
-                try:
-                    dt = datetime.strptime(d['ts'], '%Y-%m-%d %H:%M:%S,%f')
-                except ValueError:
-                    dt = None
-                current = {
-                    'ts': dt,
-                    'host': d['host'],
-                    'proc': d['proc'],
-                    'level': d['level'],
-                    'logger': d['logger'],
-                    'thread': d['thread'],
-                    'message': d['message'],
-                    'extra': [],
-                }
+                current = entry
             elif current is not None:
                 current['extra'].append(line)
     if current:
         entries.append(current)
-    # entries without a valid timestamp are useless for the timeline — drop them
-    return [e for e in entries if e['ts'] is not None]
+    # entries without a valid timestamp are useless for the timeline — drop them.
+    # Sorted because main.log interleaves frontend entries with forwarded backend ones.
+    return sorted((e for e in entries if e['ts'] is not None), key=lambda e: e['ts'])
 
 
 def enrich(entries, mask_fields=()):
@@ -127,6 +175,7 @@ def enrich(entries, mask_fields=()):
                 latency_ms = None
                 if req_idx is not None and entries[req_idx]['ts'] and e['ts']:
                     latency_ms = (e['ts'] - entries[req_idx]['ts']).total_seconds() * 1000
+                e['http']['latency_ms'] = latency_ms
                 requests_.append({
                     'method': d['method'], 'path': d['path'], 'status': status,
                     'ts': e['ts'], 'latency_ms': latency_ms,
@@ -178,8 +227,9 @@ def build_summary(entries, requests_):
         'requests': len(requests_),
         'avg_latency': round(sum(latencies) / len(latencies), 1) if latencies else None,
         'http_errors': errors,
-        'host': entries[0]['host'] if entries else '',
-        'proc': entries[0]['proc'] if entries else '',
+        # from the first backend entry: frontend entries carry no host/pid
+        'host': next((e['host'] for e in entries if e['host']), ''),
+        'proc': next((e['proc'] for e in entries if e['host']), ''),
     }
 
 
@@ -233,9 +283,12 @@ def render_html(entries, requests_, summary, timeline, source_name):
 
 
 def main():
-    ap = argparse.ArgumentParser(description='Parse a log file into an HTML dashboard')
-    ap.add_argument('logfile', help='path to the log file')
-    ap.add_argument('-o', '--output', help='output HTML path (default: alongside the log file)')
+    ap = argparse.ArgumentParser(description='Parse log files into an HTML dashboard')
+    ap.add_argument(
+        'logfile', nargs='+',
+        help='log files; pass several (app.log main.log) to merge them into one timeline',
+    )
+    ap.add_argument('-o', '--output', help='output HTML path (default: alongside the first log file)')
     ap.add_argument(
         '--mask-fields', default='preview',
         help=(
@@ -248,8 +301,11 @@ def main():
 
     mask_fields = [s.strip().lower() for s in args.mask_fields.split(',') if s.strip()]
 
-    log_path = Path(args.logfile)
-    entries = parse_log(log_path)
+    log_paths = [Path(p) for p in args.logfile]
+    entries = sorted(
+        (e for p in log_paths for e in parse_log(p)),
+        key=lambda e: e['ts'],
+    )
     if not entries:
         print('No lines matched the expected log format.', file=sys.stderr)
         sys.exit(1)
@@ -258,8 +314,8 @@ def main():
     summary = build_summary(entries, requests_)
     timeline = build_timeline(entries)
 
-    out_path = Path(args.output) if args.output else log_path.with_suffix('.html')
-    html = render_html(entries, requests_, summary, timeline, log_path.name)
+    out_path = Path(args.output) if args.output else log_paths[0].with_suffix('.html')
+    html = render_html(entries, requests_, summary, timeline, ' + '.join(p.name for p in log_paths))
     out_path.write_text(html, encoding='utf-8')
     print(f'Done: {out_path} ({len(entries)} entries, {len(requests_)} HTTP requests)')
 
