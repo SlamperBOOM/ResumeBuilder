@@ -7,8 +7,7 @@
 
 [Key Features](#key-features) • [How to Use](#how-to-use) • [Development](#development) • [Tech Stack](#tech-stack) • [License](#license)
 
-<!-- TODO: add a GIF of the app in action -->
-<!-- ![demo](docs/demo.gif) -->
+![img.png](app_preview.png)
 
 ## Key Features
 

@@ -202,7 +202,7 @@
         },
         "recommendations": {
             "title": "Recommendations",
-            "recommending": "Full name oof recommender",
+            "recommending": "Full name of recommender",
             "company": "Company",
             "email": "E-male",
             "phone_number": "Phone number",
