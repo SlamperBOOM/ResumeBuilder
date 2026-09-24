@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Software Engineer</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        @page {
+          size: A4;
+          margin: 10mm 0;
+        }
+
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          color: #1a1a1a;
+          background: #ffffff;
+        }
+
+        .page {
+          width: 210mm;
+          overflow: hidden;
+          background: #ffffff;
+        }
+
+        /* ---------- HEADER ---------- */
+        .header {
+          text-align: center;
+          padding: 1.4rem 2rem 1.1rem 2rem;
+          border-bottom: 2px solid #1a1a1a;
+        }
+
+        .photo-container {
+            width: 96px;
+            height: 96px;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 1px solid #c9c9c9;
+            margin: 0 auto 0.8rem auto;
+        }
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .header h1 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          word-break: break-word;
+        }
+        .header .position {
+          margin: 0.25rem 0 0 0;
+          font-size: 1.05rem;
+          font-weight: 700;
+          letter-spacing: 0.03em;
+          text-transform: uppercase;
+          color: #4a4a4a;
+        }
+        .header .meta {
+          margin: 0.5rem 0 0 0;
+          font-size: 0.88rem;
+          color: #333333;
+        }
+        .header .meta .sep { color: #b0b0b0; padding: 0 0.45rem; }
+
+        /* ---------- COLUMNS ---------- */
+        .main {
+          float: left;
+          width: 65%;
+          padding: 1.4rem 1.6rem 1.4rem 2rem;
+        }
+        .side {
+          float: left;
+          width: 35%;
+          padding: 1.4rem 2rem 1.4rem 1.6rem;
+          border-left: 1px solid #1a1a1a;
+          /* faux full-height divider: overshoot then clip via .page overflow:hidden */
+          padding-bottom: 3000px;
+          margin-bottom: -3000px;
+        }
+
+        .section { margin-bottom: 1.6rem; }
+        .section:last-child { margin-bottom: 0; }
+
+        h2 {
+          position: relative;
+          margin: 0 0 0.9rem 0;
+          padding-bottom: 0.45rem;
+          font-size: 1.1rem;
+          font-weight: 700;
+          border-bottom: 1px solid #cfcfcf;
+        }
+        h2::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 42px;
+          height: 3px;
+          background: #1a1a1a;
+        }
+
+        p { line-height: 1.5; margin: 0.35rem 0; }
+
+        /* ---------- ITEMS ---------- */
+        .items {
+          margin-left: 0.15rem;
+          padding-left: 1rem;
+          border-left: 1px solid #d8d8d8;
+        }
+        .item {
+          position: relative;
+          margin-bottom: 1.1rem;
+        }
+        .item:last-child { margin-bottom: 0; }
+        .item::before {
+          content: "";
+          position: absolute;
+          left: -1.3rem;
+          top: 0.35rem;
+          width: 7px;
+          height: 7px;
+          background: #1a1a1a;
+        }
+
+        .item-head { border-collapse: collapse; width: 100%; }
+        .item-head td { padding: 0; vertical-align: baseline; }
+        .item-title {
+          font-size: 0.98rem;
+          font-weight: 700;
+        }
+        .item-dates {
+          text-align: right;
+          font-size: 0.8rem;
+          color: #5c5c5c;
+          white-space: nowrap;
+          padding-left: 0.6rem !important;
+        }
+        .item-sub {
+          margin: 0.15rem 0 0 0;
+          font-size: 0.92rem;
+          font-style: italic;
+          color: #2b2b2b;
+        }
+        .item-description {
+          margin: 0.3rem 0 0 0.9rem;
+          font-size: 0.9rem;
+          line-height: 1.45;
+          color: #3d3d3d;
+        }
+
+        ul.plain-list {
+          margin: 0;
+          padding-left: 1.05rem;
+        }
+        ul.plain-list li {
+          font-size: 0.92rem;
+          line-height: 1.5;
+          margin-bottom: 0.3rem;
+        }
+
+        /* ---------- SIDE ---------- */
+        .side-line {
+          font-size: 0.88rem;
+          line-height: 1.45;
+          margin: 0.3rem 0;
+          word-break: break-word;
+        }
+        .side-line a { color: #1a1a1a; text-decoration: none; }
+        .side-label {
+          margin: 1.1rem 0 0.2rem 0;
+          font-size: 0.78rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #4a4a4a;
+        }
+        .side-sub {
+          font-size: 0.82rem;
+          color: #5c5c5c;
+          margin: 0 0 0.5rem 0;
+        }
+
+        @media screen and (max-width: 480px) {
+          html, body { width: 100%; }
+          .page { width: 100%; }
+          .main, .side {
+            float: none;
+            width: 100%;
+            border-left: none;
+            padding-bottom: 1.4rem;
+            margin-bottom: 0;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- ============ HEADER ============ -->
+    <div class="header">
+            <h1>Bennett Michael</h1>
+            <p class="position">Senior Software Engineer</p>
+            <p class="meta">
+                    Austin, TX
+                    <span class="sep">|</span>
+                    Date of birth: 14.06.1990 (36)
+                    <span class="sep">|</span>
+                    Desired salary: 140000 USD
+            </p>
+    </div>
+
+    <!-- ============ MAIN COLUMN ============ -->
+    <div class="main">
+
+        <div class="section">
+            <h2>Work experience</h2>
+            <div class="items">
+                <div class="item">
+                    <table class="item-head">
+                        <tr>
+                            <td class="item-title">Northwind Technologies</td>
+                            <td class="item-dates">
+                                    March 2021 — present
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="item-sub">Senior Software Engineer:</p>
+                    <p class="item-description"><ul>
+ <li>Led backend architecture for a microservices platform serving 2M+ users</li>
+ <li>Mentored a team of 4 junior engineers</li>
+</ul>
+<p><strong>Key achievements:</strong></p>
+<ul>
+ <li>Reduced API latency by 35%</li>
+ <li>Migrated legacy monolith to Kubernetes</li>
+</ul></p>
+                </div>
+                <div class="item">
+                    <table class="item-head">
+                        <tr>
+                            <td class="item-title">BlueOak Solutions</td>
+                            <td class="item-dates">
+                                    July 2016 — February 2021
+                            </td>
+                        </tr>
+                    </table>
+                    <p class="item-sub">Software Engineer:</p>
+                    <p class="item-description"><p>Developed and maintained RESTful APIs using Java and Spring Boot. Collaborated with the product team on feature design.</p></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Education</h2>
+            <div class="items">
+                <div class="item">
+                    <table class="item-head">
+                        <tr>
+                            <td class="item-title">
+                                University of Texas at Austin
+                                , Bachelor's degree
+                            </td>
+                            <td class="item-dates">2016</td>
+                        </tr>
+                    </table>
+                    <p class="item-description">College of Natural Sciences, Computer Science</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Courses</h2>
+            <ul class="plain-list">
+                <li>
+                    AWS Certified Solutions Architect
+                     — Amazon Web Services
+                    , 2022
+                </li>
+                <li>
+                    Advanced Kubernetes
+                     — Coursera
+                    , 2023
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>About me</h2>
+            <p><p>Backend engineer with 8+ years of experience building scalable distributed systems. Passionate about clean architecture, mentoring, and open-source contributions.</p></p>
+        </div>
+
+        <div class="section">
+            <h2>Hobbies</h2>
+            <p><p>Rock climbing, home coffee roasting, contributing to open-source projects</p></p>
+        </div>
+
+        <div class="section">
+            <h2>Recommendations</h2>
+            <ul class="plain-list">
+                <li>
+                    Laura Chen
+                     (Northwind Technologies)<br>
+                    laura.chen@northwind.example
+                     | +1-512-555-0199
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Publications</h2>
+            <ul class="plain-list">
+                <li>
+                    Designing Resilient Microservices at Scale
+                     — May 2023
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Additional info</h2>
+            <p><p>Open to relocation within the US for the right opportunity. Available to start within 4 weeks.</p></p>
+        </div>
+
+    </div>
+
+    <!-- ============ SIDE COLUMN ============ -->
+    <div class="side">
+
+        <div class="section">
+            <h2>Contacts</h2>
+                <p class="side-line">+1-512-555-0148</p>
+                <p class="side-line">michael.bennett@example.com</p>
+                        <p class="side-line">LinkedIn: <a href=https://linkedin.com/in/michaelbennett target="_blank">https://linkedin.com/in/michaelbennett</a></p>
+                        <p class="side-line">GitHub: <a href=https://github.com/mbennett-dev target="_blank">https://github.com/mbennett-dev</a></p>
+        </div>
+
+        <div class="section">
+                <p class="side-label">Employment:</p>
+                    <p class="side-line">
+                        Full time, Remote work
+                    </p>
+                    <p class="side-line">
+                            Relocation not possible
+                        , Ready for business trips
+                    </p>
+                <p class="side-label">Occupation:</p>
+                <p class="side-line">Backend Development</p>
+                <p class="side-label">Driving license:</p>
+                <p class="side-line">Class C</p>
+                <p class="side-label">Family status:</p>
+                <p class="side-line">
+                    Married, Have children
+                </p>
+        </div>
+
+        <div class="section">
+            <h2>Languages</h2>
+                <p class="side-line">English</p>
+                <p class="side-sub">C2</p>
+                <p class="side-line">Spanish</p>
+                <p class="side-sub">B1</p>
+        </div>
+
+        <div class="section">
+            <h2>Skills</h2>
+            <ul class="plain-list">
+                <li>Java — Expert</li>
+                <li>Spring Boot — Expert</li>
+                <li>Kubernetes — Experienced</li>
+                <li>PostgreSQL — Experienced</li>
+                <li>System Design — Expert</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -10,5 +10,8 @@
     },
     "simple_template_updated": {
         "display_name": "templates.simple_template_updated"
+    },
+    "centered_header_template": {
+        "display_name": "templates.centered_header_template"
     }
 }

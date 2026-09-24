@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${resume_name}</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        @page {
+          size: A4;
+          margin: 10mm 0;
+        }
+
+        html, body {
+          width: 210mm;
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          color: #1a1a1a;
+          background: #ffffff;
+        }
+
+        .page {
+          width: 210mm;
+          overflow: hidden;
+          background: #ffffff;
+        }
+
+        /* ---------- HEADER ---------- */
+        .header {
+          text-align: center;
+          padding: 1.4rem 2rem 1.1rem 2rem;
+          border-bottom: 2px solid #1a1a1a;
+        }
+
+        .photo-container {
+            width: 96px;
+            height: 96px;
+            overflow: hidden;
+            border-radius: 50%;
+            border: 1px solid #c9c9c9;
+            margin: 0 auto 0.8rem auto;
+        }
+        .photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .header h1 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          word-break: break-word;
+        }
+        .header .position {
+          margin: 0.25rem 0 0 0;
+          font-size: 1.05rem;
+          font-weight: 700;
+          letter-spacing: 0.03em;
+          text-transform: uppercase;
+          color: #4a4a4a;
+        }
+        .header .meta {
+          margin: 0.5rem 0 0 0;
+          font-size: 0.88rem;
+          color: #333333;
+        }
+        .header .meta .sep { color: #b0b0b0; padding: 0 0.45rem; }
+
+        /* ---------- COLUMNS ---------- */
+        .main {
+          float: left;
+          width: 65%;
+          padding: 1.4rem 1.6rem 1.4rem 2rem;
+        }
+        .side {
+          float: left;
+          width: 35%;
+          padding: 1.4rem 2rem 1.4rem 1.6rem;
+          border-left: 1px solid #1a1a1a;
+          /* faux full-height divider: overshoot then clip via .page overflow:hidden */
+          padding-bottom: 3000px;
+          margin-bottom: -3000px;
+        }
+
+        .section { margin-bottom: 1.6rem; }
+        .section:last-child { margin-bottom: 0; }
+
+        h2 {
+          position: relative;
+          margin: 0 0 0.9rem 0;
+          padding-bottom: 0.45rem;
+          font-size: 1.1rem;
+          font-weight: 700;
+          border-bottom: 1px solid #cfcfcf;
+        }
+        h2::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          bottom: -2px;
+          width: 42px;
+          height: 3px;
+          background: #1a1a1a;
+        }
+
+        p { line-height: 1.5; margin: 0.35rem 0; }
+
+        /* ---------- ITEMS ---------- */
+        .items {
+          margin-left: 0.15rem;
+          padding-left: 1rem;
+          border-left: 1px solid #d8d8d8;
+        }
+        .item {
+          position: relative;
+          margin-bottom: 1.1rem;
+        }
+        .item:last-child { margin-bottom: 0; }
+        .item::before {
+          content: "";
+          position: absolute;
+          left: -1.3rem;
+          top: 0.35rem;
+          width: 7px;
+          height: 7px;
+          background: #1a1a1a;
+        }
+
+        .item-head { border-collapse: collapse; width: 100%; }
+        .item-head td { padding: 0; vertical-align: baseline; }
+        .item-title {
+          font-size: 0.98rem;
+          font-weight: 700;
+        }
+        .item-dates {
+          text-align: right;
+          font-size: 0.8rem;
+          color: #5c5c5c;
+          white-space: nowrap;
+          padding-left: 0.6rem !important;
+        }
+        .item-sub {
+          margin: 0.15rem 0 0 0;
+          font-size: 0.92rem;
+          font-style: italic;
+          color: #2b2b2b;
+        }
+        .item-description {
+          margin: 0.3rem 0 0 0.9rem;
+          font-size: 0.9rem;
+          line-height: 1.45;
+          color: #3d3d3d;
+        }
+
+        ul.plain-list {
+          margin: 0;
+          padding-left: 1.05rem;
+        }
+        ul.plain-list li {
+          font-size: 0.92rem;
+          line-height: 1.5;
+          margin-bottom: 0.3rem;
+        }
+
+        /* ---------- SIDE ---------- */
+        .side-line {
+          font-size: 0.88rem;
+          line-height: 1.45;
+          margin: 0.3rem 0;
+          word-break: break-word;
+        }
+        .side-line a { color: #1a1a1a; text-decoration: none; }
+        .side-label {
+          margin: 1.1rem 0 0.2rem 0;
+          font-size: 0.78rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #4a4a4a;
+        }
+        .side-sub {
+          font-size: 0.82rem;
+          color: #5c5c5c;
+          margin: 0 0 0.5rem 0;
+        }
+
+        @media screen and (max-width: 480px) {
+          html, body { width: 100%; }
+          .page { width: 100%; }
+          .main, .side {
+            float: none;
+            width: 100%;
+            border-left: none;
+            padding-bottom: 1.4rem;
+            margin-bottom: 0;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- ============ HEADER ============ -->
+    <div class="header">
+        <#if blocks["MAIN_BLOCK"].person_photo_name??>
+            <div class="photo-container">
+                <img class="photo" src=${blocks["MAIN_BLOCK"].person_photo_name}>
+            </div>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].last_name?? || blocks["MAIN_BLOCK"].first_name??>
+            <h1><#if blocks["MAIN_BLOCK"].last_name??>${blocks["MAIN_BLOCK"].last_name}</#if><#if blocks["MAIN_BLOCK"].last_name?? && blocks["MAIN_BLOCK"].first_name??> </#if><#if blocks["MAIN_BLOCK"].first_name??>${blocks["MAIN_BLOCK"].first_name}</#if></h1>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].desired_position??>
+            <p class="position">${blocks["MAIN_BLOCK"].desired_position}</p>
+        </#if>
+        <#if blocks["MAIN_BLOCK"].city?? || blocks["MAIN_BLOCK"].date_of_birth?? || blocks["MAIN_BLOCK"].desired_salary??>
+            <p class="meta">
+                <#assign metaPrinted = false>
+                <#if blocks["MAIN_BLOCK"].city??>
+                    ${blocks["MAIN_BLOCK"].city}<#assign metaPrinted = true>
+                </#if>
+                <#if blocks["MAIN_BLOCK"].date_of_birth??>
+                    <#if metaPrinted><span class="sep">|</span></#if>
+                    ${translations.main_block.date_of_birth}: ${blocks["MAIN_BLOCK"].date_of_birth}<#assign metaPrinted = true>
+                </#if>
+                <#if blocks["MAIN_BLOCK"].desired_salary??>
+                    <#if metaPrinted><span class="sep">|</span></#if>
+                    ${translations.main_block.desired_salary}: ${blocks["MAIN_BLOCK"].desired_salary}
+                </#if>
+            </p>
+        </#if>
+    </div>
+
+    <!-- ============ MAIN COLUMN ============ -->
+    <div class="main">
+
+        <#if blocks["EXPERIENCE"]?? && blocks["EXPERIENCE"].experiences?? && (blocks["EXPERIENCE"].experiences?size > 0)>
+        <div class="section">
+            <h2>${translations.experience.title}</h2>
+            <div class="items">
+            <#list blocks["EXPERIENCE"].experiences as job>
+            <#if job.company?? || job.position?? || job.start_date?? || job.end_date?? || job.work_description??>
+                <div class="item">
+                    <table class="item-head">
+                        <tr>
+                            <td class="item-title"><#if job.company??>${job.company}<#elseif job.position??>${job.position}</#if></td>
+                            <td class="item-dates">
+                                <#if job.start_date?? && job.is_still_working?? && job.is_still_working>
+                                    ${job.start_date} — ${translations.experience.until_now}
+                                <#elseif job.start_date?? && job.end_date??>
+                                    ${job.start_date} — ${job.end_date}
+                                </#if>
+                            </td>
+                        </tr>
+                    </table>
+                    <#if job.company?? && job.position??>
+                    <p class="item-sub">${job.position}:</p>
+                    </#if>
+                    <#if job.work_description??>
+                    <p class="item-description">${job.work_description}</p>
+                    </#if>
+                </div>
+            </#if>
+            </#list>
+            </div>
+        </div>
+        </#if>
+
+        <#if blocks["EDUCATION"]?? && blocks["EDUCATION"].educations?? && (blocks["EDUCATION"].educations?size > 0)>
+        <div class="section">
+            <h2>${translations.education.title}</h2>
+            <div class="items">
+            <#list blocks["EDUCATION"].educations as edu>
+                <div class="item">
+                    <table class="item-head">
+                        <tr>
+                            <td class="item-title">
+                                <#if edu.institution??>${edu.institution}</#if>
+                                <#if edu.education_level?has_content>, ${translations.education.level[edu.education_level]!edu.education_level}</#if>
+                            </td>
+                            <td class="item-dates"><#if edu.year_of_graduate??>${edu.year_of_graduate}</#if></td>
+                        </tr>
+                    </table>
+                    <#if edu.faculty?? || edu.speciality??>
+                    <p class="item-description"><#if edu.faculty??>${edu.faculty}</#if><#if edu.faculty?? && edu.speciality??>, </#if><#if edu.speciality??>${edu.speciality}</#if></p>
+                    </#if>
+                </div>
+            </#list>
+            </div>
+        </div>
+        </#if>
+
+        <#if blocks["ADVANCED_TRAINING"]?? && blocks["ADVANCED_TRAINING"].trainings?? && (blocks["ADVANCED_TRAINING"].trainings?size > 0)>
+        <div class="section">
+            <h2>${translations.adv_training.title}</h2>
+            <ul class="plain-list">
+                <#list blocks["ADVANCED_TRAINING"].trainings as course>
+                <li>
+                    <#if course.course_name??>${course.course_name}</#if>
+                    <#if course.organization??> — ${course.organization}</#if>
+                    <#if course.year_of_graduate??>, ${course.year_of_graduate}</#if>
+                </li>
+                </#list>
+            </ul>
+        </div>
+        </#if>
+
+        <#if blocks["ABOUT"]?? && blocks["ABOUT"].about_text??>
+        <div class="section">
+            <h2>${translations.about.title}</h2>
+            <p>${blocks["ABOUT"].about_text}</p>
+        </div>
+        </#if>
+
+        <#if blocks["HOBBIES"]?? && blocks["HOBBIES"].hobbies??>
+        <div class="section">
+            <h2>${translations.hobbies.title}</h2>
+            <p>${blocks["HOBBIES"].hobbies}</p>
+        </div>
+        </#if>
+
+        <#if blocks["RECOMMENDATIONS"]?? && blocks["RECOMMENDATIONS"].recommendations?? && (blocks["RECOMMENDATIONS"].recommendations?size > 0)>
+        <div class="section">
+            <h2>${translations.recommendations.title}</h2>
+            <ul class="plain-list">
+                <#list blocks["RECOMMENDATIONS"].recommendations as rec>
+                <li>
+                    <#if rec.recommending??>${rec.recommending}</#if>
+                    <#if rec.company??> (${rec.company})</#if><br>
+                    <#if rec.email??>${rec.email}</#if>
+                    <#if rec.phone_number??> | ${rec.phone_number}</#if>
+                </li>
+                </#list>
+            </ul>
+        </div>
+        </#if>
+
+        <#if blocks["PUBLICATIONS"]?? && blocks["PUBLICATIONS"].publications?? && (blocks["PUBLICATIONS"].publications?size > 0)>
+        <div class="section">
+            <h2>${translations.publications.title}</h2>
+            <ul class="plain-list">
+                <#list blocks["PUBLICATIONS"].publications as pub>
+                <li>
+                    <#if pub.publication??>${pub.publication}</#if>
+                    <#if pub.date??> — ${pub.date}</#if>
+                </li>
+                </#list>
+            </ul>
+        </div>
+        </#if>
+
+        <#if blocks["ADDITIONAL"]?? && blocks["ADDITIONAL"].additional_info??>
+        <div class="section">
+            <h2>${translations.additional.title}</h2>
+            <p>${blocks["ADDITIONAL"].additional_info}</p>
+        </div>
+        </#if>
+
+    </div>
+
+    <!-- ============ SIDE COLUMN ============ -->
+    <div class="side">
+
+        <#if blocks["CONTACTS"]?? &&
+            (blocks["CONTACTS"].phone_number?? || blocks["CONTACTS"].email?? || (blocks["CONTACTS"].social_nets?? && blocks["CONTACTS"].social_nets?size > 0))>
+        <div class="section">
+            <h2>${translations.contacts.title}</h2>
+            <#if blocks["CONTACTS"].phone_number??>
+                <p class="side-line">${blocks["CONTACTS"].phone_number}</p>
+            </#if>
+            <#if blocks["CONTACTS"].email??>
+                <p class="side-line">${blocks["CONTACTS"].email}</p>
+            </#if>
+            <#if blocks["CONTACTS"].social_nets??>
+                <#list blocks["CONTACTS"].social_nets as nets>
+                    <#if nets?? && nets.social_net_profile_link?? && nets.social_net_name??>
+                        <p class="side-line">${nets.social_net_name}: <a href=${nets.social_net_profile_link} target="_blank">${nets.social_net_profile_link}</a></p>
+                    </#if>
+                </#list>
+            </#if>
+        </div>
+        </#if>
+
+        <#if blocks["MAIN_BLOCK"].employment?? || blocks["MAIN_BLOCK"].schedule?? || blocks["MAIN_BLOCK"].is_moving_acceptable??
+            || blocks["MAIN_BLOCK"].is_ready_for_business_trips || blocks["MAIN_BLOCK"].occupation??
+            || blocks["MAIN_BLOCK"].driver_license?? || blocks["MAIN_BLOCK"].marital_status?? || blocks["MAIN_BLOCK"].have_children>
+        <div class="section">
+            <#if blocks["MAIN_BLOCK"].employment?? || blocks["MAIN_BLOCK"].schedule?? || blocks["MAIN_BLOCK"].is_moving_acceptable?? || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+                <p class="side-label">${translations.main_block.work_conditions}:</p>
+                <#if blocks["MAIN_BLOCK"].employment?? || blocks["MAIN_BLOCK"].schedule??>
+                    <p class="side-line">
+                        <#if blocks["MAIN_BLOCK"].employment??>${translations.main_block.employment[blocks["MAIN_BLOCK"].employment]}</#if><#if blocks["MAIN_BLOCK"].employment?? && blocks["MAIN_BLOCK"].schedule??>, </#if><#if blocks["MAIN_BLOCK"].schedule??>${translations.main_block.schedule[blocks["MAIN_BLOCK"].schedule]}</#if>
+                    </p>
+                </#if>
+                <#if blocks["MAIN_BLOCK"].is_moving_acceptable?? || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+                    <p class="side-line">
+                        <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>
+                            <#if blocks["MAIN_BLOCK"].is_moving_acceptable>${translations.main_block.moving.ready}<#else>${translations.main_block.moving.not_ready}</#if>
+                        </#if>
+                        <#if blocks["MAIN_BLOCK"].is_ready_for_business_trips><#if blocks["MAIN_BLOCK"].is_moving_acceptable??>, </#if>${translations.main_block.business_trips_ready}</#if>
+                    </p>
+                </#if>
+            </#if>
+            <#if blocks["MAIN_BLOCK"].occupation??>
+                <p class="side-label">${translations.main_block.occupation}:</p>
+                <p class="side-line">${blocks["MAIN_BLOCK"].occupation}</p>
+            </#if>
+            <#if blocks["MAIN_BLOCK"].driver_license??>
+                <p class="side-label">${translations.main_block.driving_license}:</p>
+                <p class="side-line">${blocks["MAIN_BLOCK"].driver_license}</p>
+            </#if>
+            <#if blocks["MAIN_BLOCK"].marital_status?? || blocks["MAIN_BLOCK"].have_children>
+                <p class="side-label">${translations.main_block.marital_status}:</p>
+                <p class="side-line">
+                    <#if blocks["MAIN_BLOCK"].marital_status??>${blocks["MAIN_BLOCK"].marital_status}</#if><#if blocks["MAIN_BLOCK"].marital_status?? && blocks["MAIN_BLOCK"].have_children>, </#if><#if blocks["MAIN_BLOCK"].have_children>${translations.main_block.have_children}</#if>
+                </p>
+            </#if>
+        </div>
+        </#if>
+
+        <#if blocks["LANGUAGES"]?? && blocks["LANGUAGES"].languages?? && (blocks["LANGUAGES"].languages?size > 0)>
+        <div class="section">
+            <h2>${translations.languages.title}</h2>
+            <#list blocks["LANGUAGES"].languages as lang>
+                <p class="side-line"><#if lang.language??>${lang.language}</#if></p>
+                <#if lang.language_level??>
+                <p class="side-sub">${lang.language_level}</p>
+                </#if>
+            </#list>
+        </div>
+        </#if>
+
+        <#if blocks["SKILLS"]?? && blocks["SKILLS"].skills?? && (blocks["SKILLS"].skills?size > 0)>
+        <div class="section">
+            <h2>${translations.skills.title}</h2>
+            <ul class="plain-list">
+                <#list blocks["SKILLS"].skills as skill>
+                <#if skill.skill_name??>
+                <li>${skill.skill_name}<#if skill.skill_level?has_content> — ${translations.skills.level[skill.skill_level]!skill.skill_level}</#if></li>
+                </#if>
+                </#list>
+            </ul>
+        </div>
+        </#if>
+
+    </div>
+</div>
+</body>
+</html>

@@ -8,9 +8,8 @@
             "simple_template": "Simple template",
             "simple_divided_template": "Simple divided template",
             "timeline_template": "Timeline style",
-            "simple_template_modern": "*ignore*",
             "simple_template_updated": "Modern template",
-            "dossier_template": "Dossier style"
+            "centered_header_template": "Centered header"
         }
     },
     "error_messages": {

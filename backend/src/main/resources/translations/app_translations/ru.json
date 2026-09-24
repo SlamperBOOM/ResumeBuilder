@@ -8,9 +8,8 @@
             "simple_template": "Простой шаблон",
             "simple_divided_template": "Простой разделенный шаблон",
             "timeline_template": "В стиле таймлайн",
-            "simple_template_modern": "*игнор*",
             "simple_template_updated": "Современный шаблон",
-            "dossier_template": "В стиле досье"
+            "centered_header_template": "С центрированной шапкой"
         }
     },
     "error_messages": {
