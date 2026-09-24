@@ -1,0 +1,81 @@
+name: Build installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag for a draft release (leave empty to only attach artifacts to this run)'
+        required: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            shell: cmd
+            command: package.bat
+          - os: ubuntu-latest
+            shell: bash
+            command: bash package.sh
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/resume-builder-frontend/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # package.bat / package.sh overwrite JAVA_HOME with the downloaded JRE,
+      # which has no javac, so point the Gradle toolchain at the JDK above.
+      - name: Register the JDK as a Gradle toolchain
+        shell: bash
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.java.installations.paths=$(echo "$JAVA_HOME" | tr '\\' '/')" >> ~/.gradle/gradle.properties
+          cat ~/.gradle/gradle.properties
+
+      - name: Build installers
+        shell: ${{ matrix.shell }}
+        run: ${{ matrix.command }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ runner.os }}
+          if-no-files-found: error
+          # Artifact storage is billed per GB-hour and GitHub Free includes only
+          # 500 MB; the installers are ~150 MB each. Release assets are free, so
+          # keep artifacts just long enough to download or promote them.
+          retention-days: 1
+          path: |
+            release/build/*.exe
+            release/build/*.AppImage
+            release/build/*.deb
+
+  release:
+    if: inputs.tag != ''
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "${{ inputs.tag }}" dist/* --draft --title "${{ inputs.tag }}" --generate-notes
