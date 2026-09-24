@@ -2,6 +2,26 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
+
+/*
+ * Inter, bundled with the app. The same variable file the resume templates
+ * use (backend/src/main/resources/templates/fonts/), copied here so the
+ * renderer can load it from disk: the app must render correctly with no
+ * network, so no webfont is ever fetched.
+ *
+ * One file covers every weight (100-900) and carries the `opsz` axis, which
+ * `font-optical-sizing: auto` uses to open up small text and tighten large
+ * text. `font-display: block` is safe because the file is local: it loads in
+ * milliseconds, and blocking avoids a flash of fallback metrics on startup.
+ */
+@font-face {
+  font-family: 'Inter Variable';
+  src: url('../../assets/fonts/Inter-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: block;
+}
+
 body {
   position: relative;
   height: 100vh;
@@ -10,4 +30,27 @@ body {
   justify-content: center;
   align-items: center;
   margin: 0;
+  font-optical-sizing: auto;
+  /* `l` with a tail: Il1 are otherwise near-identical in Inter, and this app
+     is mostly people typing names, URLs and job titles into fields. */
+  font-feature-settings: 'cv05' 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Light text on a dark field blooms and reads a weight heavier than it is.
+   Antialiased smoothing takes that weight back off. */
+@media (prefers-color-scheme: dark) {
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Text surfaces the browser would otherwise style for us. */
+::selection {
+  background-color: rgba(var(--mui-palette-primary-mainChannel) / 0.28);
+}
+
+input,
+textarea {
+  caret-color: var(--mui-palette-primary-main);
 }

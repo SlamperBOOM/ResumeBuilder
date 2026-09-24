@@ -3,6 +3,7 @@ import { Palette, useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import AppDialogActions from './appDialogActions';
 import { HelpModalSchema } from '../utils/backendTypes';
+import interVariable from '../../../assets/fonts/Inter-Variable.ttf';
 
 type HelpDialogProps = {
   showState: boolean;
@@ -30,6 +31,13 @@ export default function HelpDialog(props: HelpDialogProps) {
   }
 
   const { light, dark } = theme.colorSchemes;
+  // The frame is its own document, so the app's @font-face does not reach it.
+  // The URL is resolved against the renderer's own location because srcDoc
+  // documents resolve relative URLs against <base href="about:srcdoc">
+  const fontCss =
+    `<style>@font-face{font-family:'Inter Variable';` +
+    `src:url(${new URL(interVariable, window.location.href).href}) format('truetype');` +
+    `font-weight:100 900;font-style:normal;font-display:block}</style>`;
   const themeCss =
     light && dark
       ? `<style>:root{${themeVars(light)}}` +
@@ -56,7 +64,10 @@ export default function HelpDialog(props: HelpDialogProps) {
         <iframe
           title={schema.title}
           sandbox="allow-same-origin"
-          srcDoc={schema.html.replace('</head>', `${themeCss}</head>`)}
+          srcDoc={schema.html.replace(
+            '</head>',
+            `${fontCss}${themeCss}</head>`,
+          )}
           style={{ flex: 1, border: 'none' }}
         />
       </DialogContent>

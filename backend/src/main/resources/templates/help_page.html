@@ -40,13 +40,19 @@
             scroll-behavior: smooth;
         }
 
+        /* Inter is bundled with the app. HelpDialog.tsx appends the @font-face
+           for it along with the theme variables; the fallbacks below are what
+           an unstyled render of this page gets */
         body {
-            font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            font-family: 'Inter Variable', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            font-optical-sizing: auto;
+            font-feature-settings: 'cv05' 1;
             margin: 0;
             padding: 0.5rem 1.5rem 3rem;
             color: var(--text);
             background: var(--bg);
             line-height: 1.6;
+            letter-spacing: -0.006em;
         }
 
         .page {
@@ -61,9 +67,10 @@
         .intro {
             grid-column: 1 / -1;
             margin: 0 0 0.5rem;
-            font-size: 1.05rem;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
             color: var(--muted);
-            max-width: 760px;
+            max-width: 38rem;
         }
 
         /* Table of contents: sticks next to the text on a wide window,
@@ -71,13 +78,14 @@
         nav {
             position: sticky;
             top: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         nav h2 {
             margin: 0 0 0.5rem;
-            font-size: 0.75rem;
-            letter-spacing: 0.08em;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.09em;
             text-transform: uppercase;
             color: var(--muted);
         }
@@ -112,9 +120,11 @@
             border-left-color: var(--accent);
         }
 
+        /* 38rem keeps a line of body text near 70 characters; past that the eye
+           loses the start of the next line */
         main {
             counter-reset: section;
-            max-width: 760px;
+            max-width: 38rem;
         }
 
         section {
@@ -128,7 +138,9 @@
 
         main h2 {
             counter-increment: section;
-            font-size: 1.2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: -0.014em;
             margin: 0 0 0.5rem;
             color: var(--accent);
             scroll-margin-top: 0.5rem;
@@ -143,7 +155,7 @@
             border-radius: 50%;
             background: var(--accent);
             color: var(--on-accent);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             line-height: 1.6rem;
             text-align: center;
         }
@@ -198,7 +210,7 @@
             padding-top: 1rem;
             border-top: 1px solid var(--line);
             color: var(--muted);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         @media (max-width: 900px) {

@@ -69,8 +69,8 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
     >
       <AppBar position="static">
         <Toolbar>
-          <img src={appIcon} alt="" height="64px" />
-          <Typography variant="h4" marginRight={2}>
+          <img src={appIcon} alt="" height="32px" />
+          <Typography variant="h6" marginRight={2}>
             {title}
           </Typography>
           <IconButton

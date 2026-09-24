@@ -81,11 +81,7 @@ export default function BlockRail(props: BlockRailProps) {
         p: 1.5,
       }}
     >
-      <Typography
-        variant="overline"
-        color="text.secondary"
-        sx={{ px: 1, letterSpacing: '0.12em' }}
-      >
+      <Typography variant="overline" color="text.secondary" sx={{ px: 1 }}>
         {title}
       </Typography>
 
@@ -117,7 +113,7 @@ export default function BlockRail(props: BlockRailProps) {
               >
                 <ListItemText
                   primary={translateKey(blocks[blockKey].block_title)}
-                  slotProps={{ primary: { fontWeight: isActive ? 700 : 400 } }}
+                  slotProps={{ primary: { fontWeight: isActive ? 600 : 400 } }}
                 />
               </ListItemButton>
             </ListItem>

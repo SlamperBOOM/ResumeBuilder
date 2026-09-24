@@ -120,9 +120,15 @@ annotation processor.
 
 ## Fonts
 
-Bundled in `backend/src/main/resources/templates/fonts/`. Full license texts
-are in `templates/fonts/licenses/` (in the installed app:
-`resources/licenses/fonts/`).
+Bundled in `backend/src/main/resources/templates/fonts/`, where the resume
+templates use them. Full license texts are in `templates/fonts/licenses/` (in
+the installed app: `resources/licenses/fonts/`).
+
+The app interface itself is set in Inter. The same variable font file is copied
+to `frontend/resume-builder-frontend/assets/fonts/Inter-Variable.ttf` and
+bundled into the renderer, so the interface never fetches a webfont and renders
+identically offline. It is the same file under the same license
+(`templates/fonts/licenses/Inter-OFL.txt`); only the file name differs.
 
 | Font             | License                                                                     |
 |------------------|-----------------------------------------------------------------------------|

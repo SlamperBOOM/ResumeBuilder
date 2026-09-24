@@ -71,7 +71,7 @@ function MainScreenEmptyState(props: { schema: MainScreenResponse }) {
       }}
     >
       <ArticleOutlinedIcon sx={{ fontSize: 96, opacity: 0.4 }} />
-      <Typography variant="h6" color="text.primary">
+      <Typography variant="h5" color="text.primary">
         {translateKey(emptyState.title)}
       </Typography>
       <Typography variant="body2">
