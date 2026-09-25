@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T00:00:00Z",
+  "title": "Design System: Resume Builder",
+  "extensions": {
+    "colorMeta": {
+      "teal-ink": {
+        "role": "primary",
+        "displayName": "Deep Teal Ink",
+        "canonical": "#117a80",
+        "note": "Light-scheme accent. Hue is a pragmatic default, not a trademark; a future palette setting may replace it.",
+        "tonalRamp": [
+          "oklch(20% 0.045 205)",
+          "oklch(30% 0.060 205)",
+          "oklch(40% 0.070 205)",
+          "oklch(48% 0.075 205)",
+          "oklch(58% 0.070 205)",
+          "oklch(70% 0.055 205)",
+          "oklch(83% 0.035 205)",
+          "oklch(95% 0.012 205)"
+        ]
+      },
+      "teal-mint": {
+        "role": "primary",
+        "displayName": "Pale Mint",
+        "canonical": "#94e2d5",
+        "note": "Dark-scheme accent. Reads as illumination against the dark field rather than as ink.",
+        "tonalRamp": [
+          "oklch(20% 0.030 175)",
+          "oklch(32% 0.045 175)",
+          "oklch(44% 0.060 175)",
+          "oklch(56% 0.070 175)",
+          "oklch(68% 0.075 175)",
+          "oklch(78% 0.070 175)",
+          "oklch(87% 0.055 175)",
+          "oklch(95% 0.025 175)"
+        ]
+      },
+      "desk-light": {
+        "role": "neutral",
+        "displayName": "Desk",
+        "canonical": "#eff1f5",
+        "note": "Catppuccin Latte base. The lowest surface in the light scheme; nothing sits behind it.",
+        "tonalRamp": [
+          "#4c4f69",
+          "#6c6f85",
+          "#8c8fa1",
+          "#9ca0b0",
+          "#acb0be",
+          "#ccd0da",
+          "#dce0e8",
+          "#eff1f5"
+        ]
+      },
+      "desk-dark": {
+        "role": "neutral",
+        "displayName": "Desk (Dark)",
+        "canonical": "#181825",
+        "note": "Catppuccin Mocha mantle. The lowest surface in the dark scheme.",
+        "tonalRamp": [
+          "#11111b",
+          "#181825",
+          "#1e1e2e",
+          "#313244",
+          "#45475a",
+          "#585b70",
+          "#6c7086",
+          "#7f849c"
+        ]
+      },
+      "ink-light": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#4c4f69",
+        "note": "Primary text in the light scheme. Never pure black; the desk metaphor has no ink that harsh.",
+        "tonalRamp": [
+          "#292c3c",
+          "#3c3f54",
+          "#4c4f69",
+          "#6c6f85",
+          "#8c8fa1",
+          "#9ca0b0",
+          "#bcc0cc",
+          "#dce0e8"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink (Dark)",
+        "canonical": "#cdd6f4",
+        "note": "Primary text in the dark scheme. Never pure white.",
+        "tonalRamp": [
+          "#313244",
+          "#45475a",
+          "#6c7086",
+          "#7f849c",
+          "#9399b2",
+          "#a6adc8",
+          "#bac2de",
+          "#cdd6f4"
+        ]
+      },
+      "rule-light": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#dce0e8",
+        "note": "The 1px divider that does the structural work shadows would do in a more decorative system."
+      },
+      "alarm-light": {
+        "role": "error",
+        "displayName": "Alarm",
+        "canonical": "#d20f39",
+        "note": "Destructive confirmation and validation failure only. Never decorative."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The rare large moment; never used for chrome."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Dialog titles and empty-state headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The workhorse heading: resume name on a card, active block title, empty-state heading."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Form field values and dialog prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Every button and menu item, in sentence case."
+      },
+      "eyebrow": {
+        "displayName": "Eyebrow",
+        "purpose": "Section labels in the block rail; uppercase at 0.09em tracking."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Counts and positional readouts; carries tabular figures."
+      },
+      "body-small": {
+        "displayName": "Body Small",
+        "purpose": "Supporting text and every timestamp in the app; carries tabular figures."
+      }
+    },
+    "fontNote": "Inter variable (weights 100-900, opsz axis) ships inside the app at frontend/resume-builder-frontend/assets/fonts/Inter-Variable.ttf, the same file the resume templates use. Declared in src/renderer/App.css with font-display: block, and injected into the help page's iframe by HelpDialog.tsx. No webfont is fetched at runtime.",
+    "shadows": [
+      {
+        "name": "hover-lift",
+        "value": "0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)",
+        "purpose": "Survives only in the template picker. Not available to new work: a border or tone change says the same thing in both schemes."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "0.2s",
+        "purpose": "Duration for every hover and selection state change: transform, box-shadow, border-color."
+      }
+    ],
+    "layout": [
+      {
+        "name": "sheet-grid",
+        "value": "repeat(auto-fill, minmax(220px, 1fr)) / gap 24px / align-content start",
+        "purpose": "The main screen grid of A4 sheets. Reflows by window width; the app's 1200px minimum window keeps it at four or more columns."
+      },
+      {
+        "name": "panel-separator",
+        "value": "6px",
+        "purpose": "The draggable divider between resizable panes in the edit screen, filled with the rule color."
+      },
+      {
+        "name": "rail-row-min",
+        "value": "44px",
+        "purpose": "Minimum pointer target for block rail rows, kept despite dense typography."
+      },
+      {
+        "name": "sheet-aspect",
+        "value": "1 / 1.414",
+        "purpose": "A4. Any container holding a page preview takes the page's proportion instead of imposing its own."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action a screen region is asking for. Accent fill, sentence-case label, no resting shadow.",
+      "html": "<button class=\"ds-btn-primary\">Edit</button>",
+      "css": ".ds-btn-primary { background: #117a80; color: #ffffff; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.875rem; font-weight: 550; line-height: 1.4; letter-spacing: 0; padding: 6px 16px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; } .ds-btn-primary:hover { background: #0d6165; } .ds-btn-primary:focus-visible { outline: 2px solid #117a80; outline-offset: 2px; } .ds-btn-primary:active { background: #0a4e51; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined companion to the primary button. Pairs at equal width when two actions are genuinely equally likely.",
+      "html": "<button class=\"ds-btn-secondary\">Export to PDF</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #117a80; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.875rem; font-weight: 550; line-height: 1.4; letter-spacing: 0; padding: 5px 15px; border: 1px solid rgba(17, 122, 128, 0.5); border-radius: 4px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; } .ds-btn-secondary:hover { background: rgba(17, 122, 128, 0.06); border-color: #117a80; } .ds-btn-secondary:focus-visible { outline: 2px solid #117a80; outline-offset: 2px; }"
+    },
+    {
+      "name": "Resume Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "The main screen's unit: the page itself at A4 proportion, square-cornered and flat, with the caption beneath it and an action bar revealed on hover or focus.",
+      "html": "<article class=\"ds-sheet-item\"><div class=\"ds-sheet\"><div class=\"ds-sheet-doc\"><b>Bennett Michael</b><span>Senior Software Engineer</span><i>Work experience</i><u></u><u class=\"s\"></u><i>Education</i><u></u></div><div class=\"ds-sheet-bar\"><button class=\"ds-sheet-act ds-sheet-act--primary\" aria-label=\"Edit\"><svg viewBox=\"0 0 24 24\"><path d=\"M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z\"/></svg></button><button class=\"ds-sheet-act\" aria-label=\"Duplicate\"><svg viewBox=\"0 0 24 24\"><path d=\"M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z\"/></svg></button><button class=\"ds-sheet-act\" aria-label=\"Export\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z\"/></svg></button><span class=\"ds-sheet-gap\"></span><button class=\"ds-sheet-act\" aria-label=\"More\"><svg viewBox=\"0 0 24 24\"><path d=\"M12 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z\"/></svg></button></div></div><div class=\"ds-sheet-cap\"><p class=\"ds-sheet-name\">Senior Software Engineer</p><p class=\"ds-sheet-date\">5 минут назад</p><p class=\"ds-sheet-tags\">English · Modern template</p></div></article>",
+      "css": ".ds-sheet-item { width: 240px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #4c4f69; } .ds-sheet { position: relative; aspect-ratio: 1 / 1.414; background: #ffffff; border: 1px solid #dce0e8; overflow: hidden; transition: border-color 0.2s; } .ds-sheet:hover, .ds-sheet:focus-within { border-color: #117a80; } .ds-sheet-doc { padding: 14px 12px; font-size: 5px; line-height: 1.5; color: #6c6f85; } .ds-sheet-doc b { display: block; font-size: 9px; margin-bottom: 2px; color: #4c4f69; } .ds-sheet-doc i { display: block; font-style: normal; font-size: 6px; font-weight: 600; color: #117a80; margin: 6px 0 2px; } .ds-sheet-doc u { display: block; height: 3px; background: #4c4f69; opacity: 0.22; text-decoration: none; margin: 3px 0; } .ds-sheet-doc u.s { width: 60%; } .ds-sheet-bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: #ffffff; border-top: 1px solid #dce0e8; opacity: 0; pointer-events: none; transition: opacity 0.2s; } .ds-sheet:hover .ds-sheet-bar, .ds-sheet:focus-within .ds-sheet-bar { opacity: 1; pointer-events: auto; } .ds-sheet-act { width: 28px; height: 28px; display: grid; place-items: center; border: none; border-radius: 50%; background: transparent; color: #6c6f85; cursor: pointer; } .ds-sheet-act svg { width: 16px; height: 16px; fill: currentColor; } .ds-sheet-act--primary { color: #117a80; } .ds-sheet-act:hover { background: rgba(76, 79, 105, 0.10); } .ds-sheet-act:focus-visible { outline: 2px solid #117a80; outline-offset: -2px; } .ds-sheet-gap { flex: 1; } .ds-sheet-cap { margin-top: 8px; } .ds-sheet-name { margin: 0; font-size: 1.125rem; font-weight: 600; line-height: 1.4; letter-spacing: -0.012em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-sheet-date { margin: 0; font-size: 0.875rem; line-height: 1.5; letter-spacing: -0.004em; color: #6c6f85; font-variant-numeric: tabular-nums; } .ds-sheet-tags { margin: 0; font-size: 0.75rem; line-height: 1.5; color: #6c6f85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }"
+    },
+    {
+      "name": "Metadata Chip",
+      "kind": "chip",
+      "refersTo": "chip-tag",
+      "description": "Read-only metadata: resume locale and template name. Never interactive, never dismissible, never a filter.",
+      "html": "<span class=\"ds-chip\">Simple divided template</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; line-height: 1.66; color: #4c4f69; background: transparent; border: 1px solid #dce0e8; border-radius: 16px; white-space: nowrap; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Outlined field with a floating label, rendered from backend schema through the field registry. Never hand-placed.",
+      "html": "<label class=\"ds-field\"><input class=\"ds-field-input\" placeholder=\" \" value=\"Senior Software Engineer\" /><span class=\"ds-field-label\">Desired position</span></label>",
+      "css": ".ds-field { position: relative; display: block; width: 280px; } .ds-field-input { width: 100%; box-sizing: border-box; padding: 16.5px 14px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; line-height: 1.5; color: #4c4f69; background: transparent; border: 1px solid rgba(76, 79, 105, 0.23); border-radius: 4px; transition: border-color 0.2s, box-shadow 0.2s; } .ds-field-input:hover { border-color: #4c4f69; } .ds-field-input:focus { outline: none; border-color: #117a80; box-shadow: inset 0 0 0 1px #117a80; } .ds-field-label { position: absolute; top: 0; left: 9px; transform: translateY(-50%); padding: 0 5px; background: #ffffff; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; color: #6c6f85; pointer-events: none; transition: color 0.2s; } .ds-field-input:focus + .ds-field-label { color: #117a80; }"
+    },
+    {
+      "name": "Block Rail",
+      "kind": "nav",
+      "refersTo": "rail-item",
+      "description": "The edit screen's primary navigation: a dense list in a resizable pane, with entry counts and a 3px accent rule on the active block.",
+      "html": "<nav class=\"ds-rail\"><p class=\"ds-rail-title\">Blocks</p><ul class=\"ds-rail-list\"><li><button class=\"ds-rail-item\">Personal info<span class=\"ds-rail-count\">1</span></button></li><li><button class=\"ds-rail-item ds-rail-item--active\">Work experience<span class=\"ds-rail-count\">3</span></button></li><li><button class=\"ds-rail-item\">Education<span class=\"ds-rail-count\">2</span></button></li><li><button class=\"ds-rail-item\">Skills<span class=\"ds-rail-count\">8</span></button></li></ul></nav>",
+      "css": ".ds-rail { width: 240px; padding: 12px; background: #e6e9ef; border-right: 1px solid #dce0e8; box-sizing: border-box; } .ds-rail-title { margin: 0 0 4px; padding: 0 8px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.75rem; line-height: 2.66; letter-spacing: 0.12em; color: #6c6f85; } .ds-rail-list { list-style: none; margin: 0; padding: 0; } .ds-rail-item { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 4px 16px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 1rem; font-weight: 400; color: #4c4f69; text-align: left; background: transparent; border: none; border-left: 3px solid transparent; border-radius: 4px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; } .ds-rail-item:hover { background: rgba(76, 79, 105, 0.06); } .ds-rail-item:focus-visible { outline: 2px solid #117a80; outline-offset: -2px; } .ds-rail-item--active { font-weight: 600; border-left-color: #117a80; background: rgba(17, 122, 128, 0.10); } .ds-rail-count { font-size: 0.75rem; color: #6c6f85; font-weight: 400; }"
+    },
+    {
+      "name": "App Bar",
+      "kind": "nav",
+      "refersTo": "button-bar",
+      "description": "The accent-filled static top bar: app icon, Display-sized title, theme toggle, then text buttons generated from the backend header schema.",
+      "html": "<header class=\"ds-appbar\"><span class=\"ds-appbar-mark\"></span><h1 class=\"ds-appbar-title\">Resume Builder</h1><button class=\"ds-appbar-icon\" aria-label=\"Toggle theme\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-5.4-5.4c0-1.81.9-3.4 2.26-4.4-.44-.06-.9-.1-1.36-.1z\"/></svg></button><nav class=\"ds-appbar-nav\"><button class=\"ds-btn-bar\">Help</button><button class=\"ds-btn-bar\">About</button><button class=\"ds-btn-bar\">Exit</button></nav></header>",
+      "css": ".ds-appbar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #117a80; color: #ffffff; } .ds-appbar-mark { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.22); flex: 0 0 auto; } .ds-appbar-title { margin: 0 8px 0 0; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 2.125rem; font-weight: 400; line-height: 1.235; letter-spacing: 0.00735em; } .ds-appbar-icon { display: flex; padding: 8px; color: inherit; background: transparent; border: none; border-radius: 50%; cursor: pointer; transition: background-color 0.2s; } .ds-appbar-icon:hover { background: rgba(255,255,255,0.12); } .ds-appbar-nav { display: flex; gap: 4px; } .ds-btn-bar { background: transparent; color: inherit; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.875rem; font-weight: 550; line-height: 1.4; letter-spacing: 0; padding: 6px 8px; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; } .ds-btn-bar:hover { background: rgba(255,255,255,0.12); } .ds-btn-bar:focus-visible { outline: 2px solid #ffffff; outline-offset: -2px; }"
+    },
+    {
+      "name": "PDF Preview Pane",
+      "kind": "custom",
+      "refersTo": "panel-backdrop",
+      "description": "The signature component: the real exported PDF rendered against a toned backdrop, with fit-width, fit-height, and manual zoom modes that persist across sessions.",
+      "html": "<section class=\"ds-preview\"><div class=\"ds-preview-stage\"><div class=\"ds-preview-page\"></div></div><div class=\"ds-preview-controls\"><span class=\"ds-preview-mode\">Fit width</span><span class=\"ds-preview-mode ds-preview-mode--on\">Fit height</span><span class=\"ds-preview-mode\">Custom</span><span class=\"ds-preview-zoom\">70%</span></div></section>",
+      "css": ".ds-preview { width: 320px; border: 1px solid #dce0e8; border-radius: 12px; overflow: hidden; background: #ffffff; } .ds-preview-stage { display: flex; align-items: center; justify-content: center; height: 240px; padding: 16px; background: #ccd0da; } .ds-preview-page { width: 148px; height: 209px; background: #ffffff; box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14); } .ds-preview-controls { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-family: 'Inter Variable', Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 0.875rem; color: #6c6f85; border-top: 1px solid #dce0e8; } .ds-preview-mode--on { color: #117a80; font-weight: 500; } .ds-preview-zoom { margin-left: auto; font-variant-numeric: tabular-nums; color: #4c4f69; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Desk",
+    "overview": "The hero of every screen is the document, not the application. The interface is the desk surface underneath a sheet of paper: level, matte, unhurried, and deliberately less interesting than the thing lying on it. Every screen in this app exists to hold a resume steady while someone works on it, and the screen that competes with the resume for attention has failed at its only job.\n\nThis is why the color system is built as a graded stack of desk tones rather than a single background: desk under everything, paper for the surfaces that carry content, editor for the working panel, card-well and backdrop for the recesses a PDF sits in. Depth in this system is a change in tone, not a shadow. The palette is Catppuccin-derived (Latte in light, Mocha in dark) and its accent is a muted teal chosen pragmatically, not a trademark. That accent is replaceable; the restraint is not. A future palette setting may swap every hue in this file, and the system must survive that swap without redesign, which is only true if no rule here depends on the hue itself.\n\nThe product's users arrive after long absences, often years, and never to admire the app. They are mid-application, switching between a vacancy posting and this window. The system therefore prizes legibility, a stable spatial model between visits, and the absence of anything that must be learned twice. Ornament is not suppressed because ornament is bad; it is suppressed because it would be aimed at the wrong object.",
+    "keyCharacteristics": [
+      "Tonal depth, not shadow depth: surfaces separate by lightness step and a 1px rule.",
+      "One accent, used sparingly, on the action the user came to take.",
+      "Material Design as substrate, not as personality — the app reads as quiet, not as a Material demo.",
+      "The PDF is the only element allowed to look like a physical object.",
+      "Every string is a translation key; no layout may assume the width of English."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "There is exactly one accent hue in the system, and it never appears on a surface the user is not being asked to act on. If a screen has two teal things competing, one of them is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Replaceable-Hue Rule",
+        "body": "No rule in this system may depend on the accent being teal. The accent's role and scarcity are invariants; its hue is a default. A user-selectable palette must be able to replace every value in the frontmatter without invalidating a single line of this document.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Scheme Rule",
+        "body": "Every color decision ships in both schemes or it does not ship. A value added to colors.light without its colors.dark counterpart is a bug, not a work in progress.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bundled-Face Rule",
+        "body": "The interface font ships inside the app and loads from disk with font-display: block. A local file resolves in milliseconds, so blocking costs nothing and avoids a flash of fallback metrics; a webfont URL would break the product's offline promise outright.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence-Case Rule",
+        "body": "Buttons and menu items are sentence case. Uppercase labels were the framework default, not a decision, and they cost Russian words their shape, since Cyrillic has less ascender/descender variety to survive the flattening.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "Any number that changes in place while the user watches, and any timestamp that sits in a column of other timestamps, uses tabular figures. This is carried by the body-small and caption roles, so it is inherited rather than remembered.",
+        "section": "typography"
+      },
+      {
+        "name": "The Translated-Width Rule",
+        "body": "No heading, label, or button may be sized on the assumption that its English string is the longest one. Russian runs longer; headings truncate with ellipsis and noWrap rather than wrapping the layout.",
+        "section": "typography"
+      },
+      {
+        "name": "The Dark-Bloom Rule",
+        "body": "Light text on the dark scheme is rendered with -webkit-font-smoothing: antialiased. Identical weights bloom on a dark field and read a step heavier than they are; the thinner rasterization takes that step back off.",
+        "section": "typography"
+      },
+      {
+        "name": "The Window-Not-Device Rule",
+        "body": "This is a desktop app. Layout responds to container width through fluid grids and resizable panels; it does not branch on device breakpoints, and there is no mobile layout to maintain.",
+        "section": "layout"
+      },
+      {
+        "name": "The Persisted-Geometry Rule",
+        "body": "Anything the user physically drags — window size, splitter positions, preview zoom — is saved and restored. Returning to a layout you left is part of the product's promise of ownership.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-At-Rest Rule",
+        "body": "A surface that is not hovered, dragged, open, or focused casts no shadow. If a new component needs a shadow to be findable, its tone or its rule is wrong.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Both-Schemes-Visible Rule",
+        "body": "Every state change must be perceptible in both light and dark. A shadow alone never satisfies this, because shadow is nearly invisible on a dark field — pair it with a tone or border change, or use tone alone.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Paper Exception",
+        "body": "The rendered PDF page is the one element permitted to read as a physical object sitting above its surface. It earns this because it is literally the document. Nothing else in the interface may borrow the treatment.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Radius-Tracks-Size Rule",
+        "body": "Radius scales with the element: 4px inline, 8px grouped, 12px container. A 12px radius on a button or a 4px radius on a card is a mistake, not a variant.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Square-Paper Exception",
+        "body": "The resume sheet on the main screen has no radius at all. It is the one element that is a document rather than a container, and paper does not have rounded corners. The exception is the sheet only; every container around it still follows the radius rule.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do separate surfaces with tone and a 1px rule, in the order desk → paper → editor → well/backdrop.",
+      "Do keep the accent scarce and tied to the single action a region is asking for.",
+      "Do declare new form UI in backend/src/main/resources/screens/*.json and render it through the existing registry.",
+      "Do pass every user-visible string through a translation key, and size layout for the longer Russian string.",
+      "Do persist anything the user physically drags or zooms.",
+      "Do set new text from one of the eight type roles; a one-off fontSize in an sx prop is how a ramp dies.",
+      "Do use tabular-nums for any numeric readout that updates in place.",
+      "Do verify both schemes before calling a state change done.",
+      "Do write dates the way a person would: relative inside a week, a plain calendar date after it, and never a clock time in a list. The backend formats the phrase and sends it ready to render, so the strings stay in the translation files with every other string."
+    ],
+    "donts": [
+      "Don't write a raw hex value in a component. colors.ts is the only place color exists.",
+      "Don't let a shadow be the sole signal of a state change — it disappears in dark mode.",
+      "Don't give a resting surface a shadow.",
+      "Don't introduce a second accent hue, a gradient, or a decorative illustration. The document supplies all the visual interest this app needs.",
+      "Don't make a chip clickable.",
+      "Don't add a CSS feature to a resume template because it works in the app — templates render through openhtmltopdf, which supports a limited CSS subset and must be verified by rendering.",
+      "Don't build a bespoke React component when a registered field type fits.",
+      "Don't write a rule that depends on the accent being teal.",
+      "Don't add a second type family, an italic, or a weight outside 400-600. Inter alone carries every role.",
+      "Don't reference a font by URL, from Google Fonts or anywhere else. The face ships in the bundle or it does not ship.",
+      "Don't wrap a document preview in a well of a different proportion. The container takes the page's aspect ratio or there is no container."
+    ]
+  }
+}

@@ -1,9 +1,5 @@
 {
     "resume_menu": {
-        "duplicate": {
-            "key": "resume_menu.duplicate",
-            "action": "duplicate"
-        },
         "delete": {
             "key": "resume_menu.delete",
             "action": "delete"
@@ -13,6 +9,10 @@
     "edit_button": {
         "key": "edit_title",
         "action": "load"
+    },
+    "duplicate_button": {
+        "key": "duplicate_title",
+        "action": "duplicate"
     },
     "export_button": {
         "key": "export_title",

@@ -24,6 +24,7 @@ jest.mock('../../renderer/components/ResumeCard', () => ({
 const schema: MainScreenSchema = {
   resume_menu: {},
   edit_button: { key: 'edit_key', action: 'load' },
+  duplicate_button: { key: 'duplicate_key', action: 'duplicate' },
   export_button: { key: 'export_key', action: 'export' },
   resume_menu_tooltip_title: 'menu_title',
   create_new: { key: 'create_new_key', action: 'create_new' },

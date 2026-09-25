@@ -17,7 +17,13 @@ import { useTranslate } from '../utils/translations';
 import { searchByName } from '../utils/resumeSearch';
 import logger from '../utils/logger';
 
-const CARD_MIN_WIDTH = 340;
+const SHEET_MIN_WIDTH = 220;
+const SHEET_GRID = {
+  display: 'grid',
+  gridTemplateColumns: `repeat(auto-fill, minmax(${SHEET_MIN_WIDTH}px, 1fr))`,
+  gap: 3,
+  alignContent: 'start',
+};
 
 type MainScreenProps = {
   appActions: AppActions;
@@ -32,22 +38,17 @@ type ResumeGridProps = {
 function MainScreenSkeleton() {
   const animation = 'wave';
   return (
-    <Box
-      role="status"
-      aria-busy="true"
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_MIN_WIDTH}px, 1fr))`,
-        gap: 3,
-      }}
-    >
+    <Box role="status" aria-busy="true" sx={SHEET_GRID}>
       {[1, 2, 3, 4, 5, 6].map((key: number) => (
-        <Skeleton
-          key={key}
-          variant="rounded"
-          height={320}
-          animation={animation}
-        />
+        <Box key={key}>
+          <Skeleton
+            variant="rectangular"
+            animation={animation}
+            sx={{ aspectRatio: '1 / 1.414' }}
+          />
+          <Skeleton animation={animation} width="70%" sx={{ mt: 1 }} />
+          <Skeleton animation={animation} width="40%" />
+        </Box>
       ))}
     </Box>
   );
@@ -97,17 +98,7 @@ function ResumeGrid(props: ResumeGridProps) {
     );
   }
 
-  return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(auto-fill, minmax(${CARD_MIN_WIDTH}px, 1fr))`,
-        gap: 3,
-      }}
-    >
-      {cards}
-    </Box>
-  );
+  return <Box sx={SHEET_GRID}>{cards}</Box>;
 }
 
 function MainScreenError(props: { onRetry: () => void }) {
@@ -206,8 +197,12 @@ export default function MainScreen(props: MainScreenProps) {
         <>
           <Box
             sx={{
-              justifyContent: 'center',
               display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              px: 3,
+              pt: 2,
+              pb: 2,
             }}
           >
             <Button
@@ -215,19 +210,13 @@ export default function MainScreen(props: MainScreenProps) {
               onClick={() => {
                 appActions.performBduAction(newButton.action);
               }}
-              sx={{
-                margin: 2,
-              }}
             >
               {translateKey(newButton.key)}
             </Button>
             <Button
-              variant="contained"
+              variant="outlined"
               onClick={() => {
                 appActions.performBduAction(importButton.action);
-              }}
-              sx={{
-                margin: 2,
               }}
             >
               {translateKey(importButton.key)}
@@ -251,7 +240,7 @@ export default function MainScreen(props: MainScreenProps) {
                     ),
                   },
                 }}
-                sx={{ margin: 2, width: 250 }}
+                sx={{ ml: 'auto', width: 250 }}
               />
             )}
           </Box>
@@ -260,8 +249,8 @@ export default function MainScreen(props: MainScreenProps) {
               flex: 1,
               minHeight: 0,
               overflowY: 'auto',
-              padding: 2,
-              paddingRight: 1,
+              px: 3,
+              pb: 4,
             }}
           >
             <ResumeGrid

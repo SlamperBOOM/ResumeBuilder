@@ -39,11 +39,11 @@
     },
     "main_screen": {
         "resume_menu": {
-            "duplicate": "Дублировать",
             "delete": "Удалить",
             "tooltip_title": "Действия"
         },
         "edit_title": "Редактировать",
+        "duplicate_title": "Дублировать",
         "create_resume_title": "Создать резюме",
         "export_title": "Экспортировать в PDF",
         "import_title": "Импортировать резюме",
@@ -52,6 +52,19 @@
         "empty_state": {
             "title": "У вас пока нет резюме",
             "subtitle": "Нажмите «Создать резюме», чтобы начать"
+        },
+        "modified": {
+            "just_now": "Только что",
+            "minutes_one": "{0} минуту назад",
+            "minutes_few": "{0} минуты назад",
+            "minutes_many": "{0} минут назад",
+            "hours_one": "{0} час назад",
+            "hours_few": "{0} часа назад",
+            "hours_many": "{0} часов назад",
+            "yesterday": "Вчера",
+            "days_one": "{0} день назад",
+            "days_few": "{0} дня назад",
+            "days_many": "{0} дней назад"
         }
     },
     "header": {

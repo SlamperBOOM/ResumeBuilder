@@ -39,11 +39,11 @@
     },
     "main_screen": {
         "resume_menu": {
-            "duplicate": "",
             "delete": "",
             "tooltip_title": ""
         },
         "edit_title": "",
+        "duplicate_title": "",
         "create_resume_title": "",
         "export_title": "",
         "import_title": "",
@@ -52,6 +52,19 @@
         "empty_state": {
             "title": "",
             "subtitle": ""
+        },
+        "modified": {
+            "just_now": "",
+            "minutes_one": "",
+            "minutes_few": "",
+            "minutes_many": "",
+            "hours_one": "",
+            "hours_few": "",
+            "hours_many": "",
+            "yesterday": "",
+            "days_one": "",
+            "days_few": "",
+            "days_many": ""
         }
     },
     "header": {

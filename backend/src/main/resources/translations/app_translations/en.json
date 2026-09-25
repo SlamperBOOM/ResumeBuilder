@@ -39,11 +39,11 @@
     },
     "main_screen": {
         "resume_menu": {
-            "duplicate": "Duplicate",
             "delete": "Delete",
             "tooltip_title": "Actions"
         },
         "edit_title": "Edit",
+        "duplicate_title": "Duplicate",
         "create_resume_title": "Create resume",
         "export_title": "Export to PDF",
         "import_title": "Import resume",
@@ -52,6 +52,19 @@
         "empty_state": {
             "title": "You don't have any resumes yet",
             "subtitle": "Click \"Create resume\" above to get started"
+        },
+        "modified": {
+            "just_now": "Just now",
+            "minutes_one": "{0} minute ago",
+            "minutes_few": "{0} minutes ago",
+            "minutes_many": "{0} minutes ago",
+            "hours_one": "{0} hour ago",
+            "hours_few": "{0} hours ago",
+            "hours_many": "{0} hours ago",
+            "yesterday": "Yesterday",
+            "days_one": "{0} day ago",
+            "days_few": "{0} days ago",
+            "days_many": "{0} days ago"
         }
     },
     "header": {

@@ -43,6 +43,7 @@ export type BDUActionPayload = {
 export type MainScreenSchema = {
   resume_menu: { [menuKey: string]: BDUButtonSchema };
   edit_button: BDUButtonSchema;
+  duplicate_button: BDUButtonSchema;
   export_button: BDUButtonSchema;
   resume_menu_tooltip_title: string;
   create_new: BDUButtonSchema;
@@ -58,6 +59,7 @@ export type SimpleResume = {
   resume_id: string;
   resume_name: string;
   last_modification_date: string;
+  modified_label?: string;
   html_preview: string;
   pdf_preview: string;
   tags?: string[];

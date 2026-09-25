@@ -275,6 +275,24 @@ describe('MainScreen with the real main screen schema', () => {
     expect(schema.resume_menu).not.toHaveProperty('edit');
   });
 
+  it('offers the duplicate action as a button on the sheet', async () => {
+    const { response, appActions } = mainScreenFor(readScreen('main_schema'));
+    const { schema, translations } = response;
+    const duplicate = schema.duplicate_button;
+
+    render(<MainScreen appActions={appActions} />);
+
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: translations[duplicate.key],
+      }),
+    );
+
+    expect(appActions.performBduAction).toHaveBeenCalledWith(duplicate.action, {
+      payload: { resume_id: 'r1' },
+    });
+  });
+
   it('renders the edit button on the card and resolves the tag keys', async () => {
     const { response, appActions } = mainScreenFor(readScreen('main_schema'));
     const { schema, translations } = response;

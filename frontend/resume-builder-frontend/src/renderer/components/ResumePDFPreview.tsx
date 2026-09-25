@@ -29,10 +29,11 @@ type ResumePDFPreviewProps = {
   paginated?: boolean;
   scaleType: ResumePreviewScaleEnum;
   scale?: number;
+  flush?: boolean;
 };
 
 export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
-  const { preview, paginated, scale = 1, scaleType } = props;
+  const { preview, paginated, scale = 1, scaleType, flush = false } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -131,12 +132,12 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
         ref={containerRef}
         sx={{
           flex: 1,
-          overflow: 'auto',
+          overflow: flush ? 'hidden' : 'auto',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          backgroundColor: 'surface.pdfBackdrop',
-          p: 2,
+          backgroundColor: flush ? 'transparent' : 'surface.pdfBackdrop',
+          p: flush ? 0 : 2,
         }}
       >
         <Document

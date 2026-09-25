@@ -1,11 +1,6 @@
 import {
   Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Chip,
-  Grid,
+  ButtonBase,
   IconButton,
   Menu,
   MenuItem,
@@ -13,8 +8,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { MouseEvent, ReactNode, useState } from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { AppActions } from '../utils/appActions';
 import { SimpleResume } from '../utils/backendTypes';
 import ResumePDFPreview, { ResumePreviewScaleEnum } from './ResumePDFPreview';
@@ -27,6 +26,8 @@ export type ResumeCardProps = {
   appActions: AppActions;
 };
 
+const PAGE_ASPECT = '1 / 1.414';
+
 export function ResumeCard(props: ResumeCardProps) {
   const { resume, schema, appActions } = props;
   const screenSchema = schema.schema;
@@ -36,12 +37,18 @@ export function ResumeCard(props: ResumeCardProps) {
 
   const open = Boolean(anchorEl);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const runWithResumeId = (action: string) => {
+    appActions.performBduAction(action, {
+      payload: { resume_id: resume.resume_id },
+    });
   };
 
   const resumeMenuButtons: ReactNode[] = [];
@@ -52,11 +59,7 @@ export function ResumeCard(props: ResumeCardProps) {
         key={menuButton.action}
         onClick={() => {
           handleClose();
-          appActions.performBduAction(menuButton.action, {
-            payload: {
-              resume_id: resume.resume_id,
-            },
-          });
+          runWithResumeId(menuButton.action);
         }}
       >
         {translateKey(menuButton.key)}
@@ -64,143 +67,167 @@ export function ResumeCard(props: ResumeCardProps) {
     );
   });
 
+  const editLabel = translateKey(screenSchema.edit_button.key);
+  const duplicateButton = screenSchema.duplicate_button;
+
   return (
-    <Card
-      elevation={2}
-      sx={(theme) => ({
-        borderRadius: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
-        width: '100%',
-        minWidth: 0,
-        border: '1px solid transparent',
-        '&:hover': {
-          boxShadow: 6,
-          transform: 'translateY(-2px)',
-        },
-        ...theme.applyStyles('dark', {
-          '&:hover': {
-            transform: 'translateY(-2px)',
-            borderColor: theme.palette.primary.main,
-            boxShadow:
-              '0 0 0 4px rgba(var(--mui-palette-primary-mainChannel) / 0.18)',
-          },
-        }),
-      })}
-    >
-      {/* Preview */}
-      <CardMedia
+    <Box component="article" sx={{ minWidth: 0 }}>
+      <Box
         sx={{
-          height: 320,
-          backgroundColor: 'surface.cardPreview',
           position: 'relative',
+          aspectRatio: PAGE_ASPECT,
+          backgroundColor: 'background.paper',
+          border: 1,
+          borderColor: 'divider',
           overflow: 'hidden',
+          transition: 'border-color 0.2s',
+          '&:hover, &:focus-within': {
+            borderColor: 'primary.main',
+          },
+          '&:hover .sheet-actions, &:focus-within .sheet-actions': {
+            opacity: 1,
+            pointerEvents: 'auto',
+          },
         }}
       >
-        {resume.pdf_preview && (
+        {resume.pdf_preview ? (
           <ResumePDFPreview
             preview={resume.pdf_preview}
-            scaleType={ResumePreviewScaleEnum.FULL_HEIGHT}
+            scaleType={ResumePreviewScaleEnum.FULL_WIDTH}
+            flush
           />
+        ) : (
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'text.disabled',
+            }}
+          >
+            <ArticleOutlinedIcon sx={{ fontSize: 48 }} />
+          </Box>
         )}
-      </CardMedia>
 
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Grid
-          container
-          justifyContent="space-between"
-          alignItems="flex-start"
-          wrap="nowrap"
+        <ButtonBase
+          aria-label={resume.resume_name}
+          onClick={() => runWithResumeId(screenSchema.edit_button.action)}
+          sx={{ position: 'absolute', inset: 0 }}
+        />
+
+        <Stack
+          className="sheet-actions"
+          direction="row"
+          alignItems="center"
+          spacing={0.5}
+          sx={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            px: 1,
+            py: 0.5,
+            backgroundColor: 'background.paper',
+            borderTop: 1,
+            borderColor: 'divider',
+            opacity: 0,
+            pointerEvents: 'none',
+            transition: 'opacity 0.2s',
+            '@media (prefers-reduced-motion: reduce)': {
+              transition: 'none',
+            },
+          }}
         >
-          <Grid sx={{ minWidth: 0 }}>
-            <Typography
-              variant="h6"
-              noWrap
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
+          <Tooltip title={editLabel}>
+            <IconButton
+              size="small"
+              color="primary"
+              aria-label={editLabel}
+              onClick={() => runWithResumeId(screenSchema.edit_button.action)}
             >
-              {resume.resume_name}
-            </Typography>
+              <EditOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
 
-            <Typography variant="body2" color="text.secondary">
-              {new Date(resume.last_modification_date).toLocaleString()}
-            </Typography>
-          </Grid>
-
-          <Grid>
-            <Tooltip
-              title={translateKey(screenSchema.resume_menu_tooltip_title)}
-            >
-              <IconButton onClick={handleMenuOpen}>
-                <MoreVertIcon />
+          {duplicateButton && (
+            <Tooltip title={translateKey(duplicateButton.key)}>
+              <IconButton
+                size="small"
+                aria-label={translateKey(duplicateButton.key)}
+                onClick={() => runWithResumeId(duplicateButton.action)}
+              >
+                <ContentCopyIcon fontSize="small" />
               </IconButton>
             </Tooltip>
+          )}
 
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+          <Tooltip title={translateKey(screenSchema.export_button.key)}>
+            <IconButton
+              size="small"
+              aria-label={translateKey(screenSchema.export_button.key)}
+              onClick={() => {
+                appActions.performBduAction(screenSchema.export_button.action, {
+                  payload: {
+                    resume_id: resume.resume_id,
+                    resume_name: resume.resume_name,
+                  },
+                });
               }}
             >
-              {resumeMenuButtons}
-            </Menu>
-          </Grid>
-        </Grid>
+              <FileDownloadOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
 
-        {resume.tags && resume.tags.length > 0 && (
-          <Stack direction="row" flexWrap="wrap" gap={0.75} mt={1.5}>
-            {resume.tags.map((tag) => (
-              <Chip
-                key={tag}
-                label={translateKey(tag)}
-                size="small"
-                variant="outlined"
-              />
-            ))}
-          </Stack>
+          <Box sx={{ flex: 1 }} />
+
+          <Tooltip title={translateKey(screenSchema.resume_menu_tooltip_title)}>
+            <IconButton
+              size="small"
+              aria-label={translateKey(screenSchema.resume_menu_tooltip_title)}
+              onClick={handleMenuOpen}
+            >
+              <MoreVertIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            {resumeMenuButtons}
+          </Menu>
+        </Stack>
+      </Box>
+
+      <Box sx={{ mt: 1 }}>
+        <Typography variant="h6" noWrap title={resume.resume_name}>
+          {resume.resume_name}
+        </Typography>
+        {resume.modified_label && (
+          <Typography variant="body2" color="text.secondary">
+            {resume.modified_label}
+          </Typography>
         )}
-
-        <Box mt={2} display="flex" gap={1}>
-          <Button
-            variant="contained"
-            sx={{ flex: 1 }}
-            onClick={() => {
-              appActions.performBduAction(screenSchema.edit_button.action, {
-                payload: {
-                  resume_id: resume.resume_id,
-                },
-              });
-            }}
+        {resume.tags && resume.tags.length > 0 && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            component="p"
+            noWrap
           >
-            {translateKey(screenSchema.edit_button.key)}
-          </Button>
-          <Button
-            variant="outlined"
-            sx={{ flex: 1 }}
-            onClick={() => {
-              appActions.performBduAction(screenSchema.export_button.action, {
-                payload: {
-                  resume_id: resume.resume_id,
-                  resume_name: resume.resume_name,
-                },
-              });
-            }}
-          >
-            {translateKey(screenSchema.export_button.key)}
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+            {resume.tags.map((tag, index) => (
+              <Box component="span" key={tag}>
+                {index > 0 && ' · '}
+                <Box component="span">{translateKey(tag)}</Box>
+              </Box>
+            ))}
+          </Typography>
+        )}
+      </Box>
+    </Box>
   );
 }

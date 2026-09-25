@@ -18,11 +18,13 @@ import com.slamperboom.resume.saves.IResumeManager;
 import com.slamperboom.settings.DynamicSettings;
 import com.slamperboom.managers.TranslationsManager;
 import com.slamperboom.settings.Settings;
+import com.slamperboom.utils.RelativeTime;
 import com.slamperboom.utils.ThreadPoolReducer;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @ApplicationScoped
@@ -80,15 +82,20 @@ public class BDUIBuilder {
         resumeManager.readAllResumes();
 
         JsonNode mainScreenSchema = schemaManager.getSchema(SchemaType.MAIN_SCREEN);
+        JsonNode mainScreenTranslations = translationsManager.getMainScreenTranslations();
         result.set(BackendConstants.SCHEMA_KEY, mainScreenSchema);
-        result.set(BackendConstants.TRANSLATIONS_KEY, translationsManager.getMainScreenTranslations());
+        result.set(BackendConstants.TRANSLATIONS_KEY, mainScreenTranslations);
 
         ObjectNode payload = objectMapper.createObjectNode();
         try {
+            LocalDateTime now = LocalDateTime.now();
+            Locale locale = translationsManager.getCurrentLocale();
             ArrayNode resumes = objectMapper.createArrayNode();
             for (var simpleResume : resumeManager.getListOfResumes()) {
                 ObjectNode resumeNode = objectMapper.valueToTree(simpleResume);
                 resumeNode.set("tags", buildResumeTags(simpleResume.resumeId(), mainScreenSchema));
+                resumeNode.put("modified_label", RelativeTime.format(
+                        simpleResume.lastModificationDate(), now, locale, mainScreenTranslations));
                 resumes.add(resumeNode);
             }
             payload.set("resumes", resumes);
