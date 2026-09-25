@@ -6,8 +6,7 @@
         "work_conditions": "Employment",
         "occupation": "Occupation",
         "moving": {
-            "ready": "Relocation possible",
-            "not_ready": "Relocation not possible"
+            "ready": "Relocation possible"
         },
         "business_trips_ready": "Ready for business trips",
         "employment": {

@@ -184,17 +184,11 @@
                 <#if blocks["MAIN_BLOCK"].schedule??>${translations.main_block.schedule[blocks["MAIN_BLOCK"].schedule]}</#if>
             </p>
         </#if>
-        <#if blocks["MAIN_BLOCK"].is_moving_acceptable?? || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
+        <#if blocks["MAIN_BLOCK"].is_moving_acceptable || blocks["MAIN_BLOCK"].is_ready_for_business_trips>
             <p style="margin-top: 0.25rem">
-                <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>
-                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable>
-                        ${translations.main_block.moving.ready}
-                    <#else>
-                        ${translations.main_block.moving.not_ready}
-                    </#if>
-                </#if>
+                <#if blocks["MAIN_BLOCK"].is_moving_acceptable>${translations.main_block.moving.ready}</#if>
                 <#if blocks["MAIN_BLOCK"].is_ready_for_business_trips>
-                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable??>, </#if>
+                    <#if blocks["MAIN_BLOCK"].is_moving_acceptable>, </#if>
                     ${translations.main_block.business_trips_ready}
                 </#if>
             </p>

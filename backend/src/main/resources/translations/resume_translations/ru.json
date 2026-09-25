@@ -6,8 +6,7 @@
         "work_conditions": "Занятость",
         "occupation": "Гражданство",
         "moving": {
-            "ready": "Готов к переезду",
-            "not_ready": "Не готов к переезду"
+            "ready": "Готов к переезду"
         },
         "business_trips_ready": "Возможны командировки",
         "employment": {
