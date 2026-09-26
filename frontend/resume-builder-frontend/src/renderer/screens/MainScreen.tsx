@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   InputAdornment,
-  Skeleton,
   TextField,
   Typography,
 } from '@mui/material';
@@ -12,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
+import { MainScreenSkeleton } from '../components/ScreenSkeletons';
 import MainScreenResponse from '../DTO/MainScreenResponse';
 import { useTranslate } from '../utils/translations';
 import { searchByName } from '../utils/resumeSearch';
@@ -34,25 +34,6 @@ type ResumeGridProps = {
   cards: ReactNode[];
   schema: MainScreenResponse;
 };
-
-function MainScreenSkeleton() {
-  const animation = 'wave';
-  return (
-    <Box role="status" aria-busy="true" sx={SHEET_GRID}>
-      {[1, 2, 3, 4, 5, 6].map((key: number) => (
-        <Box key={key}>
-          <Skeleton
-            variant="rectangular"
-            animation={animation}
-            sx={{ aspectRatio: '1 / 1.414' }}
-          />
-          <Skeleton animation={animation} width="70%" sx={{ mt: 1 }} />
-          <Skeleton animation={animation} width="40%" />
-        </Box>
-      ))}
-    </Box>
-  );
-}
 
 function MainScreenEmptyState(props: { schema: MainScreenResponse }) {
   const { schema } = props;
@@ -263,7 +244,7 @@ export default function MainScreen(props: MainScreenProps) {
       ) : loadError ? (
         <MainScreenError onRetry={handleRetry} />
       ) : (
-        <MainScreenSkeleton />
+        <MainScreenSkeleton gridSx={SHEET_GRID} />
       )}
     </Box>
   );

@@ -1,32 +1,37 @@
 {
     "edit_area": {
-        "to_main_screen_title": "to_main_screen_title",
-        "blocks_title": "blocks_title",
-        "export_button": {
-            "key": "export_title",
-            "action": "export"
-        },
-        "resume_name": {
-            "type": "text_input",
-            "title": "resume_name_title",
-            "resume_value": "resume_name"
-        },
-        "resume_locale": {
-            "type": "drop_down_list",
-            "title": "resume_locale_title",
-            "values": {
-                "en": "locales.en",
-                "ru": "locales.ru"
+        "topbar": {
+            "to_main_screen_title": "to_main_screen_title",
+            "resume_name": {
+                "type": "text_input",
+                "title": "resume_name_title",
+                "resume_value": "resume_name"
             },
-            "resume_value": "resume_locale",
-            "default": "en"
+            "resume_locale": {
+                "type": "drop_down_list",
+                "title": "resume_locale_title",
+                "values": {
+                    "en": "locales.en",
+                    "ru": "locales.ru"
+                },
+                "resume_value": "resume_locale",
+                "default": "en"
+            },
+            "template": {
+                "type": "template",
+                "title": "template_name_title",
+                "resume_value": "template_name",
+                "template_choose_title": "template_choose_title",
+                "load_error_key": "templates_load_error"
+            },
+            "export_button": {
+                "key": "export_title",
+                "action": "export"
+            }
         },
-        "template": {
-            "type": "template",
-            "title": "template_name_title",
-            "resume_value": "template_name",
-            "template_choose_title": "template_choose_title"
-        },
+        "blocks_title": "blocks_title",
+        "pin_blocks_title": "pin_blocks_title",
+        "unpin_blocks_title": "unpin_blocks_title",
         "preview": {
             "scale_title": "preview.scale_title",
             "full_width_option_key": "preview.full_width",
@@ -36,6 +41,7 @@
         "resume_blocks": {
             "main_block": {
                 "block_title": "main_block.title",
+                "block_hint": "main_block.hint",
                 "person_photo": {
                     "type": "image",
                     "title": "main_block.person_photo",
@@ -139,6 +145,7 @@
             },
             "contacts": {
                 "block_title": "contacts.title",
+                "block_hint": "contacts.hint",
                 "email": {
                     "type": "text_input",
                     "title": "contacts.email",
@@ -170,6 +177,7 @@
             },
             "experience": {
                 "block_title": "experience.title",
+                "block_hint": "experience.hint",
                 "experiences": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.EXPERIENCE.experiences",
@@ -214,6 +222,7 @@
             },
             "education": {
                 "block_title": "education.title",
+                "block_hint": "education.hint",
                 "educations": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.EDUCATION.educations",
@@ -263,6 +272,7 @@
             },
             "advanced_training": {
                 "block_title": "advanced_training.title",
+                "block_hint": "advanced_training.hint",
                 "trainings": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.ADVANCED_TRAINING.trainings",
@@ -289,6 +299,7 @@
             },
             "languages": {
                 "block_title": "languages.title",
+                "block_hint": "languages.hint",
                 "languages": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.LANGUAGES.languages",
@@ -320,6 +331,7 @@
             },
             "skills": {
                 "block_title": "skills.title",
+                "block_hint": "skills.hint",
                 "dynamic_combined_block": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.SKILLS.skills",
@@ -349,6 +361,7 @@
             },
             "about": {
                 "block_title": "about.title",
+                "block_hint": "about.hint",
                 "about": {
                     "type": "text_area",
                     "title": "",
@@ -357,6 +370,7 @@
             },
             "hobbies": {
                 "block_title": "hobbies.title",
+                "block_hint": "hobbies.hint",
                 "hobbies": {
                     "type": "text_area",
                     "title": "",
@@ -365,6 +379,7 @@
             },
             "recommendations": {
                 "block_title": "recommendations.title",
+                "block_hint": "recommendations.hint",
                 "recommendations": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.RECOMMENDATIONS.recommendations",
@@ -396,6 +411,7 @@
             },
             "publications": {
                 "block_title": "publications.title",
+                "block_hint": "publications.hint",
                 "publications": {
                     "type": "dynamic_combined_block",
                     "blocks_list": "blocks.PUBLICATIONS.publications",
@@ -418,6 +434,7 @@
             },
             "additional_info": {
                 "block_title": "additional_info.title",
+                "block_hint": "additional_info.hint",
                 "info": {
                     "type": "text_area",
                     "title": "",

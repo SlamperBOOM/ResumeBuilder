@@ -1,23 +1,19 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Skeleton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Divider, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Group, Layout, Panel, Separator } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { BDU_ACTION_OPEN_MAIN_SCREEN } from '../api/useActionApi';
-import { EditArea } from '../components/EditArea';
+import { EditArea } from '../components/resume_edit/EditArea';
+import { EditScreenSkeleton } from '../components/ScreenSkeletons';
+import FieldRenderer from '../components/resume_edit/FieldRenderer';
+import ResumeFormProvider from '../components/resume_edit/ResumeFormProvider';
 import { useTranslate } from '../utils/translations';
 import ResumePDFPreview, {
   ResumePreviewScaleEnum,
 } from '../components/ResumePDFPreview';
-import PreviewControls from '../components/PreviewControls';
+import PreviewControls from '../components/resume_edit/PreviewControls';
 import EditScreenResponse from '../DTO/EditScreenResponse';
 import logger from '../utils/logger';
 import { getSetting, setSetting } from '../utils/settings';
@@ -27,27 +23,6 @@ type EditScreenProps = {
 };
 
 const LAYOUT_SAVE_DEBOUNCE_MS = 100;
-
-function EditScreenSkeleton() {
-  return (
-    <Box
-      role="status"
-      aria-busy="true"
-      sx={{
-        flex: 1,
-        display: 'flex',
-        minHeight: 0,
-      }}
-    >
-      <Skeleton
-        variant="rounded"
-        width="33vw"
-        height="100vh"
-        animation="wave"
-      />
-    </Box>
-  );
-}
 
 export default function EditScreen(props: EditScreenProps) {
   const { appActions } = props;
@@ -122,7 +97,11 @@ export default function EditScreen(props: EditScreenProps) {
       }}
     >
       {editSchema && schema ? (
-        <>
+        <ResumeFormProvider
+          appActions={appActions}
+          editSchemaResponse={editSchema}
+          setEditSchema={setEditSchema}
+        >
           <Stack
             direction="row"
             alignItems="center"
@@ -133,30 +112,51 @@ export default function EditScreen(props: EditScreenProps) {
               borderBottom: 1,
               borderColor: 'divider',
               backgroundColor: 'background.paper',
+              '& .MuiFormControl-root': { my: 0 },
             }}
           >
             <Button
               startIcon={<ArrowBackIcon />}
+              sx={{ flexShrink: 0 }}
               onClick={() => {
                 appActions.performBduAction(BDU_ACTION_OPEN_MAIN_SCREEN, {
                   payload: { resume_id: resumeId },
                 });
               }}
             >
-              {translateKey(schema.edit_area.to_main_screen_title)}
+              {translateKey(schema.edit_area.topbar.to_main_screen_title)}
             </Button>
 
             <Divider orientation="vertical" flexItem />
 
-            <Typography variant="h6" noWrap sx={{ flex: 1, minWidth: 0 }}>
-              {editSchema.payload.resume.resume_name}
-            </Typography>
+            <Box sx={{ flex: '1 1 220px', minWidth: 140 }}>
+              <FieldRenderer
+                resumeField={schema.edit_area.topbar.resume_name}
+                translations={editSchema.translations}
+                resumeId={editSchema.payload.resume.resume_id}
+              />
+            </Box>
+            <Box sx={{ flex: '0 1 170px', minWidth: 120 }}>
+              <FieldRenderer
+                resumeField={schema.edit_area.topbar.resume_locale}
+                translations={editSchema.translations}
+                resumeId={editSchema.payload.resume.resume_id}
+              />
+            </Box>
+            <Box sx={{ flex: '0 1 200px', minWidth: 130 }}>
+              <FieldRenderer
+                resumeField={schema.edit_area.topbar.template}
+                translations={editSchema.translations}
+                resumeId={editSchema.payload.resume.resume_id}
+              />
+            </Box>
 
             <Button
               variant="contained"
+              sx={{ flexShrink: 0 }}
               onClick={() =>
                 appActions.performBduAction(
-                  schema.edit_area.export_button.action,
+                  schema.edit_area.topbar.export_button.action,
                   {
                     payload: {
                       resume_id: editSchema.payload.resume.resume_id,
@@ -166,7 +166,7 @@ export default function EditScreen(props: EditScreenProps) {
                 )
               }
             >
-              {translateKey(schema.edit_area.export_button.key)}
+              {translateKey(schema.edit_area.topbar.export_button.key)}
             </Button>
           </Stack>
 
@@ -184,18 +184,14 @@ export default function EditScreen(props: EditScreenProps) {
                   borderColor: 'divider',
                 }}
               >
-                <EditArea
-                  appActions={appActions}
-                  editSchemaResponse={editSchema}
-                  setEditSchema={setEditSchema}
-                />
+                <EditArea editSchemaResponse={editSchema} />
               </Box>
             </Panel>
 
             <Separator
               style={{
                 width: '6px',
-                background: 'var(--mui-palette-primary-main)',
+                background: 'var(--mui-palette-divider)',
                 cursor: 'col-resize',
               }}
             />
@@ -245,7 +241,7 @@ export default function EditScreen(props: EditScreenProps) {
               </Box>
             </Panel>
           </Group>
-        </>
+        </ResumeFormProvider>
       ) : (
         <EditScreenSkeleton />
       )}

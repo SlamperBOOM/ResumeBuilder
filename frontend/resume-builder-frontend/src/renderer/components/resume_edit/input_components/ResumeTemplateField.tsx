@@ -6,10 +6,12 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
   Typography,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   FieldRendererProps,
   TemplateChooser,
@@ -109,13 +111,22 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
             label={translateKey(currentField.title)}
             value={controllerField.value}
             onClick={() => setInitDialogOpen(true)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setInitDialogOpen(true);
+              }
+            }}
+            slotProps={{
+              htmlInput: { readOnly: true, 'aria-haspopup': 'dialog' },
+            }}
             fullWidth
             margin="normal"
             sx={{ cursor: 'pointer' }}
           />
           {loadError && (
             <Alert severity="error" onClose={() => setLoadError(false)}>
-              Failed to load templates. Please try again.
+              {translateKey(currentField.load_error_key)}
             </Alert>
           )}
           <Dialog
@@ -136,7 +147,13 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
             <DialogTitle>
               {translateKey(currentField.template_choose_title)}
             </DialogTitle>
-
+            <IconButton
+              aria-label="close"
+              onClick={() => setDialogOpen(false)}
+              sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
             <DialogContent ref={contentRef} dividers>
               {rowHeight > 0 && (
                 <div

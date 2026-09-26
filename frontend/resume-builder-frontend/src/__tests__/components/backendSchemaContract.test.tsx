@@ -11,7 +11,8 @@ import {
 import useActionApi, {
   BDU_ACTION_UPDATE,
 } from '../../renderer/api/useActionApi';
-import { EditArea } from '../../renderer/components/EditArea';
+import { EditArea } from '../../renderer/components/resume_edit/EditArea';
+import ResumeFormProvider from '../../renderer/components/resume_edit/ResumeFormProvider';
 import HeaderWrapper from '../../renderer/components/HeaderWrapper';
 import EditScreenResponse from '../../renderer/DTO/EditScreenResponse';
 import MainScreenResponse from '../../renderer/DTO/MainScreenResponse';
@@ -114,7 +115,11 @@ const TRANSLATED_PROPS = new Set([
   'no_search_results',
   'to_main_screen_title',
   'blocks_title',
+  'pin_blocks_title',
+  'unpin_blocks_title',
+  'block_hint',
   'template_choose_title',
+  'load_error_key',
   'add_button_title',
   'change_button_title',
   'delete_button_title',
@@ -331,11 +336,13 @@ describe('EditArea with the real edit schema and a sample resume', () => {
       payload: { resume, preview: '' },
     };
     render(
-      <EditArea
+      <ResumeFormProvider
         appActions={appActions}
         editSchemaResponse={response}
         setEditSchema={jest.fn()}
-      />,
+      >
+        <EditArea editSchemaResponse={response} />
+      </ResumeFormProvider>,
     );
     return appActions;
   }
@@ -344,7 +351,13 @@ describe('EditArea with the real edit schema and a sample resume', () => {
   function selectBlock(blockKey: string) {
     const blockTitle =
       translations[schema.edit_area.resume_blocks[blockKey].block_title];
-    fireEvent.click(screen.getByRole('button', { name: blockTitle }));
+    // The rail row also carries the block's entry count, so it is the start of
+    // the accessible name that identifies it.
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: (accessibleName) => accessibleName.startsWith(blockTitle),
+      }),
+    );
   }
 
   // Waits out EditArea's 2s autosave debounce, returns saved blocks by name.

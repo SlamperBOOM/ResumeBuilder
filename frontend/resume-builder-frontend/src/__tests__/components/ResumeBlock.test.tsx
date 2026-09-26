@@ -13,6 +13,7 @@ jest.mock('../../renderer/components/resume_edit/FieldRenderer', () => ({
 
 const schema: BlockContent = {
   block_title: 'block_title_key',
+  block_hint: 'block_hint_key',
   full_name: {
     type: 'text_input',
     title: 'name_title',
@@ -27,20 +28,25 @@ const schema: BlockContent = {
 };
 
 describe('ResumeBlock', () => {
-  // The block title belongs to the form header in EditArea, not to the block body.
-  it('does not render the block title', () => {
+  // The title and the hint belong to the form header in EditArea, not to the
+  // block body.
+  it('does not render the block title or its hint', () => {
     render(
       <ResumeBlock
         schema={schema}
-        translations={{ block_title_key: 'Personal info' }}
+        translations={{
+          block_title_key: 'Personal info',
+          block_hint_key: 'What belongs here',
+        }}
         resumeId="resume-1"
       />,
     );
 
     expect(screen.queryByText('Personal info')).toBeNull();
+    expect(screen.queryByText('What belongs here')).toBeNull();
   });
 
-  it('skips block_title and renders one FieldRenderer per remaining key', () => {
+  it('skips the non-field keys and renders one FieldRenderer per remaining key', () => {
     render(
       <ResumeBlock schema={schema} translations={{}} resumeId="resume-1" />,
     );

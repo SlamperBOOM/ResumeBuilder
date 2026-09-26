@@ -87,10 +87,13 @@
         "resume_name_title": "Resume name",
         "to_main_screen_title": "To main menu",
         "blocks_title": "Resume blocks",
+        "pin_blocks_title": "Pin the block list",
+        "unpin_blocks_title": "Collapse the block list",
         "export_title": "Export to PDF",
         "resume_locale_title": "Resume language",
         "template_name_title": "Chosen template",
         "template_choose_title": "Choose template",
+        "templates_load_error": "Could not load the templates. Try again.",
         "delete_entry": "Delete",
         "preview": {
             "scale_title": "Scale:",
@@ -101,6 +104,7 @@
         "locale_name": "en",
         "main_block": {
             "title": "Basic information",
+            "hint": "Fill in only what the vacancy asks for — empty fields are not printed in the resume.",
             "person_photo": "Your photo",
             "empty_person_photo": "Choose your photo",
             "change_person_photo": "Change photo",
@@ -137,6 +141,7 @@
         },
         "contacts": {
             "title": "Contacts",
+            "hint": "Email and phone are the minimum. The order of the social links carries into the resume.",
             "email": "E-mail",
             "phone_number": "Phone number",
             "social_net_name": "Social network",
@@ -145,6 +150,7 @@
         },
         "experience": {
             "title": "Work experience",
+            "hint": "Newest first. Describe the tasks and the result in numbers. Markdown works here: lists with \"-\", **bold**, *italic*.",
             "position": "Position",
             "company": "Company",
             "start_date": "Start date",
@@ -155,6 +161,7 @@
         },
         "education": {
             "title": "Education",
+            "hint": "The year you graduated, not the years you studied.",
             "institution": "Institution",
             "education_level": "Education level",
             "level": {
@@ -175,6 +182,7 @@
         },
         "advanced_training": {
             "title": "Courses",
+            "hint": "Courses and certificates: name, organisation, year.",
             "course_name": "Course name",
             "organization": "Organization",
             "year_of_graduate": "Year of graduate",
@@ -182,6 +190,7 @@
         },
         "languages": {
             "title": "Languages",
+            "hint": "Levels follow the A1-C2 scale.",
             "language": "Language",
             "language_level": "Level",
             "level": {
@@ -196,6 +205,7 @@
         },
         "skills": {
             "title": "Skills",
+            "hint": "Name concrete tools and technologies, not \"good communicator\".",
             "skill_name": "Skill",
             "skill_level": "Level",
             "level": {
@@ -207,27 +217,32 @@
             "add_skill": "Add skill"
         },
         "about": {
-            "title": "About me"
+            "title": "About me",
+            "hint": "One short paragraph: who you are and what you are good for. Markdown works here."
         },
         "hobbies": {
-            "title": "Hobbies"
+            "title": "Hobbies",
+            "hint": "A line or two, and only what says something about you as a professional. Markdown works here."
         },
         "recommendations": {
             "title": "Recommendations",
+            "hint": "Name, company, contact. Ask the referee for permission first.",
             "recommending": "Full name of recommender",
             "company": "Company",
-            "email": "E-male",
+            "email": "E-mail",
             "phone_number": "Phone number",
             "add_recommendation": "Add recommendation"
         },
         "publications": {
             "title": "Publications",
+            "hint": "A title or a link, and a date.",
             "publication": "Publication name or link",
             "publication_date": "Publication date",
             "add_publication": "Add publication"
         },
         "additional_info": {
-            "title": "Additional info"
+            "title": "Additional info",
+            "hint": "Anything that had no field in the other blocks. Markdown works here."
         }
     }
 }

@@ -7,7 +7,8 @@
 
 [Key Features](#key-features) • [How to Use](#how-to-use) • [Development](#development) • [Tech Stack](#tech-stack) • [License](#license)
 
-![img.png](app_preview.png)
+![main_screen.png](main_screen_preview.png)
+![edit_screen.png](edit_screen_preview.png)
 
 ## Key Features
 

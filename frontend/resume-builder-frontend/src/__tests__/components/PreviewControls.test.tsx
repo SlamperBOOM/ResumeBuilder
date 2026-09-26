@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
-import PreviewControls from '../../renderer/components/PreviewControls';
+import PreviewControls from '../../renderer/components/resume_edit/PreviewControls';
 import { ResumePreviewScaleEnum } from '../../renderer/components/ResumePDFPreview';
 
 jest.mock('../../renderer/components/ResumePDFPreview');
@@ -27,28 +27,30 @@ function renderControls(
 }
 
 describe('PreviewControls', () => {
-  it('renders the labels and exposes the current scale on the slider', () => {
+  it('renders the mode options and the current scale', () => {
     renderControls({ previewScale: 0.5 });
 
-    expect(screen.getByText('Scale')).toBeInTheDocument();
     expect(
-      screen.getByRole('radio', { name: 'Full width' }),
+      screen.getByRole('button', { name: 'Full width' }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('radio', { name: 'Full height' }),
+      screen.getByRole('button', { name: 'Full height' }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('radio', { name: 'Custom' })).toBeInTheDocument();
-    expect(screen.getByRole('slider', { name: 'Scale' })).toHaveAttribute(
-      'aria-valuetext',
-      '50%',
-    );
+    expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument();
+    expect(screen.getByText('50%')).toBeInTheDocument();
   });
 
-  it('checks the radio matching the current preview mode', () => {
+  it('marks the option matching the current preview mode', () => {
     renderControls({ previewMode: ResumePreviewScaleEnum.CUSTOM });
 
-    expect(screen.getByRole('radio', { name: 'Custom' })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Full width' })).not.toBeChecked();
+    expect(screen.getByRole('button', { name: 'Custom' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Full width' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('calls onPreviewModeChange when a different mode is selected', () => {
@@ -56,22 +58,60 @@ describe('PreviewControls', () => {
       previewMode: ResumePreviewScaleEnum.FULL_HEIGHT,
     });
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Full width' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Full width' }));
 
     expect(onPreviewModeChange).toHaveBeenCalledWith(
       ResumePreviewScaleEnum.FULL_WIDTH,
     );
   });
 
-  it('disables the slider unless the mode is Custom', () => {
+  it('disables the zoom stepper unless the mode is Custom', () => {
     renderControls({ previewMode: ResumePreviewScaleEnum.FULL_HEIGHT });
 
-    expect(screen.getByRole('slider')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Scale +' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Scale −' })).toBeDisabled();
   });
 
-  it('enables the slider when the mode is Custom', () => {
-    renderControls({ previewMode: ResumePreviewScaleEnum.CUSTOM });
+  it('steps the scale by 10% in Custom mode', () => {
+    const { onPreviewScaleChange } = renderControls({
+      previewMode: ResumePreviewScaleEnum.CUSTOM,
+      previewScale: 0.5,
+    });
 
-    expect(screen.getByRole('slider')).toBeEnabled();
+    fireEvent.click(screen.getByRole('button', { name: 'Scale +' }));
+    expect(onPreviewScaleChange).toHaveBeenCalledWith(0.6);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Scale −' }));
+    expect(onPreviewScaleChange).toHaveBeenCalledWith(0.4);
+  });
+
+  it('stops the stepper at the ends of the range', () => {
+    const { rerender } = render(
+      <PreviewControls
+        scaleTitle="Scale"
+        fullWidthLabel="Full width"
+        fullHeightLabel="Full height"
+        customLabel="Custom"
+        previewMode={ResumePreviewScaleEnum.CUSTOM}
+        onPreviewModeChange={jest.fn()}
+        previewScale={1}
+        onPreviewScaleChange={jest.fn()}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Scale +' })).toBeDisabled();
+
+    rerender(
+      <PreviewControls
+        scaleTitle="Scale"
+        fullWidthLabel="Full width"
+        fullHeightLabel="Full height"
+        customLabel="Custom"
+        previewMode={ResumePreviewScaleEnum.CUSTOM}
+        onPreviewModeChange={jest.fn()}
+        previewScale={0.1}
+        onPreviewScaleChange={jest.fn()}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Scale −' })).toBeDisabled();
   });
 });

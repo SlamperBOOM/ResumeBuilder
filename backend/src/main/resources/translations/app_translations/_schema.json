@@ -87,10 +87,13 @@
         "resume_name_title": "",
         "to_main_screen_title": "",
         "blocks_title": "",
+        "pin_blocks_title": "",
+        "unpin_blocks_title": "",
         "export_title": "",
         "resume_locale_title": "",
         "template_name_title": "",
         "template_choose_title": "",
+        "templates_load_error": "",
         "delete_entry": "",
         "preview": {
             "scale_title": "",
@@ -101,6 +104,7 @@
         "locale_name": "",
         "main_block": {
             "title": "",
+            "hint": "",
             "person_photo": "",
             "empty_person_photo": "",
             "change_person_photo": "",
@@ -137,6 +141,7 @@
         },
         "contacts": {
             "title": "",
+            "hint": "",
             "email": "",
             "phone_number": "",
             "social_net_name": "",
@@ -145,6 +150,7 @@
         },
         "experience": {
             "title": "",
+            "hint": "",
             "position": "",
             "company": "",
             "start_date": "",
@@ -155,6 +161,7 @@
         },
         "education": {
             "title": "",
+            "hint": "",
             "institution": "",
             "education_level": "",
             "level": {
@@ -175,6 +182,7 @@
         },
         "advanced_training": {
             "title": "",
+            "hint": "",
             "course_name": "",
             "organization": "",
             "year_of_graduate": "",
@@ -182,6 +190,7 @@
         },
         "languages": {
             "title": "",
+            "hint": "",
             "language": "",
             "language_level": "",
             "level": {
@@ -196,6 +205,7 @@
         },
         "skills": {
             "title": "",
+            "hint": "",
             "skill_name": "",
             "skill_level": "",
             "level": {
@@ -207,13 +217,16 @@
             "add_skill": ""
         },
         "about": {
-            "title": ""
+            "title": "",
+            "hint": ""
         },
         "hobbies": {
-            "title": ""
+            "title": "",
+            "hint": ""
         },
         "recommendations": {
             "title": "",
+            "hint": "",
             "recommending": "",
             "company": "",
             "email": "",
@@ -222,12 +235,14 @@
         },
         "publications": {
             "title": "",
+            "hint": "",
             "publication": "",
             "publication_date": "",
             "add_publication": ""
         },
         "additional_info": {
-            "title": ""
+            "title": "",
+            "hint": ""
         }
     }
 }

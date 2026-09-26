@@ -319,12 +319,19 @@ The **main screen** is a fluid card grid:
 width with no breakpoints — this is a resizable desktop window, not a set of
 device classes, so the layout answers to the window, never to a media query.
 
-The **edit screen** is a persistent two-pane split (block rail | form) beside the
-PDF preview, built on `react-resizable-panels`. Pane sizes are user property:
-they are persisted to `electron-store` (debounced 100ms) and restored on the next
-visit. The separator is a 6px `divider`-colored bar with `col-resize`. Minimum
-sizes (rail 10%, form 30%) exist so a pane can be pushed aside but never
-destroyed.
+The **edit screen** is one band of resume-wide controls over a split of block
+rail | form beside the PDF preview, built on `react-resizable-panels`. Pane sizes
+are user property: they are persisted to `electron-store` (debounced 100ms) and
+restored on the next visit. Both separators are 6px `divider`-colored bars with
+`col-resize`. Minimum sizes (rail 10%, form 30%) exist so a pane can be pushed
+aside but never destroyed.
+
+The rail has two states, and which one the user left it in is persisted next to
+the pane sizes. **Pinned** (the default) is the resizable pane described above.
+**Collapsed** replaces it with a 56px strip carrying each block's state and no
+names, which opens to 260px *over* the form on hover or focus, Esc to close —
+the strip's width is the only width the rail then costs. A returning user finds
+it pinned and named; a daily user collapses it once and keeps the width.
 
 **Spacing rhythm** is MUI's 8px base. In use: 6px (`0.75`) for chip clusters, 8px
 (`1`) for tight element pairs, 12px (`1.5`) for rail padding and toolbar
@@ -468,23 +475,38 @@ no container around it: the PDF renders flush to the border.
   JSON schema through `fieldRegistry.ts`. A new field type is a registry entry,
   not a bespoke layout.
 - **Focus:** framework default — border thickens to the accent, label lifts.
+- **Block hint:** one or two Body Small lines in Ink Muted under the block
+  heading, held to the body measure, carried by the schema's `block_hint` key and
+  the interface locale. Write it short enough to hold two lines at a usual window
+  width, and write to the Russian string — it is the longer one. Never an `Alert`: nothing went wrong, and `severity="info"` would put a
+  second accent hue on screen.
 
 ### Navigation
 
 - **App bar:** static (never sticky-animated), accent-filled, containing the app
   icon at 64px, the Display-sized title, the theme toggle icon button, then text
   buttons generated from the backend header schema.
-- **Block rail:** the app's primary navigation surface. A dense list in a
-  resizable pane with a 1px right rule, an Eyebrow section title, per-item entry
-  counts as a `secondaryAction` caption, and a 3px accent left border plus
-  weight-700 label on the active item. Rows are 44px minimum.
+- **Edit-screen band:** one row under the app bar carrying back, the resume's own
+  name / locale / template fields, and Export. The fields are the band's height,
+  so they drop the form margin they carry elsewhere. The resume name appears here
+  once, as the field — never also as a label.
+- **Block rail:** the app's primary navigation surface. A dense list with a 1px
+  right rule, an Eyebrow section title, and a 3px accent left border plus
+  weight-600 label on the active item. Rows are 44px minimum. Each row ends in
+  its state: an entry count in tabular figures for a block that holds entries, a
+  filled or hollow 8px ring for one that holds text. The mark rides inside the
+  row rather than over it, so a long Russian block name wraps instead of
+  truncating — a rail whose names cannot be read does not navigate. A pin control
+  in the rail head switches pinned and collapsed.
 
 ### Signature Component: the PDF Preview
 
 The preview is not a screenshot or an approximation — it is the same PDF the
 export produces, rendered by `react-pdf` inside a `backdrop`-toned pane. It has
 three scale modes (fit width, fit height, manual zoom 10–100% in 10% steps) whose
-selection and value persist across sessions. The same component, at
+selection and value persist across sessions. Its controls are one row: a
+segmented mode control and a zoom stepper whose percentage is tabular and whose
+buttons disable at the ends of the range. The same component, at
 `FULL_HEIGHT`, is reused as the card thumbnail and as the template-picker
 thumbnail, which is why those wells are toned rather than white: the paper needs
 a field to sit against.

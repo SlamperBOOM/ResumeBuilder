@@ -19,6 +19,7 @@ const field: TemplateChooser = {
   title: 'template_title',
   resume_value: 'template_name',
   template_choose_title: 'choose_template_title',
+  load_error_key: 'templates_load_error',
 };
 
 beforeEach(() => {
@@ -54,6 +55,7 @@ function renderWithForm(defaultValues: Record<string, unknown>) {
           translations={{
             template_title: 'Template',
             choose_template_title: 'Choose a template',
+            templates_load_error: 'Could not load the templates. Try again.',
           }}
           resumeId="resume-1"
         />
@@ -116,7 +118,7 @@ describe('ResumeTemplateField', () => {
     fireEvent.click(screen.getByLabelText('Template'));
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Failed to load templates. Please try again.',
+      'Could not load the templates. Try again.',
     );
     expect(screen.queryByText('Choose a template')).not.toBeInTheDocument();
   });

@@ -27,6 +27,7 @@ const settings = new Store<Settings>({
       minItems: 2,
       maxItems: 2,
     },
+    editorRailPinned: { type: 'boolean' },
     editPreviewScale: { type: 'number', exclusiveMinimum: 0 },
     editPreviewMode: { type: 'string' },
   },

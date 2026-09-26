@@ -54,6 +54,7 @@ export type DynamicBlock = {
 
 export type TemplateChooser = BaseInput & {
   template_choose_title: string;
+  load_error_key: string;
 };
 
 export type ResumeInput =

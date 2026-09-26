@@ -12,12 +12,28 @@ import EditScreenResponse from '../../renderer/DTO/EditScreenResponse';
 import { EditScreenSchema } from '../../renderer/utils/backendTypes';
 import { makeAppActions } from '../../testUtils/appActions';
 
-jest.mock('../../renderer/components/EditArea', () => ({
+jest.mock('../../renderer/components/resume_edit/EditArea', () => ({
   __esModule: true,
   EditArea: () => <div data-testid="mock-edit-area" />,
 }));
 
-jest.mock('../../renderer/components/PreviewControls', () => ({
+jest.mock('../../renderer/components/resume_edit/FieldRenderer', () => {
+  const { useFormContext } = jest.requireActual('react-hook-form');
+  return {
+    __esModule: true,
+    default: ({ resumeField }: { resumeField: { resume_value: string } }) => {
+      const { register } = useFormContext();
+      return (
+        <input
+          aria-label={resumeField.resume_value}
+          {...register(resumeField.resume_value)}
+        />
+      );
+    },
+  };
+});
+
+jest.mock('../../renderer/components/resume_edit/PreviewControls', () => ({
   __esModule: true,
   default: () => <div data-testid="mock-preview-controls" />,
 }));
@@ -26,27 +42,32 @@ jest.mock('../../renderer/components/ResumePDFPreview');
 
 const schema: EditScreenSchema = {
   edit_area: {
-    to_main_screen_title: 'to_main_key',
+    topbar: {
+      to_main_screen_title: 'to_main_key',
+      resume_name: {
+        type: 'text_input',
+        title: 'name_title',
+        resume_value: 'resume_name',
+      },
+      resume_locale: {
+        type: 'drop_down_list',
+        title: 'locale_title',
+        resume_value: 'resume_locale',
+        values: { en: 'English' },
+        default: 'en',
+      },
+      template: {
+        type: 'template',
+        title: 'template_title',
+        resume_value: 'template_name',
+        template_choose_title: 'choose_template_key',
+  load_error_key: 'load_error_key',
+      },
+      export_button: { key: 'export_key', action: 'export' },
+    },
     blocks_title: 'blocks_title_key',
-    export_button: { key: 'export_key', action: 'export' },
-    resume_name: {
-      type: 'text_input',
-      title: 'name_title',
-      resume_value: 'resume_name',
-    },
-    resume_locale: {
-      type: 'drop_down_list',
-      title: 'locale_title',
-      resume_value: 'resume_locale',
-      values: { en: 'English' },
-      default: 'en',
-    },
-    template: {
-      type: 'template',
-      title: 'template_title',
-      resume_value: 'template_name',
-      template_choose_title: 'choose_template_key',
-    },
+    pin_blocks_title: 'pin_key',
+    unpin_blocks_title: 'unpin_key',
     preview: {
       scale_title: 'scale_title_key',
       full_width_option_key: 'full_width_key',
@@ -119,8 +140,10 @@ describe('EditScreen', () => {
       screen.getByRole('button', { name: 'Back to main' }),
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
-    // Document action row also carries the resume name.
-    expect(screen.getByText('My resume')).toBeInTheDocument();
+    // The resume name is the top bar's own field, not a second copy of it.
+    expect(screen.getByLabelText('resume_name')).toHaveValue('My resume');
+    expect(screen.getByLabelText('resume_locale')).toHaveValue('en');
+    expect(screen.getByLabelText('template_name')).toHaveValue('modern');
   });
 
   it('navigates to the main screen when "Back to main" is clicked', async () => {

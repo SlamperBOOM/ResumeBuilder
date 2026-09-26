@@ -10,7 +10,7 @@ type ResumeBlockProps = {
   resumeId: string;
 };
 
-const NON_FIELD_KEYS: Set<string> = new Set(['block_title']);
+const NON_FIELD_KEYS: Set<string> = new Set(['block_title', 'block_hint']);
 
 export default function ResumeBlock(props: ResumeBlockProps) {
   const { schema, translations, resumeId } = props;

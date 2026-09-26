@@ -70,7 +70,7 @@ export type HeaderSchema = {
   menu: BDUButtonSchema[];
 };
 
-export type BlockContent = { block_title: string } & {
+export type BlockContent = { block_title: string; block_hint: string } & {
   [field: string]:
     | TextInput
     | Toggle
@@ -86,12 +86,16 @@ export type BlocksSchema = { [block_name: string]: BlockContent };
 
 export type EditScreenSchema = {
   edit_area: {
-    to_main_screen_title: string;
+    topbar: {
+      to_main_screen_title: string;
+      resume_name: TextInput;
+      resume_locale: DropDownList;
+      template: TemplateChooser;
+      export_button: BDUButtonSchema;
+    };
     blocks_title: string;
-    export_button: BDUButtonSchema;
-    resume_name: TextInput;
-    resume_locale: DropDownList;
-    template: TemplateChooser;
+    pin_blocks_title: string;
+    unpin_blocks_title: string;
     preview: {
       scale_title: string;
       full_width_option_key: string;
