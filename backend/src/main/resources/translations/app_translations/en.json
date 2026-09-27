@@ -27,16 +27,16 @@
     },
     "confirmation_dialog": {
         "delete_confirmation": {
-            "title": "Confirm deletion of ",
-            "text": "Are you sure you want to delete resume? This action is irreversible",
+            "title": "Delete \"{name}\"?",
+            "text": "The resume file is deleted from your computer. The app cannot bring it back.",
             "confirm_button_text": "Delete",
             "decline_button_text": "Cancel"
         },
         "after_export_confirmation": {
-            "title": "Open result",
-            "text": "Do you want to open folder with saved resume?",
-            "confirm_button_text": "Yes",
-            "decline_button_text": "No"
+            "title": "Resume exported",
+            "text": "The PDF is saved. Open the folder it is in?",
+            "confirm_button_text": "Open folder",
+            "decline_button_text": "Not now"
         }
     },
     "main_screen": {
@@ -75,7 +75,6 @@
         "about": "About",
         "change_locale": "Change locale",
         "open_save_dir": "Open resume save directory",
-        "app_title": "ResumeBuilder",
         "menu": "Menu",
         "switch_to_dark": "Switch to dark theme",
         "switch_to_light": "Switch to light theme"

@@ -27,6 +27,10 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class BDUActionPerformer {
+    private static final String PRIMARY_BUTTON_CONFIRM = "confirm";
+    private static final String PRIMARY_BUTTON_DECLINE = "decline";
+    private static final String RESUME_NAME_PLACEHOLDER = "{name}";
+
     private final Logger logger = Logger.getLogger(this.getClass());
 
     private final IResumeManager resumeManager;
@@ -113,10 +117,15 @@ public class BDUActionPerformer {
             return handleFailure(e.getMessage(), e);
         }
 
-        payload.setTitle(translations.get("delete_confirmation.title").asText() + resume.getName());
+        payload.setTitle(translations.get("delete_confirmation.title").asText()
+                .replace(RESUME_NAME_PLACEHOLDER, resume.getName()));
         payload.setText(translations.get("delete_confirmation.text").asText());
         payload.setConfirmButtonText(translations.get("delete_confirmation.confirm_button_text").asText());
         payload.setDeclineButtonText(translations.get("delete_confirmation.decline_button_text").asText());
+        // Keeping is the safe answer here, so Cancel keeps the emphasis and the
+        // focus; Delete carries the destructive tint instead.
+        payload.setPrimaryButton(PRIMARY_BUTTON_DECLINE);
+        payload.setDestructive(true);
         payload.setConfirmAction("confirm_delete");
         payload.setConfirmActionPayload(getResumeIdPayload(resumeId));
 
@@ -157,6 +166,7 @@ public class BDUActionPerformer {
         confirmPayload.setText(translations.get("after_export_confirmation.text").asText());
         confirmPayload.setConfirmButtonText(translations.get("after_export_confirmation.confirm_button_text").asText());
         confirmPayload.setDeclineButtonText(translations.get("after_export_confirmation.decline_button_text").asText());
+        confirmPayload.setPrimaryButton(PRIMARY_BUTTON_CONFIRM);
         confirmPayload.setConfirmAction("open_local_dir");
         confirmPayload.setConfirmActionPayload(
                 objectMapper.createObjectNode().put(

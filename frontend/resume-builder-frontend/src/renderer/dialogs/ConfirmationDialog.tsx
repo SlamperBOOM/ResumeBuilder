@@ -28,10 +28,14 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
     });
   }, [appActions, confirmationDialogSchema]);
 
+  const confirmLeads = confirmationDialogSchema?.primary_button === 'confirm';
+  const destructive = confirmationDialogSchema?.destructive ?? false;
+
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {confirmationDialogSchema && (
+        // Escape and a click outside always decline, never confirm.
         <Dialog
           open={showState}
           onClose={appActions.dialogActions.confirmationModal.close}
@@ -44,13 +48,16 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
           </DialogContent>
           <DialogActions>
             <Button
-              variant="contained"
-              autoFocus
+              variant={confirmLeads ? 'text' : 'contained'}
+              autoFocus={!confirmLeads}
               onClick={appActions.dialogActions.confirmationModal.close}
             >
               {confirmationDialogSchema.decline_button_text}
             </Button>
             <Button
+              variant={confirmLeads ? 'contained' : 'text'}
+              color={destructive ? 'error' : 'primary'}
+              autoFocus={confirmLeads}
               onClick={() => {
                 appActions.dialogActions.confirmationModal.close();
                 confirmActionCallback();

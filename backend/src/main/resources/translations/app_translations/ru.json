@@ -27,16 +27,16 @@
     },
     "confirmation_dialog": {
         "delete_confirmation": {
-            "title": "Подтвердите удаление ",
-            "text": "Вы точно хотите удалить резюме? Это действие необратимо",
+            "title": "Удалить «{name}»?",
+            "text": "Файл резюме будет удалён с компьютера. Приложение не сможет его вернуть.",
             "confirm_button_text": "Удалить",
             "decline_button_text": "Отмена"
         },
         "after_export_confirmation": {
-            "title": "Открыть результат",
-            "text": "Хотите открыть папку с сохраненным резюме?",
-            "confirm_button_text": "Да",
-            "decline_button_text": "Нет"
+            "title": "Резюме экспортировано",
+            "text": "PDF сохранён. Открыть папку, где он лежит?",
+            "confirm_button_text": "Открыть папку",
+            "decline_button_text": "Не сейчас"
         }
     },
     "main_screen": {
@@ -75,7 +75,6 @@
         "about": "О программе",
         "change_locale": "Сменить язык",
         "open_save_dir": "Открыть папку с резюме",
-        "app_title": "ResumeBuilder",
         "menu": "Меню",
         "switch_to_dark": "Переключить на тёмную тему",
         "switch_to_light": "Переключить на светлую тему"

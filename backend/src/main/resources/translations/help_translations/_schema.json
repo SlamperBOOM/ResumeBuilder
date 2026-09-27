@@ -10,7 +10,8 @@
                 "steps": {
                     "create": "",
                     "import": "",
-                    "open": ""
+                    "open": "",
+                    "find": ""
                 }
             },
             "edit": {
@@ -53,7 +54,8 @@
                     "simple": "",
                     "divided": "",
                     "timeline": "",
-                    "modern": ""
+                    "modern": "",
+                    "centered": ""
                 },
                 "tip": ""
             },
@@ -82,6 +84,7 @@
                 "items": {
                     "edit": "",
                     "duplicate": "",
+                    "export": "",
                     "delete": ""
                 }
             },

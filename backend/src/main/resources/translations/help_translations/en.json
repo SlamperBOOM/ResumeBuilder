@@ -6,11 +6,12 @@
         "sections": {
             "start": {
                 "heading": "Getting started",
-                "body": "The main screen lists every resume you have. Each one is a card with its name and the template it uses; while you have no resumes, the screen shows a short prompt instead.",
+                "body": "The main screen lists every resume you have. Each one appears as the page itself — a preview of the PDF — with its name underneath, when you last changed it, and the language and template it uses. While you have no resumes, the screen shows a short prompt instead.",
                 "steps": {
                     "create": "\"Create resume\" makes an empty resume and opens it in the editor right away.",
                     "import": "\"Import resume\" adds a resume file that was saved by Resume Builder on this or another computer.",
-                    "open": "To come back to a resume, open the \"Actions\" menu on its card and choose \"Edit\"."
+                    "open": "To come back to a resume, click its page. Pointing at the page, or reaching it with the keyboard, also opens a bar along the bottom edge with \"Edit\" in it.",
+                    "find": "\"Search by name\" at the right of the top row filters the list, and it forgives a typo or two."
                 }
             },
             "edit": {
@@ -19,7 +20,7 @@
                 "steps": {
                     "name": "\"Resume name\" is only used inside the app: it is the title on the card and the name suggested when you export. It is not printed in the resume.",
                     "blocks": "The form is split into blocks. Leave a field empty and it simply does not appear in the resume, so there is no need to fill in everything.",
-                    "entries": "Blocks that can hold several entries — jobs, schools, languages — have an \"Add\" button, and every entry has its own \"Delete\" button."
+                    "entries": "Blocks that can hold several entries — jobs, schools, languages — have an \"Add\" button, and every entry has a delete button that asks for confirmation first."
                 },
                 "tip": "There is no save button: changes are written to disk about two seconds after you stop typing. \"To main menu\" or closing the app is safe at any moment."
             },
@@ -53,13 +54,14 @@
                     "simple": "Simple template — one column, all blocks one after another.",
                     "divided": "Simple divided template — a sidebar for contacts and short facts, the rest in the main column.",
                     "timeline": "Timeline style — experience and education drawn as a timeline.",
-                    "modern": "Modern template — an accented header with the name and the desired position."
+                    "modern": "Modern template — an accented header with the name and the desired position.",
+                    "centered": "Centered header — name, desired position and contacts centered at the top, the blocks below in one column."
                 },
                 "tip": "Some templates suit a long career and others a short one. Pick the one where the preview has no half-empty page at the end."
             },
             "preview": {
                 "heading": "Preview",
-                "body": "The preview to the right of the form is the same page that is exported to PDF, with the same page breaks. \"Scale\" above it fits the page to the width or the height of the panel, or lets you set the zoom yourself.",
+                "body": "The preview to the right of the form is the same page that is exported to PDF, with the same page breaks. \"Scale\" under it fits the page to the width or the height of the panel, or lets you set the zoom yourself.",
                 "tip": "\"Full height\" shows the whole page at once and is the quickest way to check that the resume still fits on one page."
             },
             "language": {
@@ -78,11 +80,12 @@
             },
             "manage": {
                 "heading": "Managing resumes",
-                "body": "The \"Actions\" menu on a card holds everything you can do with a resume:",
+                "body": "Point at a resume, or reach it with the keyboard, and a bar appears along the bottom of its page with everything you can do:",
                 "items": {
-                    "edit": "Edit — opens the resume in the editor.",
+                    "edit": "\"Edit\" — opens the resume in the editor; clicking the page does the same.",
                     "duplicate": "Duplicate — makes a full copy, handy for a version of the resume for a different position.",
-                    "delete": "Delete — asks for confirmation and removes the file. A deleted resume cannot be restored from the app."
+                    "export": "\"Export to PDF\" — writes the PDF straight from the list, without opening the resume.",
+                    "delete": "\"Delete\" — sits in the \"Actions\" menu at the end of the bar. It asks for confirmation and removes the file; a deleted resume cannot be restored from the app."
                 }
             },
             "files": {

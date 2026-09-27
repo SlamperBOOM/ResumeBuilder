@@ -439,6 +439,23 @@ container around it still follows the rule above.
 - **Hover / Focus:** framework default tint. Focus-visible rings are MUI's and
   must not be removed.
 
+### Confirmation dialogs
+
+One component asks every "are you sure", and the backend says which answer leads
+it, per dialog: `primary_button` is `confirm` or `decline`, and `destructive`
+says whether confirming throws something away.
+
+- **Emphasis follows the answer the user most likely wants**, not the answer that
+  advances the flow. Deleting a resume leads with Cancel — contained, focused.
+  The dialog after an export leads with "Open folder", because that is where the
+  user was already going.
+- **A destructive confirm is Alarm-colored**, never a plain text button. A dialog
+  that deletes a file may not read as a neutral question.
+- **Escape and a click outside always decline.** They never perform the
+  confirming action, whichever button leads.
+- **Buttons name their action.** `Yes` / `No` / `OK` are not answers to a
+  question about a document; "Delete", "Open folder", "Not now" are.
+
 ### Chips
 
 - **Style:** small, outlined, pill, `rule`-colored 1px border, Ink text,

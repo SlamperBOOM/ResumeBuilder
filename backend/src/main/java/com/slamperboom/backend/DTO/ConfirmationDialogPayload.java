@@ -14,6 +14,10 @@ public class ConfirmationDialogPayload {
     private String confirmButtonText;
     @JsonProperty("decline_button_text")
     private String declineButtonText;
+    @JsonProperty("primary_button")
+    private String primaryButton;
+    @JsonProperty("destructive")
+    private boolean destructive;
     @JsonProperty("confirm_action")
     private String confirmAction;
     @JsonProperty("confirm_action_payload")

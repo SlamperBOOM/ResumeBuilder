@@ -9,6 +9,8 @@ const schema: ConfirmationDialogSchema = {
   text: 'This cannot be undone.',
   confirm_button_text: 'Delete',
   decline_button_text: 'Cancel',
+  primary_button: 'decline',
+  destructive: true,
   confirm_action: 'delete_resume',
   confirm_action_payload: { resume_id: 'r1' },
 };
@@ -65,5 +67,46 @@ describe('ConfirmationDialog', () => {
     expect(appActions.performBduAction).toHaveBeenCalledWith('delete_resume', {
       payload: { resume_id: 'r1' },
     });
+  });
+  it('leads with the safe answer and tints a destructive confirm', () => {
+    render(
+      <ConfirmationDialog
+        showState
+        confirmationDialogSchema={schema}
+        appActions={makeAppActions()}
+      />,
+    );
+
+    const decline = screen.getByRole('button', { name: 'Cancel' });
+    const confirm = screen.getByRole('button', { name: 'Delete' });
+
+    expect(decline).toHaveClass('MuiButton-contained');
+    expect(decline).toHaveFocus();
+    expect(confirm).toHaveClass('MuiButton-textError');
+  });
+
+  it('leads with the confirming answer when the backend asks it to', () => {
+    render(
+      <ConfirmationDialog
+        showState
+        confirmationDialogSchema={{
+          ...schema,
+          title: 'Resume exported',
+          confirm_button_text: 'Open folder',
+          decline_button_text: 'Not now',
+          primary_button: 'confirm',
+          destructive: false,
+        }}
+        appActions={makeAppActions()}
+      />,
+    );
+
+    const confirm = screen.getByRole('button', { name: 'Open folder' });
+
+    expect(confirm).toHaveClass('MuiButton-containedPrimary');
+    expect(confirm).toHaveFocus();
+    expect(screen.getByRole('button', { name: 'Not now' })).toHaveClass(
+      'MuiButton-text',
+    );
   });
 });

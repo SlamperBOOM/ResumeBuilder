@@ -144,6 +144,8 @@ export type ConfirmationDialogSchema = {
   text: string;
   confirm_button_text: string;
   decline_button_text: string;
+  primary_button: 'confirm' | 'decline';
+  destructive: boolean;
   confirm_action: string;
   confirm_action_payload: BDUActionPayload;
 };
