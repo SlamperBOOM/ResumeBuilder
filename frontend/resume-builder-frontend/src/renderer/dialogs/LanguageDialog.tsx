@@ -14,6 +14,7 @@ import useSchemaApi from '../api/useSchemaApi';
 import LanguageDialogResponse from '../DTO/LanguageDialogResponse';
 import { translate } from '../utils/translations';
 import logger from '../utils/logger';
+import protocolErrorDialog from '../utils/protocolErrorDialog';
 
 type LanguageDialogProps = {
   showState: boolean;
@@ -49,10 +50,11 @@ export default function LanguageDialog(props: LanguageDialogProps) {
         logger.error('Failed to load language dialog', error);
         if (!cancelled) {
           dialogActions.languageDialog.close();
-          dialogActions.infoModal.open({
-            title: undefined,
-            text: error instanceof Error ? error.message : String(error),
-          });
+          dialogActions.infoModal.open(
+            protocolErrorDialog(
+              error instanceof Error ? error.message : String(error),
+            ),
+          );
         }
       });
     return () => {
@@ -79,6 +81,7 @@ export default function LanguageDialog(props: LanguageDialogProps) {
   return (
     <Dialog
       open={showState}
+      onClose={dialogActions.languageDialog.close}
       slotProps={{ transition: { onExited: () => setDialogData(null) } }}
     >
       <DialogTitle>{title}</DialogTitle>

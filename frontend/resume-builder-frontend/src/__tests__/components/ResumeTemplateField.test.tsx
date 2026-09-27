@@ -19,6 +19,7 @@ const field: TemplateChooser = {
   title: 'template_title',
   resume_value: 'template_name',
   template_choose_title: 'choose_template_title',
+  close_button_title: 'close_title',
   load_error_key: 'templates_load_error',
 };
 
@@ -99,7 +100,9 @@ describe('ResumeTemplateField', () => {
     expect(await screen.findByText('modern_display')).toBeInTheDocument();
     expect(screen.getByText('classic_display')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('classic_display'));
+    const classicCard = screen.getByText('classic_display');
+    fireEvent.click(classicCard);
+    fireEvent.pointerUp(classicCard);
 
     await waitFor(() =>
       expect(screen.getByLabelText('Template')).toHaveValue('classic'),

@@ -16,8 +16,8 @@
   - Resumes are saved as files on your machine. No account, no cloud, works offline.
 - **Live preview**
   - The PDF preview updates as you type. Fit it to the panel's width or height, or set the zoom yourself.
-- **4 templates**
-  - Simple, Simple divided, Timeline, and Modern. Switch templates at any time without re-entering your data.
+- **5 templates**
+  - Simple, Timeline, Modern and so on. Switch templates at any time without re-entering your data.
 - **All the sections a resume needs**
   - Personal info with a photo, contacts, experience, education, advanced training, skills, languages, publications, recommendations, hobbies, about, and additional info.
 - **Job search details**

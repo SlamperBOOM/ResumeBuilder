@@ -2,6 +2,7 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import type { Settings } from '../renderer/utils/settingsDefaults';
+import type { UpdatePayload } from '../renderer/utils/backendTypes';
 
 export type Channels = 'ipc-example';
 
@@ -41,6 +42,8 @@ const exposedApi = {
   getSettings: () => ipcRenderer.invoke('settings:get') as Promise<Settings>,
   setSetting: <K extends keyof Settings>(key: K, value: Settings[K]) =>
     ipcRenderer.invoke('settings:set', key, value) as Promise<void>,
+  flushResumeSave: (updatePayload: UpdatePayload) =>
+    ipcRenderer.sendSync('flush-resume-save', updatePayload) as void,
 };
 
 export type ElectronHandler = typeof exposedApi;

@@ -21,6 +21,8 @@ export type BlockRailProps = {
   onSelect: (blockKey: string) => void;
   translations: Translations;
   title: string;
+  filledTitle: string;
+  emptyTitle: string;
   pinned: boolean;
   pinTitle: string;
   unpinTitle: string;
@@ -123,12 +125,16 @@ export default function BlockRail(props: BlockRailProps) {
     onSelect,
     translations,
     title,
+    filledTitle,
+    emptyTitle,
     pinned,
     pinTitle,
     unpinTitle,
     onTogglePinned,
   } = props;
   const translateKey = useTranslate(translations);
+  const blockStateTitle = (filled: boolean) =>
+    filled ? filledTitle : emptyTitle;
   const blockValues = useWatch({ name: 'blocks' });
   const [hovered, setHovered] = useState(false);
 
@@ -186,14 +192,18 @@ export default function BlockRail(props: BlockRailProps) {
           const count = countBlockEntries(block, blockValues);
           const blockTitle = translateKey(block.block_title);
           const isActive = blockKey === activeBlockKey;
-          const mark =
-            count !== null && count > 0 ? (
-              <Typography variant="caption" color="text.secondary">
-                {count}
-              </Typography>
-            ) : (
-              <FilledMark filled={isBlockFilled(block, blockValues)} />
-            );
+          const hasEntries = count !== null && count > 0;
+          const filled = isBlockFilled(block, blockValues);
+          const mark = hasEntries ? (
+            <Typography variant="caption" color="text.secondary">
+              {count}
+            </Typography>
+          ) : (
+            <FilledMark filled={filled} />
+          );
+          const stateTitle = hasEntries
+            ? String(count)
+            : blockStateTitle(filled);
 
           return (
             <ListItem key={blockKey} disablePadding>
@@ -201,7 +211,8 @@ export default function BlockRail(props: BlockRailProps) {
                 selected={isActive}
                 onClick={() => onSelect(blockKey)}
                 title={open ? undefined : blockTitle}
-                aria-label={open ? undefined : blockTitle}
+                aria-label={`${blockTitle}, ${stateTitle}`}
+                aria-current={isActive ? 'true' : undefined}
                 sx={{
                   borderRadius: 1,
                   minHeight: 44,

@@ -13,6 +13,21 @@ import 'dayjs/locale/ru';
 
 const AUTOSAVE_DEBOUNCE_MS = 2000;
 
+function buildUpdatePayload(data: ResumeFormValues): UpdatePayload {
+  return {
+    resume_id: data.resume_id,
+    resume_info: {
+      resume_name: data.resume_name,
+      resume_locale: data.resume_locale,
+      template_name: data.template_name,
+    },
+    content: Object.keys(data.blocks ?? {}).map((blockKey: string) => ({
+      block: blockKey,
+      payload: data.blocks[blockKey],
+    })),
+  };
+}
+
 export type ResumeFormProviderProps = {
   appActions: AppActions;
   editSchemaResponse: EditScreenResponse;
@@ -44,23 +59,7 @@ export default function ResumeFormProvider(props: ResumeFormProviderProps) {
       }
 
       logger.debug('Saving resume:', data);
-      const updatePayload: UpdatePayload = {
-        resume_id: data.resume_id,
-        resume_info: {
-          resume_name: data.resume_name,
-          resume_locale: data.resume_locale,
-          template_name: data.template_name,
-        },
-        content: [],
-      };
-
-      Object.keys(data.blocks ?? {}).forEach((blockKey: string) => {
-        const block = data.blocks[blockKey];
-        updatePayload.content.push({
-          block: blockKey,
-          payload: block,
-        });
-      });
+      const updatePayload = buildUpdatePayload(data);
       appActions.performBduAction(BDU_ACTION_UPDATE, {
         payload: { update_payload: updatePayload },
         updateScreenPayload: {
@@ -72,6 +71,24 @@ export default function ResumeFormProvider(props: ResumeFormProviderProps) {
     },
     [appActions, setEditSchema],
   );
+
+  const flushPendingSave = useCallback(() => {
+    if (!debounceRef.current) {
+      return;
+    }
+    clearTimeout(debounceRef.current);
+    debounceRef.current = null;
+    methods.handleSubmit(onSubmit)();
+  }, [methods, onSubmit]);
+
+  const flushPendingSaveOnUnload = useCallback(() => {
+    if (!debounceRef.current) {
+      return;
+    }
+    clearTimeout(debounceRef.current);
+    debounceRef.current = null;
+    window.electron.flushResumeSave(buildUpdatePayload(methods.getValues()));
+  }, [methods]);
 
   useEffect(() => {
     const subscription = methods.watch((_values, { type }) => {
@@ -87,13 +104,14 @@ export default function ResumeFormProvider(props: ResumeFormProviderProps) {
       }, AUTOSAVE_DEBOUNCE_MS);
     });
 
+    window.addEventListener('beforeunload', flushPendingSaveOnUnload);
+
     return () => {
       subscription.unsubscribe();
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
+      window.removeEventListener('beforeunload', flushPendingSaveOnUnload);
+      flushPendingSave();
     };
-  }, [methods, onSubmit]);
+  }, [methods, onSubmit, flushPendingSave, flushPendingSaveOnUnload]);
 
   return (
     <FormProvider {...methods}>

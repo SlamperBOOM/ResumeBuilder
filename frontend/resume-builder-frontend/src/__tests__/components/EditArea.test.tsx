@@ -44,18 +44,26 @@ const schema: EditScreenSchema = {
         title: 'template_title',
         resume_value: 'template_name',
         template_choose_title: 'choose_template_key',
-  load_error_key: 'load_error_key',
+        close_button_title: 'close_key',
+        load_error_key: 'load_error_key',
       },
       export_button: { key: 'export_key', action: 'export' },
     },
     blocks_title: 'blocks_title_key',
     pin_blocks_title: 'pin_key',
     unpin_blocks_title: 'unpin_key',
+    block_state_filled_title: 'filled_key',
+    block_state_empty_title: 'empty_key',
     preview: {
       scale_title: 'scale_title_key',
       full_width_option_key: 'full_width_key',
       full_height_option_key: 'full_height_key',
       custom_option_key: 'custom_key',
+      previous_page_key: 'previous_page_key',
+      next_page_key: 'next_page_key',
+      zoom_in_key: 'zoom_in_key',
+      zoom_out_key: 'zoom_out_key',
+      load_error_key: 'preview_load_error_key',
     },
     resume_blocks: {
       personal: {
@@ -82,6 +90,8 @@ const schema: EditScreenSchema = {
 
 const translations = {
   personal_block_title: 'Personal',
+  filled_key: 'filled in',
+  empty_key: 'empty',
   experience_block_title: 'Experience',
   personal_block_hint: 'What belongs in this block',
   blocks_title_key: 'Blocks',
@@ -109,7 +119,7 @@ const response: EditScreenResponse = {
 
 function renderEditArea(setEditSchema = jest.fn()) {
   const appActions = makeAppActions();
-  render(
+  const view = render(
     <ResumeFormProvider
       appActions={appActions}
       editSchemaResponse={response}
@@ -118,7 +128,7 @@ function renderEditArea(setEditSchema = jest.fn()) {
       <EditArea editSchemaResponse={response} />
     </ResumeFormProvider>,
   );
-  return { appActions, setEditSchema };
+  return { appActions, setEditSchema, unmount: view.unmount };
 }
 
 describe('EditArea', () => {
@@ -160,13 +170,78 @@ describe('EditArea', () => {
     );
 
     expect(screen.queryByText('Blocks')).toBeNull();
+    // The row names its own state, so the accessible name is not bare.
     expect(
-      screen.getByRole('button', { name: 'Personal' }),
+      screen.getByRole('button', { name: 'Personal, filled in' }),
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Pin the block list' }));
 
     expect(screen.getByText('Blocks')).toBeInTheDocument();
+  });
+
+  it('saves a change still inside the debounce window when the screen closes', async () => {
+    const { appActions, unmount } = renderEditArea();
+
+    fireEvent.change(screen.getByLabelText('blocks.personal.full_name'), {
+      target: { value: 'Typed and left at once' },
+    });
+
+    expect(appActions.performBduAction).not.toHaveBeenCalled();
+
+    // react-hook-form validates before it submits, so the write lands a
+    // microtask after the screen is gone.
+    await act(async () => {
+      unmount();
+    });
+
+    expect(appActions.performBduAction).toHaveBeenCalledWith(
+      BDU_ACTION_UPDATE,
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          update_payload: expect.objectContaining({
+            content: expect.arrayContaining([
+              {
+                block: 'personal',
+                payload: {
+                  '@type': 'personal',
+                  full_name: 'Typed and left at once',
+                },
+              },
+            ]),
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('hands a pending change to the main process when the window closes', () => {
+    const flushResumeSave = jest.fn();
+    (
+      window as unknown as { electron: { flushResumeSave: jest.Mock } }
+    ).electron = { flushResumeSave };
+    const { appActions } = renderEditArea();
+
+    fireEvent.change(screen.getByLabelText('blocks.personal.full_name'), {
+      target: { value: 'Typed and quit at once' },
+    });
+    fireEvent(window, new Event('beforeunload'));
+
+    // The request outlives the window only from the main process.
+    expect(appActions.performBduAction).not.toHaveBeenCalled();
+    expect(flushResumeSave).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: expect.arrayContaining([
+          {
+            block: 'personal',
+            payload: {
+              '@type': 'personal',
+              full_name: 'Typed and quit at once',
+            },
+          },
+        ]),
+      }),
+    );
   });
 
   it('auto-saves through performBduAction 2s after the user stops typing', async () => {

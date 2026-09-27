@@ -16,6 +16,8 @@ function renderControls(
       fullWidthLabel="Full width"
       fullHeightLabel="Full height"
       customLabel="Custom"
+      zoomInLabel="Zoom in"
+      zoomOutLabel="Zoom out"
       previewMode={ResumePreviewScaleEnum.FULL_HEIGHT}
       onPreviewModeChange={onPreviewModeChange}
       previewScale={0.5}
@@ -68,8 +70,8 @@ describe('PreviewControls', () => {
   it('disables the zoom stepper unless the mode is Custom', () => {
     renderControls({ previewMode: ResumePreviewScaleEnum.FULL_HEIGHT });
 
-    expect(screen.getByRole('button', { name: 'Scale +' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Scale −' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Zoom out' })).toBeDisabled();
   });
 
   it('steps the scale by 10% in Custom mode', () => {
@@ -78,10 +80,10 @@ describe('PreviewControls', () => {
       previewScale: 0.5,
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Scale +' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Zoom in' }));
     expect(onPreviewScaleChange).toHaveBeenCalledWith(0.6);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Scale −' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Zoom out' }));
     expect(onPreviewScaleChange).toHaveBeenCalledWith(0.4);
   });
 
@@ -92,13 +94,15 @@ describe('PreviewControls', () => {
         fullWidthLabel="Full width"
         fullHeightLabel="Full height"
         customLabel="Custom"
+        zoomInLabel="Zoom in"
+        zoomOutLabel="Zoom out"
         previewMode={ResumePreviewScaleEnum.CUSTOM}
         onPreviewModeChange={jest.fn()}
         previewScale={1}
         onPreviewScaleChange={jest.fn()}
       />,
     );
-    expect(screen.getByRole('button', { name: 'Scale +' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Zoom in' })).toBeDisabled();
 
     rerender(
       <PreviewControls
@@ -106,12 +110,14 @@ describe('PreviewControls', () => {
         fullWidthLabel="Full width"
         fullHeightLabel="Full height"
         customLabel="Custom"
+        zoomInLabel="Zoom in"
+        zoomOutLabel="Zoom out"
         previewMode={ResumePreviewScaleEnum.CUSTOM}
         onPreviewModeChange={jest.fn()}
         previewScale={0.1}
         onPreviewScaleChange={jest.fn()}
       />,
     );
-    expect(screen.getByRole('button', { name: 'Scale −' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Zoom out' })).toBeDisabled();
   });
 });

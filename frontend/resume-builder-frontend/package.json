@@ -102,7 +102,6 @@
     }
   },
   "dependencies": {
-    "@electron/notarize": "^3.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
@@ -115,8 +114,6 @@
     "electron-log": "^5.3.2",
     "electron-router-dom": "^2.1.0",
     "electron-store": "^11.0.2",
-    "json-diff-ts": "^4.9.1",
-    "mui-image": "^1.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.71.2",
@@ -126,6 +123,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@electron/notarize": "^3.0.0",
     "@electron/rebuild": "^3.7.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
     "@svgr/webpack": "^8.1.0",

@@ -148,7 +148,7 @@ export default function ResumeTemplateField(props: FieldRendererProps) {
               {translateKey(currentField.template_choose_title)}
             </DialogTitle>
             <IconButton
-              aria-label="close"
+              aria-label={translateKey(currentField.close_button_title)}
               onClick={() => setDialogOpen(false)}
               sx={{ position: 'absolute', right: 8, top: 8 }}
             >

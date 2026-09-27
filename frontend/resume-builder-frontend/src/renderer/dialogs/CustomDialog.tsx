@@ -26,7 +26,10 @@ export default function CustomDialog(props: CustomDialogProps) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {customDialogSchema && (
-        <Dialog open={showState}>
+        <Dialog
+          open={showState}
+          onClose={appActions.dialogActions.customModal.close}
+        >
           <DialogTitle>{customDialogSchema.title}</DialogTitle>
           <DialogContent dividers>
             <DialogContentText>{customDialogSchema.text}</DialogContentText>

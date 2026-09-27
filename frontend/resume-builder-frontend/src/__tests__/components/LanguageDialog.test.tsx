@@ -117,10 +117,9 @@ describe('LanguageDialog', () => {
         appActions.dialogActions.languageDialog.close,
       ).toHaveBeenCalledTimes(1),
     );
-    expect(appActions.dialogActions.infoModal.open).toHaveBeenCalledWith({
-      title: undefined,
-      text: 'network down',
-    });
+    expect(appActions.dialogActions.infoModal.open).toHaveBeenCalledWith(
+      expect.objectContaining({ title: undefined, text: 'network down' }),
+    );
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 

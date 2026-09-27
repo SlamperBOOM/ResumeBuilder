@@ -37,7 +37,7 @@ public class BDUActionPerformer {
 
     private JsonNode handleFailure(String message, Throwable cause) {
         logger.error(message, cause);
-        return dialogBuilders.buildMessageDialogWithoutTitle(message);
+        return dialogBuilders.buildMessageDialogWithoutTitle(message, translationsManager.getCommonText("ok"));
     }
 
     private ObjectNode getResumeIdPayload(String resumeId) {
@@ -192,7 +192,8 @@ public class BDUActionPerformer {
         } catch (UserException | IOException e) {
             logger.error("Failed to open directory: " + dirPath, e);
             return Optional.of(dialogBuilders.buildMessageDialogWithoutTitle(
-                    UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION).getMessage()));
+                    UserExceptionFactory.construct(ErrorCode.UNABLE_TO_PERFORM_ACTION).getMessage(),
+                    translationsManager.getCommonText("ok")));
         }
     }
 
@@ -227,6 +228,7 @@ public class BDUActionPerformer {
             logger.info("Show help");
             return makeActionNode(FrontendAction.OPEN_HELP, objectMapper.createObjectNode()
                     .put("title", help.get("title").asText())
+                    .put("close", translationsManager.getCommonText("close"))
                     .put("html", html));
         } catch (UserException e) {
             return handleFailure(e.getMessage(), e);

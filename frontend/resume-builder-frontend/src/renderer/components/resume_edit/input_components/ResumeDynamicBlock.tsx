@@ -1,6 +1,19 @@
+import { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
-import { Box, Button } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {
   DynamicBlock,
   FieldRendererProps,
@@ -22,58 +35,106 @@ export default function ResumeDynamicBlock(props: FieldRendererProps) {
     name: arrayPath,
   });
 
+  const [pendingRemoval, setPendingRemoval] = useState<number | null>(null);
+  const closeConfirmation = () => setPendingRemoval(null);
+
+  const deleteTitle = translateKey(currentField.delete_button_title);
+
   return (
     <>
-      {fields.map((item, index) => (
-        <Box
-          key={item.id}
-          sx={{
-            border: 1,
-            padding: 2,
-            borderRadius: 2,
-            marginTop: 1,
-            marginBottom: 1,
-          }}
-        >
-          {Object.keys(currentField.block_format).map((subKey) => {
-            const subField = currentField.block_format[subKey];
-            const fieldName = `${arrayPath}.${index}.${subField.resume_value}`;
-            return (
-              <DynamicBlockFieldRenderer
-                key={subKey}
-                resumeField={subField}
-                translations={translations}
-                fieldNameOverride={fieldName}
-                resumeId={resumeId}
-              />
-            );
-          })}
-          <Button
-            aria-label={translateKey(currentField.delete_button_title)}
-            onClick={() => remove(index)}
+      <Stack spacing={1.5} sx={{ mt: 1 }}>
+        {fields.map((item, index) => (
+          <Box
+            key={item.id}
+            sx={{
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 2,
+              px: 2,
+              pb: 2,
+              pt: 0.5,
+            }}
           >
-            <DeleteIcon color="error" />
-          </Button>
-        </Box>
-      ))}
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography variant="caption" color="text.secondary">
+                {index + 1}
+              </Typography>
+              <Tooltip title={deleteTitle}>
+                <IconButton
+                  size="small"
+                  color="error"
+                  aria-label={deleteTitle}
+                  onClick={() => setPendingRemoval(index)}
+                >
+                  <DeleteOutlineIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
 
-      <Button
-        sx={{ marginTop: 1 }}
-        onClick={() =>
-          append(
-            Object.fromEntries(
-              Object.keys(currentField.block_format).map((key) => [
-                currentField.block_format[key].resume_value,
-                null,
-              ]),
-            ),
-          )
-        }
-        fullWidth
-        variant="contained"
-      >
-        {translateKey(currentField.add_button_title)}
-      </Button>
+            {Object.keys(currentField.block_format).map((subKey) => {
+              const subField = currentField.block_format[subKey];
+              const fieldName = `${arrayPath}.${index}.${subField.resume_value}`;
+              return (
+                <DynamicBlockFieldRenderer
+                  key={subKey}
+                  resumeField={subField}
+                  translations={translations}
+                  fieldNameOverride={fieldName}
+                  resumeId={resumeId}
+                />
+              );
+            })}
+          </Box>
+        ))}
+
+        <Button
+          onClick={() =>
+            append(
+              Object.fromEntries(
+                Object.keys(currentField.block_format).map((key) => [
+                  currentField.block_format[key].resume_value,
+                  null,
+                ]),
+              ),
+            )
+          }
+          fullWidth
+          variant="contained"
+        >
+          {translateKey(currentField.add_button_title)}
+        </Button>
+      </Stack>
+
+      <Dialog open={pendingRemoval !== null} onClose={closeConfirmation}>
+        <DialogTitle>
+          {translateKey(currentField.delete_entry_confirm_title)}
+        </DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText>
+            {translateKey(currentField.delete_entry_confirm_text)}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" autoFocus onClick={closeConfirmation}>
+            {translateKey(currentField.delete_entry_decline)}
+          </Button>
+          <Button
+            color="error"
+            onClick={() => {
+              if (pendingRemoval !== null) {
+                remove(pendingRemoval);
+              }
+              closeConfirmation();
+            }}
+          >
+            {translateKey(currentField.delete_entry_confirm)}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

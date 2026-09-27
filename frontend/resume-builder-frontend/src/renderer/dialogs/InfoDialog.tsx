@@ -22,7 +22,7 @@ export default function InfoDialog(props: InfoDialogProps) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {schema && (
-        <Dialog open={showState}>
+        <Dialog open={showState} onClose={dialogActions.infoModal.close}>
           {schema.title && <DialogTitle>{schema.title}</DialogTitle>}
           <DialogContent dividers>
             <DialogContentText>{schema.text}</DialogContentText>
@@ -33,7 +33,7 @@ export default function InfoDialog(props: InfoDialogProps) {
               variant="contained"
               onClick={dialogActions.infoModal.close}
             >
-              OK
+              {schema.close_button_text}
             </Button>
           </DialogActions>
         </Dialog>

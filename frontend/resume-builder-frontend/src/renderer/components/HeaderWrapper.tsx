@@ -4,6 +4,7 @@ import {
   Button,
   IconButton,
   Toolbar,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
@@ -27,6 +28,10 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
   const schemaApi = useSchemaApi();
   const [headerButtons, setHeaderButtons] = useState<Iterable<ReactNode>>([]);
   const [title, setTitle] = useState<string>();
+  const [themeLabels, setThemeLabels] = useState<{
+    toDark: string;
+    toLight: string;
+  }>();
   const isDark = useMediaQuery('(prefers-color-scheme: dark)', { noSsr: true });
 
   useEffect(() => {
@@ -50,6 +55,19 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
           },
         );
         setTitle(schema.schema.app_title);
+        const themeToggle = schema.schema.theme_toggle;
+        if (themeToggle) {
+          setThemeLabels({
+            toDark: translate(
+              schema.translations,
+              themeToggle.switch_to_dark_key,
+            ),
+            toLight: translate(
+              schema.translations,
+              themeToggle.switch_to_light_key,
+            ),
+          });
+        }
         setHeaderButtons(buttons);
         return null;
       })
@@ -57,6 +75,10 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
         logger.error('Failed to load header schema', error);
       });
   }, [schemaApi, appActions]);
+
+  const themeLabel = isDark
+    ? (themeLabels?.toLight ?? 'Toggle theme')
+    : (themeLabels?.toDark ?? 'Toggle theme');
 
   return (
     <Box
@@ -70,16 +92,18 @@ export default function HeaderWrapper(props: HeaderWrapperProps) {
       <AppBar position="static">
         <Toolbar>
           <img src={appIcon} alt="" height="32px" />
-          <Typography variant="h6" marginRight={2}>
+          <Typography variant="h6" component="h1" marginRight={2}>
             {title}
           </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="Toggle theme"
-            onClick={() => setSetting('themeMode', isDark ? 'light' : 'dark')}
-          >
-            {isDark ? <LightMode /> : <DarkMode />}
-          </IconButton>
+          <Tooltip title={themeLabel}>
+            <IconButton
+              color="inherit"
+              aria-label={themeLabel}
+              onClick={() => setSetting('themeMode', isDark ? 'light' : 'dark')}
+            >
+              {isDark ? <LightMode /> : <DarkMode />}
+            </IconButton>
+          </Tooltip>
           {headerButtons}
         </Toolbar>
       </AppBar>

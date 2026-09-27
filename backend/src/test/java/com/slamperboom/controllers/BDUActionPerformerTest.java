@@ -59,7 +59,6 @@ class BDUActionPerformerTest {
     private HTMLConverter htmlConverter;
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    private final DialogBuilders dialogBuilders = new DialogBuilders();
 
     private BDUActionPerformer performer;
 
@@ -67,7 +66,8 @@ class BDUActionPerformerTest {
     void setUp() throws Exception {
         var translationsConstructor = TranslationsManager.class.getDeclaredConstructor();
         translationsConstructor.setAccessible(true);
-        performer = new BDUActionPerformer(resumeManager, objectMapper, dialogBuilders, translationsConstructor.newInstance(), htmlConverter);
+        TranslationsManager translationsManager = translationsConstructor.newInstance();
+        performer = new BDUActionPerformer(resumeManager, objectMapper, new DialogBuilders(), translationsManager, htmlConverter);
         DynamicSettings.getInstance().setLocale("en");
     }
 

@@ -48,7 +48,7 @@ export default function HelpDialog(props: HelpDialogProps) {
     <Dialog open={showState} onClose={dialogActions.helpModal.close} fullScreen>
       <DialogTitle sx={{ pr: 7 }}>{schema.title}</DialogTitle>
       <IconButton
-        aria-label="close"
+        aria-label={schema.close}
         onClick={dialogActions.helpModal.close}
         sx={{ position: 'absolute', right: 8, top: 8 }}
       >

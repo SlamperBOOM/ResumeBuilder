@@ -69,6 +69,8 @@ export function EditArea(props: EditAreaProps) {
       onSelect={setActiveBlockKey}
       translations={translations}
       title={translateKey(editSchema.edit_area.blocks_title)}
+      filledTitle={translateKey(editSchema.edit_area.block_state_filled_title)}
+      emptyTitle={translateKey(editSchema.edit_area.block_state_empty_title)}
       pinned={railPinned}
       pinTitle={translateKey(editSchema.edit_area.pin_blocks_title)}
       unpinTitle={translateKey(editSchema.edit_area.unpin_blocks_title)}
@@ -93,7 +95,7 @@ export function EditArea(props: EditAreaProps) {
         spacing={2}
         sx={{ px: 2, pt: 2 }}
       >
-        <Typography variant="h6" noWrap sx={{ minWidth: 0 }}>
+        <Typography variant="h6" component="h2" noWrap sx={{ minWidth: 0 }}>
           {activeBlock && translateKey(activeBlock.block_title)}
         </Typography>
         <Typography variant="caption" color="text.secondary" noWrap>

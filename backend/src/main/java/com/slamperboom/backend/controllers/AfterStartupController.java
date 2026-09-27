@@ -20,10 +20,13 @@ public class AfterStartupController {
     @GET
     public Optional<JsonNode> checkServiceStartup() {
         if (StartupExceptionHolder.isErrorMessageOccurred()) {
+            // The message is hardcoded on purpose: the startup failure being reported here
+            // may well be the translations themselves failing to load.
             return Optional.of(dialogBuilders.buildMessageDialogWithTitle(
                     "Critical error occurred",
                     "Something went wrong while starting up the app. Close the app, redownload and reinstall it. " +
-                            "Error: " + StartupExceptionHolder.getErrorMessage()
+                            "Error: " + StartupExceptionHolder.getErrorMessage(),
+                    "OK"
             ));
         }
         return Optional.empty();

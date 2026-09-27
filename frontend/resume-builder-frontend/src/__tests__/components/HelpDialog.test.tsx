@@ -14,6 +14,7 @@ describe('HelpDialog', () => {
           showState
           schema={{
             title: 'Help',
+            close: 'Close',
             html: '<html><head><title>Help</title></head><body>text</body></html>',
           }}
           dialogActions={makeDialogActions()}

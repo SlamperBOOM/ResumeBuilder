@@ -128,8 +128,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    minHeight: 800,
-    minWidth: 1200,
+    minHeight: 700,
+    minWidth: 1100,
     width: windowState.width,
     height: windowState.height,
     backgroundColor: windowBackground(),
@@ -239,6 +239,20 @@ ipcMain.handle('settings:set', (_event, key: string, value: unknown) => {
 
 ipcMain.handle('get-backend-port', () => activeBackendPort);
 
+let pendingResumeSave: Promise<unknown> | null = null;
+
+ipcMain.on('flush-resume-save', (event, updatePayload: unknown) => {
+  event.returnValue = null;
+  if (!isBackendRunning()) {
+    return;
+  }
+  pendingResumeSave = axios
+    .post(`http://localhost:${activeBackendPort}/action/update`, updatePayload)
+    .catch((error) => {
+      log.error('Failed to flush the pending resume save', error);
+    });
+});
+
 ipcMain.handle('get-app-version', () => app.getVersion());
 
 const allowedExternalHost = new Set(['github.com']);
@@ -262,6 +276,11 @@ app.on('before-quit', async (event) => {
   }
 
   event.preventDefault();
+
+  if (pendingResumeSave) {
+    await pendingResumeSave;
+    pendingResumeSave = null;
+  }
 
   try {
     const result = (

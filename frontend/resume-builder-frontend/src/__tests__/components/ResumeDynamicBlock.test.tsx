@@ -37,6 +37,10 @@ const field: DynamicBlock = {
   },
   add_button_title: 'add_experience_key',
   delete_button_title: 'delete_entry_key',
+  delete_entry_confirm_title: 'delete_entry_confirm.title',
+  delete_entry_confirm_text: 'delete_entry_confirm.text',
+  delete_entry_confirm: 'delete_entry_confirm.confirm',
+  delete_entry_decline: 'delete_entry_confirm.cancel',
 };
 
 function renderWithForm(defaultValues: Record<string, unknown>) {
@@ -49,6 +53,10 @@ function renderWithForm(defaultValues: Record<string, unknown>) {
           translations={{
             add_experience_key: 'Add experience',
             delete_entry_key: 'Delete entry',
+            'delete_entry_confirm.title': 'Delete entry?',
+            'delete_entry_confirm.text': 'It is removed from the resume.',
+            'delete_entry_confirm.confirm': 'Delete',
+            'delete_entry_confirm.cancel': 'Cancel',
           }}
           resumeId="resume-1"
         />
@@ -79,7 +87,7 @@ describe('ResumeDynamicBlock', () => {
     expect(fields[1]).toHaveTextContent('experience.0.is_current:toggle');
   });
 
-  it('removes an entry when its delete button is pressed', () => {
+  it('removes an entry once the deletion is confirmed', () => {
     renderWithForm({
       experience: [{ company_name: 'Acme', is_current: true }],
     });
@@ -88,6 +96,22 @@ describe('ResumeDynamicBlock', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete entry' }));
 
+    expect(screen.getByText('Delete entry?')).toBeInTheDocument();
+    expect(screen.getAllByTestId('mock-dynamic-field')).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+
     expect(screen.queryAllByTestId('mock-dynamic-field')).toHaveLength(0);
+  });
+
+  it('keeps the entry when the deletion is declined', () => {
+    renderWithForm({
+      experience: [{ company_name: 'Acme', is_current: true }],
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete entry' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(screen.getAllByTestId('mock-dynamic-field')).toHaveLength(2);
   });
 });

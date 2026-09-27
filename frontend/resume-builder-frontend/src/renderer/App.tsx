@@ -34,6 +34,7 @@ import HelpDialog from './dialogs/HelpDialog';
 import OnboardingDialog from './dialogs/OnboardingDialog';
 import RouteNotFoundScreen from './screens/RouteNotFoundScreen';
 import logger from './utils/logger';
+import protocolErrorDialog from './utils/protocolErrorDialog';
 
 function useDialog<T = void>() {
   const [showState, setShowState] = useState(false);
@@ -146,10 +147,11 @@ export default function App() {
       const action = actionApi[bduAction];
       if (!action) {
         logger.error(`Unknown BDU action received: "${bduAction}"`);
-        dialogActions.infoModal.open({
-          title: undefined,
-          text: `Unknown action received from the backend: "${bduAction}"`,
-        });
+        dialogActions.infoModal.open(
+          protocolErrorDialog(
+            `Unknown action received from the backend: "${bduAction}"`,
+          ),
+        );
         return;
       }
       action(payload?.payload)
@@ -160,10 +162,11 @@ export default function App() {
               logger.error(
                 `Unknown frontend action received: "${result.frontend_action}"`,
               );
-              dialogActions.infoModal.open({
-                title: undefined,
-                text: `Unknown frontend action received from the backend: "${result.frontend_action}"`,
-              });
+              dialogActions.infoModal.open(
+                protocolErrorDialog(
+                  `Unknown frontend action received from the backend: "${result.frontend_action}"`,
+                ),
+              );
               return null;
             }
             const frontendActionResult = frontendAction({
@@ -183,7 +186,7 @@ export default function App() {
           logger.error('BDU action failed:', error);
           const message =
             error instanceof Error ? error.message : String(error);
-          dialogActions.infoModal.open({ title: undefined, text: message });
+          dialogActions.infoModal.open(protocolErrorDialog(message));
         });
     },
     [actionApi, frontendActions, dialogActions],

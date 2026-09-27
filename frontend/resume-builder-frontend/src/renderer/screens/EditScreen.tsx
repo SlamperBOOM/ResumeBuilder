@@ -217,6 +217,17 @@ export default function EditScreen(props: EditScreenProps) {
                     paginated
                     scaleType={previewMode}
                     scale={previewScale}
+                    labels={{
+                      previousPage: translateKey(
+                        schema.edit_area.preview.previous_page_key,
+                      ),
+                      nextPage: translateKey(
+                        schema.edit_area.preview.next_page_key,
+                      ),
+                      loadError: translateKey(
+                        schema.edit_area.preview.load_error_key,
+                      ),
+                    }}
                   />
                 </Box>
 
@@ -232,6 +243,12 @@ export default function EditScreen(props: EditScreenProps) {
                   )}
                   customLabel={translateKey(
                     schema.edit_area.preview.custom_option_key,
+                  )}
+                  zoomInLabel={translateKey(
+                    schema.edit_area.preview.zoom_in_key,
+                  )}
+                  zoomOutLabel={translateKey(
+                    schema.edit_area.preview.zoom_out_key,
                   )}
                   previewMode={previewMode}
                   onPreviewModeChange={handlePreviewModeChange}

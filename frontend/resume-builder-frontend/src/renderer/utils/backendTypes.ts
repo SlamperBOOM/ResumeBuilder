@@ -67,6 +67,7 @@ export type SimpleResume = {
 
 export type HeaderSchema = {
   app_title: string;
+  theme_toggle: { switch_to_dark_key: string; switch_to_light_key: string };
   menu: BDUButtonSchema[];
 };
 
@@ -96,11 +97,18 @@ export type EditScreenSchema = {
     blocks_title: string;
     pin_blocks_title: string;
     unpin_blocks_title: string;
+    block_state_filled_title: string;
+    block_state_empty_title: string;
     preview: {
       scale_title: string;
       full_width_option_key: string;
       full_height_option_key: string;
       custom_option_key: string;
+      previous_page_key: string;
+      next_page_key: string;
+      zoom_in_key: string;
+      zoom_out_key: string;
+      load_error_key: string;
     };
     resume_blocks: BlocksSchema;
   };
@@ -143,6 +151,7 @@ export type ConfirmationDialogSchema = {
 export type InfoModalSchema = {
   title: string | undefined;
   text: string;
+  close_button_text: string;
 };
 
 export type AboutModalSchema = {
@@ -159,6 +168,7 @@ export type AboutModalSchema = {
 
 export type HelpModalSchema = {
   title: string;
+  close: string;
   html: string;
 };
 

@@ -6,7 +6,11 @@ import { makeDialogActions } from '../../testUtils/appActions';
 
 describe('InfoDialog', () => {
   it('renders the title and text', () => {
-    const schema: InfoModalSchema = { title: 'Heads up', text: 'Saved.' };
+    const schema: InfoModalSchema = {
+      title: 'Heads up',
+      text: 'Saved.',
+      close_button_text: 'OK',
+    };
     render(
       <InfoDialog
         showState
@@ -20,7 +24,11 @@ describe('InfoDialog', () => {
   });
 
   it('renders without a title when none is provided', () => {
-    const schema: InfoModalSchema = { title: undefined, text: 'Saved.' };
+    const schema: InfoModalSchema = {
+      title: undefined,
+      text: 'Saved.',
+      close_button_text: 'OK',
+    };
     render(
       <InfoDialog
         showState
@@ -34,7 +42,11 @@ describe('InfoDialog', () => {
 
   it('calls close when OK is clicked', () => {
     const dialogActions = makeDialogActions();
-    const schema: InfoModalSchema = { title: 'Heads up', text: 'Saved.' };
+    const schema: InfoModalSchema = {
+      title: 'Heads up',
+      text: 'Saved.',
+      close_button_text: 'OK',
+    };
     render(
       <InfoDialog showState schema={schema} dialogActions={dialogActions} />,
     );

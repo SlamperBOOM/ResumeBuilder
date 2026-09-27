@@ -141,6 +141,10 @@ const cases: Array<{ testId: string; field: ResumeInput }> = [
       block_format: {},
       add_button_title: 'add',
       delete_button_title: 'delete',
+      delete_entry_confirm_title: 'confirm_title',
+      delete_entry_confirm_text: 'confirm_text',
+      delete_entry_confirm: 'confirm',
+      delete_entry_decline: 'decline',
     },
   },
   {

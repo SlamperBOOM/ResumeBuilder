@@ -10,7 +10,9 @@
             "timeline_template": "Timeline style",
             "simple_template_updated": "Modern template",
             "centered_header_template": "Centered header"
-        }
+        },
+        "close": "Close",
+        "ok": "OK"
     },
     "error_messages": {
         "resume_save_error": "Unable to save the resume. Please try again.",
@@ -74,7 +76,9 @@
         "change_locale": "Change locale",
         "open_save_dir": "Open resume save directory",
         "app_title": "ResumeBuilder",
-        "menu": "Menu"
+        "menu": "Menu",
+        "switch_to_dark": "Switch to dark theme",
+        "switch_to_light": "Switch to light theme"
     },
     "language_dialog": {
         "language_dialog_title": "Select language",
@@ -95,11 +99,24 @@
         "template_choose_title": "Choose template",
         "templates_load_error": "Could not load the templates. Try again.",
         "delete_entry": "Delete",
+        "delete_entry_confirm": {
+            "title": "Delete entry?",
+            "text": "The entry and everything written in it is removed from the resume.",
+            "confirm": "Delete",
+            "cancel": "Cancel"
+        },
+        "block_state_filled": "filled in",
+        "block_state_empty": "empty",
         "preview": {
             "scale_title": "Scale:",
             "full_width": "Full width",
             "full_height": "Full height",
-            "custom": "Custom"
+            "custom": "Custom",
+            "previous_page": "Previous page",
+            "next_page": "Next page",
+            "zoom_in": "Zoom in",
+            "zoom_out": "Zoom out",
+            "load_error": "The preview could not be rendered."
         },
         "locale_name": "en",
         "main_block": {

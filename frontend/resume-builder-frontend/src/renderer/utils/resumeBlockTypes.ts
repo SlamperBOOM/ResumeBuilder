@@ -50,10 +50,15 @@ export type DynamicBlock = {
   };
   add_button_title: string;
   delete_button_title: string;
+  delete_entry_confirm_title: string;
+  delete_entry_confirm_text: string;
+  delete_entry_confirm: string;
+  delete_entry_decline: string;
 };
 
 export type TemplateChooser = BaseInput & {
   template_choose_title: string;
+  close_button_title: string;
   load_error_key: string;
 };
 

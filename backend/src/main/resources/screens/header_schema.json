@@ -1,5 +1,9 @@
 {
     "app_title": "Resume Builder",
+    "theme_toggle": {
+        "switch_to_dark_key": "switch_to_dark",
+        "switch_to_light_key": "switch_to_light"
+    },
     "menu": [
         {
             "key": "open_save_dir",

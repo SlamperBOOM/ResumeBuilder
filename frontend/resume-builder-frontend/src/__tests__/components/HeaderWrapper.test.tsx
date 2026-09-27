@@ -36,6 +36,10 @@ describe('HeaderWrapper', () => {
     mockGetHeader.mockResolvedValue({
       schema: {
         app_title: 'app_title_key',
+        theme_toggle: {
+          switch_to_dark_key: 'to_dark_key',
+          switch_to_light_key: 'to_light_key',
+        },
         menu: [
           { key: 'settings_key', action: 'open_settings' },
           { key: 'about_key', action: 'open_about' },
@@ -45,6 +49,8 @@ describe('HeaderWrapper', () => {
         app_title_key: 'Resume Builder',
         settings_key: 'Settings',
         about_key: 'About',
+        to_dark_key: 'Switch to dark theme',
+        to_light_key: 'Switch to light theme',
       },
     });
     const appActions = makeAppActions();

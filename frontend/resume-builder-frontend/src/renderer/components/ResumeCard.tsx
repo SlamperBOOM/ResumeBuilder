@@ -8,7 +8,14 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { MouseEvent, ReactNode, useState } from 'react';
+import {
+  MouseEvent,
+  ReactNode,
+  memo,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -28,12 +35,34 @@ export type ResumeCardProps = {
 
 const PAGE_ASPECT = '1 / 1.414';
 
-export function ResumeCard(props: ResumeCardProps) {
+const PRERENDER_MARGIN = '300px';
+
+export const ResumeCard = memo(function ResumeCard(props: ResumeCardProps) {
   const { resume, schema, appActions } = props;
   const screenSchema = schema.schema;
   const translateKey = useTranslate(schema.translations);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const [inReach, setInReach] = useState(false);
+
+  useEffect(() => {
+    const element = sheetRef.current;
+    if (!element || inReach) {
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setInReach(true);
+        }
+      },
+      { rootMargin: PRERENDER_MARGIN },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [inReach]);
 
   const open = Boolean(anchorEl);
 
@@ -73,6 +102,7 @@ export function ResumeCard(props: ResumeCardProps) {
   return (
     <Box component="article" sx={{ minWidth: 0 }}>
       <Box
+        ref={sheetRef}
         sx={{
           position: 'relative',
           aspectRatio: PAGE_ASPECT,
@@ -91,11 +121,13 @@ export function ResumeCard(props: ResumeCardProps) {
         }}
       >
         {resume.pdf_preview ? (
-          <ResumePDFPreview
-            preview={resume.pdf_preview}
-            scaleType={ResumePreviewScaleEnum.FULL_WIDTH}
-            flush
-          />
+          inReach && (
+            <ResumePDFPreview
+              preview={resume.pdf_preview}
+              scaleType={ResumePreviewScaleEnum.FULL_WIDTH}
+              flush
+            />
+          )
         ) : (
           <Box
             sx={{
@@ -204,7 +236,12 @@ export function ResumeCard(props: ResumeCardProps) {
       </Box>
 
       <Box sx={{ mt: 1 }}>
-        <Typography variant="h6" noWrap title={resume.resume_name}>
+        <Typography
+          variant="h6"
+          component="h2"
+          noWrap
+          title={resume.resume_name}
+        >
           {resume.resume_name}
         </Typography>
         {resume.modified_label && (
@@ -230,4 +267,4 @@ export function ResumeCard(props: ResumeCardProps) {
       </Box>
     </Box>
   );
-}
+});

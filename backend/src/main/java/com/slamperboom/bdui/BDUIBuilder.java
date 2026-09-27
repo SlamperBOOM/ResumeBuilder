@@ -56,7 +56,7 @@ public class BDUIBuilder {
 
     private JsonNode handleFailure(String message, Throwable cause) {
         logger.error(message, cause);
-        return dialogBuilders.buildMessageDialogWithoutTitle(message);
+        return dialogBuilders.buildMessageDialogWithoutTitle(message, translationsManager.getCommonText("ok"));
     }
 
     private ArrayNode buildResumeTags(String resumeId, JsonNode mainScreenSchema) {
@@ -176,7 +176,9 @@ public class BDUIBuilder {
 
         if (resume == null) {
             logger.warnf("Resume not found: %s", resumeId);
-            return dialogBuilders.buildMessageDialogWithoutTitle(UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND).getMessage());
+            return dialogBuilders.buildMessageDialogWithoutTitle(
+                    UserExceptionFactory.construct(ErrorCode.RESUME_NOT_FOUND).getMessage(),
+                    translationsManager.getCommonText("ok"));
         }
 
         List<JsonNode> nodes;

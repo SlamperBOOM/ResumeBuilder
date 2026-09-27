@@ -34,7 +34,11 @@
                 "resume_value": ""
             }
         },
-        "add_button_title": ""
+        "add_button_title": "",
+        "delete_entry_confirm_title": "delete_entry_confirm.title",
+        "delete_entry_confirm_text": "delete_entry_confirm.text",
+        "delete_entry_confirm": "delete_entry_confirm.confirm",
+        "delete_entry_decline": "delete_entry_confirm.cancel"
     },
     "image": {
         "type": "image",

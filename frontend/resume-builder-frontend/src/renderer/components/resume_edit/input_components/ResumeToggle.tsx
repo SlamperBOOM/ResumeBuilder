@@ -17,7 +17,7 @@ export default function ResumeToggle(props: FieldRendererProps) {
       render={({ field: controllerField }) => (
         <FormControlLabel
           control={
-            <Switch {...controllerField} checked={controllerField.value} />
+            <Switch {...controllerField} checked={!!controllerField.value} />
           }
           label={translateKey(currentField.title)}
         />

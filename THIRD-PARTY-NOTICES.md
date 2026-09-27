@@ -82,9 +82,7 @@ Build-time only, not included in the packaged app:
 
 - **electron-builder** (MIT) — packaging.
 - **@electron/notarize** (MIT) — used only by `.erb/scripts/notarize.js`
-  during macOS packaging. It is declared in `dependencies`, but the app code
-  doesn't import it and `release/app/package.json` has no dependencies, so it
-  isn't copied into the app.
+  during macOS packaging, and declared in `devDependencies`.
 
 ## Backend (Java)
 

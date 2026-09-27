@@ -33,6 +33,30 @@ if (!global.TextDecoder) {
   global.TextDecoder = TextDecoder;
 }
 
+// JSDOM does not implement IntersectionObserver, which ResumeCard uses to
+// render a page preview once the sheet is within reach. The stub reports every
+// observed sheet as visible, so tests see the fully loaded grid.
+type IntersectionStubCallback = (
+  entries: { isIntersecting: boolean; target: unknown }[],
+) => void;
+
+if (!global.IntersectionObserver) {
+  global.IntersectionObserver = function IntersectionObserverStub(
+    callback: IntersectionStubCallback,
+  ) {
+    return {
+      root: null,
+      rootMargin: '',
+      thresholds: [],
+      observe: (target: unknown) =>
+        callback([{ isIntersecting: true, target }]),
+      unobserve: () => {},
+      disconnect: () => {},
+      takeRecords: () => [],
+    };
+  } as unknown as typeof global.IntersectionObserver;
+}
+
 // JSDOM does not implement ResizeObserver, used by react-resizable-panels
 // and a few components (ResumeTemplateField, ResumePDFPreview)
 if (!global.ResizeObserver) {

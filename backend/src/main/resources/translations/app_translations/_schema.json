@@ -10,7 +10,9 @@
             "timeline_template": "",
             "simple_template_updated": "",
             "centered_header_template": ""
-        }
+        },
+        "close": "",
+        "ok": ""
     },
     "error_messages": {
         "resume_save_error": "",
@@ -74,7 +76,9 @@
         "change_locale": "",
         "open_save_dir": "",
         "app_title": "",
-        "menu": ""
+        "menu": "",
+        "switch_to_dark": "",
+        "switch_to_light": ""
     },
     "language_dialog": {
         "language_dialog_title": "",
@@ -95,11 +99,24 @@
         "template_choose_title": "",
         "templates_load_error": "",
         "delete_entry": "",
+        "delete_entry_confirm": {
+            "title": "",
+            "text": "",
+            "confirm": "",
+            "cancel": ""
+        },
+        "block_state_filled": "",
+        "block_state_empty": "",
         "preview": {
             "scale_title": "",
             "full_width": "",
             "full_height": "",
-            "custom": ""
+            "custom": "",
+            "previous_page": "",
+            "next_page": "",
+            "zoom_in": "",
+            "zoom_out": "",
+            "load_error": ""
         },
         "locale_name": "",
         "main_block": {

@@ -22,6 +22,7 @@
                 "title": "template_name_title",
                 "resume_value": "template_name",
                 "template_choose_title": "template_choose_title",
+                "close_button_title": "close",
                 "load_error_key": "templates_load_error"
             },
             "export_button": {
@@ -32,11 +33,18 @@
         "blocks_title": "blocks_title",
         "pin_blocks_title": "pin_blocks_title",
         "unpin_blocks_title": "unpin_blocks_title",
+        "block_state_filled_title": "block_state_filled",
+        "block_state_empty_title": "block_state_empty",
         "preview": {
             "scale_title": "preview.scale_title",
             "full_width_option_key": "preview.full_width",
             "full_height_option_key": "preview.full_height",
-            "custom_option_key": "preview.custom"
+            "custom_option_key": "preview.custom",
+            "previous_page_key": "preview.previous_page",
+            "next_page_key": "preview.next_page",
+            "zoom_in_key": "preview.zoom_in",
+            "zoom_out_key": "preview.zoom_out",
+            "load_error_key": "preview.load_error"
         },
         "resume_blocks": {
             "main_block": {
@@ -172,7 +180,11 @@
                         }
                     },
                     "add_button_title": "contacts.add_social_net",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "experience": {
@@ -217,7 +229,11 @@
                         }
                     },
                     "add_button_title": "experience.add_experience",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "education": {
@@ -267,7 +283,11 @@
                         }
                     },
                     "add_button_title": "education.add_education",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "advanced_training": {
@@ -294,7 +314,11 @@
                         }
                     },
                     "add_button_title": "advanced_training.add_training",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "languages": {
@@ -326,7 +350,11 @@
                         }
                     },
                     "add_button_title": "languages.add_language",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "skills": {
@@ -356,7 +384,11 @@
                         }
                     },
                     "add_button_title": "skills.add_skill",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "about": {
@@ -406,7 +438,11 @@
                         }
                     },
                     "add_button_title": "recommendations.add_recommendation",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "publications": {
@@ -429,7 +465,11 @@
                         }
                     },
                     "add_button_title": "publications.add_publication",
-                    "delete_button_title": "delete_entry"
+                    "delete_button_title": "delete_entry",
+                    "delete_entry_confirm_title": "delete_entry_confirm.title",
+                    "delete_entry_confirm_text": "delete_entry_confirm.text",
+                    "delete_entry_confirm": "delete_entry_confirm.confirm",
+                    "delete_entry_decline": "delete_entry_confirm.cancel"
                 }
             },
             "additional_info": {

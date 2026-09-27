@@ -2,7 +2,6 @@ package com.slamperboom.bdui;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slamperboom.backend.BackendConstants;
 import com.slamperboom.backend.DTO.ConfirmationDialogPayload;
 import com.slamperboom.backend.DTO.CustomDialogPayload;
@@ -20,14 +19,15 @@ public class DialogBuilders {
                 .set(BackendConstants.PAYLOAD_KEY, payload);
     }
 
-    public JsonNode buildMessageDialogWithoutTitle(String text) {
-        return buildMessageDialogWithTitle(null, text);
+    public JsonNode buildMessageDialogWithoutTitle(String text, String closeButtonText) {
+        return buildMessageDialogWithTitle(null, text, closeButtonText);
     }
 
-    public JsonNode buildMessageDialogWithTitle(String title, String text) {
+    public JsonNode buildMessageDialogWithTitle(String title, String text, String closeButtonText) {
         MessageDialogPayload payload = new MessageDialogPayload();
         payload.setTitle(title);
         payload.setText(text);
+        payload.setCloseButtonText(closeButtonText);
         return makeDialogNode(FrontendAction.SHOW_MESSAGE, objectMapper.valueToTree(payload));
     }
 

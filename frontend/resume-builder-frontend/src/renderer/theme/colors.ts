@@ -11,7 +11,7 @@ export const colors = {
     primary: { main: '#117a80' },
     error: { main: '#d20f39' },
     background: { default: '#eff1f5', paper: '#ffffff' },
-    text: { primary: '#4c4f69', secondary: '#6c6f85', disabled: '#9ca0b0' },
+    text: { primary: '#4c4f69', secondary: '#5c5f77', disabled: '#9ca0b0' },
     divider: '#dce0e8',
     surface: {
       editor: '#e6e9ef',

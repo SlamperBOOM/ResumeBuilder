@@ -8,7 +8,14 @@ import {
 } from '@mui/material';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { AppActions, ScreenSource } from '../utils/appActions';
 import { ResumeCard } from '../components/ResumeCard';
 import { MainScreenSkeleton } from '../components/ScreenSkeletons';
@@ -53,7 +60,7 @@ function MainScreenEmptyState(props: { schema: MainScreenResponse }) {
       }}
     >
       <ArticleOutlinedIcon sx={{ fontSize: 96, opacity: 0.4 }} />
-      <Typography variant="h5" color="text.primary">
+      <Typography variant="h5" component="h2" color="text.primary">
         {translateKey(emptyState.title)}
       </Typography>
       <Typography variant="body2">
@@ -147,13 +154,15 @@ export default function MainScreen(props: MainScreenProps) {
     [mainSchema],
   );
 
+  const deferredQuery = useDeferredValue(searchQuery);
+
   const resumeCards = useMemo(() => {
     if (!mainSchema) {
       return [];
     }
     return searchByName(
       resumes,
-      searchQuery,
+      deferredQuery,
       (resume) => resume.resume_name,
     ).map((resume) => (
       <ResumeCard
@@ -163,7 +172,7 @@ export default function MainScreen(props: MainScreenProps) {
         appActions={appActions}
       />
     ));
-  }, [mainSchema, resumes, searchQuery, appActions]);
+  }, [mainSchema, resumes, deferredQuery, appActions]);
 
   return (
     <Box

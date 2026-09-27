@@ -10,7 +10,7 @@ colors:
   card-well-light: "#dce0e8"
   backdrop-light: "#ccd0da"
   ink-light: "#4c4f69"
-  ink-muted-light: "#6c6f85"
+  ink-muted-light: "#5c5f77"
   ink-faint-light: "#9ca0b0"
   rule-light: "#dce0e8"
   alarm-light: "#d20f39"
@@ -217,7 +217,10 @@ in a component.
   PDF page sits in — the card thumbnail well and the preview pane backdrop. These
   exist so a white PDF page has something to be white *against*.
 - **Ink / Ink Muted / Ink Faint**: primary, secondary, and disabled text. Ink
-  Faint is for disabled only; secondary text uses Ink Muted.
+  Faint is for disabled only; secondary text uses Ink Muted. Ink Muted is
+  measured against the *desk*, not against paper: on the main screen every date
+  and metadata line sits on the lowest surface, so the light value is Latte's
+  subtext1 (5.53:1 there) rather than subtext0, which fell to 4.37:1.
 - **Rule** (`rule-*`): the 1px divider that does the structural work shadows
   would do in a more decorative system.
 
@@ -475,6 +478,11 @@ no container around it: the PDF renders flush to the border.
   JSON schema through `fieldRegistry.ts`. A new field type is a registry entry,
   not a bespoke layout.
 - **Focus:** framework default — border thickens to the accent, label lifts.
+- **Repeating entry:** an 8px-radius box bordered with the 1px `rule` — never
+  `currentColor` — opening with a row that carries the entry's position in
+  Caption tabular on the left and a small error-tinted delete control on the
+  right. Deleting asks first: the entry holds typed history and autosave commits
+  the removal seconds later, so the confirmation is the only place to stop it.
 - **Block hint:** one or two Body Small lines in Ink Muted under the block
   heading, held to the body measure, carried by the schema's `block_hint` key and
   the interface locale. Write it short enough to hold two lines at a usual window
@@ -492,7 +500,9 @@ no container around it: the PDF renders flush to the border.
   once, as the field — never also as a label.
 - **Block rail:** the app's primary navigation surface. A dense list with a 1px
   right rule, an Eyebrow section title, and a 3px accent left border plus
-  weight-600 label on the active item. Rows are 44px minimum. Each row ends in
+  weight-600 label on the active item, which also carries `aria-current`. Each
+  row names its own state — "Experience, 3", "About, empty" — because a count or
+  a ring spoken alone says nothing about what it counts. Rows are 44px minimum. Each row ends in
   its state: an entry count in tabular figures for a block that holds entries, a
   filled or hollow 8px ring for one that holds text. The mark rides inside the
   row rather than over it, so a long Russian block name wraps instead of

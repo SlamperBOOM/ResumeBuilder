@@ -10,7 +10,9 @@
             "timeline_template": "В стиле таймлайн",
             "simple_template_updated": "Современный шаблон",
             "centered_header_template": "С центрированной шапкой"
-        }
+        },
+        "close": "Закрыть",
+        "ok": "ОК"
     },
     "error_messages": {
         "resume_save_error": "Не удалось сохранить резюме. Попробуйте ещё раз.",
@@ -74,7 +76,9 @@
         "change_locale": "Сменить язык",
         "open_save_dir": "Открыть папку с резюме",
         "app_title": "ResumeBuilder",
-        "menu": "Меню"
+        "menu": "Меню",
+        "switch_to_dark": "Переключить на тёмную тему",
+        "switch_to_light": "Переключить на светлую тему"
     },
     "language_dialog": {
         "language_dialog_title": "Выберите язык",
@@ -95,11 +99,24 @@
         "template_choose_title": "Выберите шаблон",
         "templates_load_error": "Не удалось загрузить шаблоны. Попробуйте ещё раз.",
         "delete_entry": "Удалить",
+        "delete_entry_confirm": {
+            "title": "Удалить запись?",
+            "text": "Запись и всё, что в ней написано, будет удалено из резюме.",
+            "confirm": "Удалить",
+            "cancel": "Отмена"
+        },
+        "block_state_filled": "заполнен",
+        "block_state_empty": "не заполнен",
         "preview": {
             "scale_title": "Масштаб:",
             "full_width": "По ширине",
             "full_height": "По высоте",
-            "custom": "Произвольный"
+            "custom": "Произвольный",
+            "previous_page": "Предыдущая страница",
+            "next_page": "Следующая страница",
+            "zoom_in": "Увеличить",
+            "zoom_out": "Уменьшить",
+            "load_error": "Не удалось отобразить предпросмотр."
         },
         "locale_name": "ru",
         "main_block": {

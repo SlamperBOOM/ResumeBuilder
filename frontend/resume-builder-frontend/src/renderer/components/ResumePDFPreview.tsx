@@ -21,6 +21,12 @@ export enum ResumePreviewScaleEnum {
   CUSTOM = 'custom',
 }
 
+export type ResumePreviewLabels = {
+  previousPage: string;
+  nextPage: string;
+  loadError: string;
+};
+
 type ResumePDFPreviewProps = {
   preview: string;
   // Shows prev/next page navigation controls below the preview.
@@ -30,10 +36,18 @@ type ResumePDFPreviewProps = {
   scaleType: ResumePreviewScaleEnum;
   scale?: number;
   flush?: boolean;
+  labels?: ResumePreviewLabels;
 };
 
 export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
-  const { preview, paginated, scale = 1, scaleType, flush = false } = props;
+  const {
+    preview,
+    paginated,
+    scale = 1,
+    scaleType,
+    flush = false,
+    labels,
+  } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,14 +81,20 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
   useEffect(() => {
     if (!pdf) return;
 
-    pdf.getPage(1).then((page) => {
-      const viewport = page.getViewport({ scale: 1 });
+    pdf
+      .getPage(1)
+      .then((page) => {
+        const viewport = page.getViewport({ scale: 1 });
 
-      setPageSize({
-        width: viewport.width,
-        height: viewport.height,
+        setPageSize({
+          width: viewport.width,
+          height: viewport.height,
+        });
+        return null;
+      })
+      .catch((error: unknown) => {
+        logger.error('Failed to measure the first PDF page:', error);
       });
-    });
   }, [pdf]);
 
   const onDocumentLoadSuccess = useCallback(
@@ -144,6 +164,16 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
           file={preview}
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
+          loading=""
+          error={
+            labels ? (
+              <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
+                {labels.loadError}
+              </Typography>
+            ) : (
+              ''
+            )
+          }
         >
           <Page
             pageNumber={currentPage}
@@ -168,17 +198,19 @@ export default function ResumePDFPreview(props: ResumePDFPreviewProps) {
           }}
         >
           <IconButton
+            aria-label={labels?.previousPage}
             onClick={() => setCurrentPage((p) => p - 1)}
             disabled={currentPage <= 1}
           >
             <NavigateBeforeIcon />
           </IconButton>
 
-          <Typography>
+          <Typography variant="caption" aria-live="polite">
             {currentPage} / {pages}
           </Typography>
 
           <IconButton
+            aria-label={labels?.nextPage}
             onClick={() => setCurrentPage((p) => p + 1)}
             disabled={currentPage >= pages}
           >

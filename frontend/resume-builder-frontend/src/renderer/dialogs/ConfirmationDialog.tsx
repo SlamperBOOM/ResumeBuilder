@@ -32,7 +32,10 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {confirmationDialogSchema && (
-        <Dialog open={showState}>
+        <Dialog
+          open={showState}
+          onClose={appActions.dialogActions.confirmationModal.close}
+        >
           <DialogTitle>{confirmationDialogSchema.title}</DialogTitle>
           <DialogContent dividers>
             <DialogContentText>

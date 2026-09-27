@@ -169,6 +169,11 @@ public class TranslationsManager {
         return resumeTranslations.get(DEFAULT_LOCALE);
     }
 
+    public String getCommonText(String key) {
+        JsonNode common = getAppSection(COMMON_KEY);
+        return common == null ? key : common.path(key).asText(key);
+    }
+
     public JsonNode getMainScreenTranslations() {
         return getAppSection(MAIN_SCREEN_KEY);
     }

@@ -27,6 +27,8 @@ type PreviewControlsProps = {
   fullWidthLabel: string;
   fullHeightLabel: string;
   customLabel: string;
+  zoomInLabel: string;
+  zoomOutLabel: string;
   previewMode: ResumePreviewScaleEnum;
   onPreviewModeChange: (mode: ResumePreviewScaleEnum) => void;
   previewScale: number;
@@ -39,6 +41,8 @@ export default function PreviewControls(props: PreviewControlsProps) {
     fullWidthLabel,
     fullHeightLabel,
     customLabel,
+    zoomInLabel,
+    zoomOutLabel,
     previewMode,
     onPreviewModeChange,
     previewScale,
@@ -89,7 +93,7 @@ export default function PreviewControls(props: PreviewControlsProps) {
         <Stack direction="row" spacing={0.5} alignItems="center">
           <IconButton
             size="small"
-            aria-label={`${scaleTitle} −`}
+            aria-label={zoomOutLabel}
             disabled={zoomDisabled || previewScale <= MIN_SCALE}
             onClick={() =>
               onPreviewScaleChange(clampScale(previewScale - SCALE_STEP))
@@ -99,7 +103,8 @@ export default function PreviewControls(props: PreviewControlsProps) {
           </IconButton>
 
           <Typography
-            variant="body2"
+            variant="caption"
+            aria-live="polite"
             color={zoomDisabled ? 'text.disabled' : 'text.primary'}
             sx={{
               width: 48,
@@ -112,7 +117,7 @@ export default function PreviewControls(props: PreviewControlsProps) {
 
           <IconButton
             size="small"
-            aria-label={`${scaleTitle} +`}
+            aria-label={zoomInLabel}
             disabled={zoomDisabled || previewScale >= MAX_SCALE}
             onClick={() =>
               onPreviewScaleChange(clampScale(previewScale + SCALE_STEP))
