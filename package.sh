@@ -95,9 +95,11 @@ fi
 
 if [[ "$OS" == "Linux" ]]; then
   PLATFORM="linux"
+  JRE_STRIP_COMPONENTS=1
   ARCHS_TO_FETCH=("$HOST_EB_ARCH")
 elif [[ "$OS" == "Darwin" ]]; then
   PLATFORM="mac"
+  JRE_STRIP_COMPONENTS=3
   ARCHS_TO_FETCH=("x64" "arm64")
 else
   echo "Unsupported OS: $OS"
@@ -164,7 +166,7 @@ download_jre() {
     download_file "$url" "$archive" || { rm -f "$archive"; exit 1; }
   fi
 
-  tar -xzf "$archive" --strip-components=1 -C "$target_dir"
+  tar -xzf "$archive" --strip-components="$JRE_STRIP_COMPONENTS" -C "$target_dir"
   if [[ "$REUSE_JRE" == 0 ]]; then
     rm "$archive"
   fi
@@ -228,7 +230,7 @@ echo "Building backend"
 begin_stage "Backend"
 
 cd backend
-export JAVA_HOME="$(cd "../jre/${PLATFORM}-${ARCHS_TO_FETCH[0]}" && pwd)"
+export JAVA_HOME="$(cd "../jre/${PLATFORM}-${HOST_EB_ARCH}" && pwd)"
 ./gradlew :quarkusBuild --no-daemon
 cd ..
 
@@ -255,7 +257,22 @@ fi
 
 begin_stage "Frontend"
 cd frontend/resume-builder-frontend/
-if ! { npm install && npm run package; }; then
+
+package_frontend() {
+  npm install || return 1
+  if [[ "$PLATFORM" != "mac" ]]; then
+    npm run package
+    return
+  fi
+
+  ./node_modules/.bin/ts-node ./.erb/scripts/clean.js dist &&
+    npm run build &&
+    ./node_modules/.bin/electron-builder build --arm64 --publish never &&
+    ./node_modules/.bin/electron-builder build --x64 --publish never &&
+    npm run build:dll
+}
+
+if ! package_frontend; then
   echo "Frontend build failed." >&2
   if [[ "$DOWNLOAD_NPM" == 0 ]]; then
     echo "If your system Node.js/npm is missing or incompatible, re-run with --download-npm to build with a portable Node.js ${NODE_MAJOR}." >&2
